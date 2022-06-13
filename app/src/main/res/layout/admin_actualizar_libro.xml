@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AgregarLibros"
+    android:orientation="vertical"
+    android:background="@color/black"
+    >
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include
+            layout="@layout/item_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:layout_marginTop="-28dp"
+            android:orientation="vertical">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/txt_agregar_nombre"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#787676"
+                app:hintTextColor="#FFFFFF"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <EditText
+                    android:id="@+id/nombreLibro_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:background="@drawable/customs_editex"
+                    android:hint="Nombre Completo"
+                    android:inputType="textEmailAddress"
+                    android:paddingStart="20dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#787676"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="5dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/txt_agregar_autor"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#787676"
+                app:hintTextColor="#FFFFFF"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <EditText
+                    android:id="@+id/autorLibro_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:background="@drawable/customs_editex"
+                    android:hint="Autor Libro"
+                    android:inputType="textEmailAddress"
+                    android:paddingStart="20dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#787676"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="5dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/txt_agregar_cantidad"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#787676"
+                app:hintTextColor="#FFFFFF"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <EditText
+                    android:id="@+id/cantidadLibros_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:background="@drawable/customs_editex"
+                    android:hint="Cantidad Libro"
+                    android:inputType="number"
+                    android:paddingStart="20dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#787676"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="5dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/txt_agregar_libro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#787676"
+                app:hintTextColor="#FFFFFF"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <EditText
+                    android:id="@+id/urlLibro_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:background="@drawable/customs_editex"
+                    android:hint="Url Libro"
+                    android:inputType="textPersonName"
+                    android:paddingStart="20dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#787676"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="5dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/txt_agregar_imagen"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#787676"
+                app:hintTextColor="#FFFFFF"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <EditText
+                    android:id="@+id/urlImagen_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:background="@drawable/customs_editex"
+                    android:hint="Imagen Libro"
+                    android:inputType="textEmailAddress"
+                    android:paddingStart="20dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#787676"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                android:layout_width="wrap_content"
+                android:layout_height="5dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/txt_agregar_descripcion"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColorHint="#787676"
+                app:hintTextColor="#FFFFFF"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+                <EditText
+                    android:id="@+id/descripcion_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="110dp"
+                    android:background="@drawable/customs_editex"
+                    android:hint="Descripcion"
+                    android:inputType="text"
+                    android:paddingStart="20dp"
+                    android:textColor="#FFFFFF"
+                    android:textColorHint="#787676"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <Button
+                android:id="@+id/actualizar_boton"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_marginTop="18dp"
+                android:background="@drawable/custom_button"
+                android:text="Actualizar Libro"
+                android:textSize="20dp"
+                android:textColor="#FFFFFF"
+                android:textAllCaps="false" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>
+
+
+
+
+
+
+
+
