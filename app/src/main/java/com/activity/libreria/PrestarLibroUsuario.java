@@ -1,6 +1,7 @@
 package com.activity.libreria;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -12,6 +13,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.activity.libreria.metodos.MetodosLibros;
 import com.activity.libreria.metodos.MetodosUsuario;
+import com.activity.libreria.metodos.SPreferences;
 import com.activity.libreria.modelos.Libros;
 import com.activity.libreria.modelos.Usuario;
 import com.bumptech.glide.Glide;
@@ -35,6 +37,7 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
     Usuario usuario;
     MetodosUsuario metodosUsuario;
     MetodosLibros metodosLibros;
+    SPreferences sharedPreferences;
     Libros libros;
     int id = 0;
 
@@ -53,6 +56,7 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
         metodosUsuario = new MetodosUsuario(this);
         metodosLibros = new MetodosLibros(this);
         usuario = new Usuario();
+        sharedPreferences = new SPreferences(this);
         nombreLibro_ver = findViewById(R.id.nombreLibro_ver);
         nombre_usuario_txt = findViewById(R.id.nombre_usuario_txt);
         autorLibro_ver = findViewById(R.id.autorLibro_ver);
@@ -114,7 +118,7 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.volverLibros:
                 Intent i = new Intent(this, librosDisponiblesUsuario.class);
                 startActivity(i);
@@ -122,18 +126,35 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
             case R.id.prestar_libro:
                 DateFormat df = new SimpleDateFormat(" d MMM yyyy, HH:mm"); //definir formato para fecha
                 String fecha_registro = df.format(Calendar.getInstance().getTime()); //obtener fecha
+                ArrayList<Libros> listaPrestado = metodosLibros.ArraysLibrosPre();
                 libros.setId_libro(id);
                 libros.setFechaPrestamo(fecha_registro);
                 libros.setNombreLibro(nombreLibro_ver.getText().toString());
                 libros.setAutorLibro(autorLibro_ver.getText().toString());
                 libros.setDescripcion(descripcionLibro_ver.getText().toString());
                 usuario = metodosUsuario.traerDatos();
-                metodosLibros.prestarLibro(libros, usuario);
-                libros.setCantidadLibro(String.valueOf(restarLibro()));
-                metodosLibros.actualizarCantidadLibro(libros);
-                Toast.makeText(getApplicationContext(),"Libro prestado...", Toast.LENGTH_LONG).show();
-                Intent i2 = new Intent(this, actividadUsuario.class);
-                startActivity(i2);
+                boolean siExiste = false;
+                for (int j = 0; j < listaPrestado.size(); j++)
+                {
+                    if (listaPrestado.get(j).getCorreoPrestamo().equals(sharedPreferences.getSharedPreference()) && listaPrestado.get(j).getId_libro() == id)
+                    {
+                        siExiste = true;
+                    }
+                }
+                if (siExiste)
+                {
+                    Toast.makeText(this, "Libro ya esta prestado", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    metodosLibros.prestarLibro(libros, usuario);
+                    libros.setCantidadLibro(String.valueOf(restarLibro()));
+                    metodosLibros.actualizarCantidadLibro(libros);
+                    Toast.makeText(getApplicationContext(),"Libro prestado...", Toast.LENGTH_LONG).show();
+                    Intent i2 = new Intent(this, actividadUsuario.class);
+                    startActivity(i2);
+                }
+
                 break;
         }
     }

@@ -12,6 +12,7 @@ public class Libros {
     private String fechaPrestamo;
     private String nombrePrestamo;
     private String telefonoPrestamo;
+    private String correoPrestamo;
 
     public int getId() {
         return id;
@@ -100,5 +101,13 @@ public class Libros {
 
     public void setTelefonoPrestamo(String telefonoPrestamo) {
         this.telefonoPrestamo = telefonoPrestamo;
+    }
+
+    public String getCorreoPrestamo() {
+        return correoPrestamo;
+    }
+
+    public void setCorreoPrestamo(String correoPrestamo) {
+        this.correoPrestamo = correoPrestamo;
     }
 }

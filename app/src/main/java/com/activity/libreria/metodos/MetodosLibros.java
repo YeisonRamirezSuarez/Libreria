@@ -29,6 +29,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.widget.Toast;
 
+import com.activity.libreria.LibrosPrestadosAdmin;
 import com.activity.libreria.bd.BDHelper;
 import com.activity.libreria.modelos.Libros;
 import com.activity.libreria.modelos.Usuario;
@@ -71,8 +72,9 @@ public class MetodosLibros {
                 libros.setUrlImagen(cursor.getString(5));
                 libros.setDescripcion(cursor.getString(6));
                 libros.setFechaPrestamo(cursor.getString(7));
-                libros.setNombrePrestamo(cursor.getString(8));
-                libros.setTelefonoPrestamo(cursor.getString(9));
+                libros.setCorreoPrestamo(cursor.getString(8));
+                libros.setNombrePrestamo(cursor.getString(9));
+                libros.setTelefonoPrestamo(cursor.getString(10));
 
                 listaLibros.add(libros);
             }
@@ -106,8 +108,45 @@ public class MetodosLibros {
                 libros.setUrlImagen(cursor.getString(5));
                 libros.setDescripcion(cursor.getString(6));
                 libros.setFechaPrestamo(cursor.getString(7));
-                libros.setNombrePrestamo(cursor.getString(8));
-                libros.setTelefonoPrestamo(cursor.getString(9));
+                libros.setCorreoPrestamo(cursor.getString(8));
+                libros.setNombrePrestamo(cursor.getString(9));
+                libros.setTelefonoPrestamo(cursor.getString(10));
+
+                listaLibros.add(libros);
+            }
+
+        }
+        return listaLibros;
+    }
+
+    public ArrayList<Libros> ArraysLibrosPre() {
+
+        SPreferences sPreferences;
+        sPreferences = new SPreferences(context);
+
+        ArrayList<Libros> listaLibros = new ArrayList<>();
+        Cursor cursor;
+        BDHelper bdHelper = new BDHelper(context);
+        SQLiteDatabase sql = bdHelper.getWritableDatabase();
+        cursor = sql.rawQuery("SELECT * FROM " + TABLE_LIBROS_PRESTADOS, null);
+
+
+        if (cursor.getCount() == 0) {
+            Toast.makeText(context, "No hay datos", Toast.LENGTH_SHORT).show();
+        } else {
+            while (cursor.moveToNext()) {
+                Libros libros = new Libros();
+                libros.setId(cursor.getInt(0));
+                libros.setId_libro(cursor.getInt(1));
+                libros.setNombreLibro(cursor.getString(2));
+                libros.setAutorLibro(cursor.getString(3));
+                libros.setUrlLibro(cursor.getString(4));
+                libros.setUrlImagen(cursor.getString(5));
+                libros.setDescripcion(cursor.getString(6));
+                libros.setFechaPrestamo(cursor.getString(7));
+                libros.setCorreoPrestamo(cursor.getString(8));
+                libros.setNombrePrestamo(cursor.getString(9));
+                libros.setTelefonoPrestamo(cursor.getString(10));
 
                 listaLibros.add(libros);
             }
@@ -259,7 +298,7 @@ public class MetodosLibros {
 
 
         try {
-            cursorLibro = db.rawQuery("SELECT * FROM " + TABLE_LIBROS_PRESTADOS + " WHERE _id = " + id, null);
+            cursorLibro = db.rawQuery("SELECT * FROM " + TABLE_LIBROS_PRESTADOS + " WHERE _id = " + id ,null);
 
             if (cursorLibro.moveToFirst()) {
                 libros = new Libros();
@@ -271,8 +310,9 @@ public class MetodosLibros {
                 libros.setUrlImagen(cursorLibro.getString(5));
                 libros.setDescripcion(cursorLibro.getString(6));
                 libros.setFechaPrestamo(cursorLibro.getString(7));
-                libros.setNombrePrestamo(cursorLibro.getString(8));
-                libros.setTelefonoPrestamo(cursorLibro.getString(9));
+                libros.setCorreoPrestamo(cursorLibro.getString(8));
+                libros.setNombrePrestamo(cursorLibro.getString(9));
+                libros.setTelefonoPrestamo(cursorLibro.getString(10));
 
             }
 

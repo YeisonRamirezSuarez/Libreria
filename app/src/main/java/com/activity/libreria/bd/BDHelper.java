@@ -47,6 +47,7 @@ public class BDHelper extends SQLiteOpenHelper {
     public static final String COLUMN_LIBRO_PRESTADOS_TELEFONO_PRESTO = "Telefono_Usuario_Prestamo_libro";
 
 
+
     //Tabla Usuario
     public static final String TABLE_USER = "Usuario";
     public static final String COLUMN_USUARIO_ID = "_id";
