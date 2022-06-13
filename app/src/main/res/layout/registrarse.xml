@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black"
+    android:orientation="vertical"
+    android:padding="20dp"
+    tools:context=".Registrar">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView0"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Crear Tu Cuenta"
+            android:textAlignment="center"
+            android:textColor="#FFFFFF"
+            android:textSize="35sp"
+            android:textStyle="bold" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="5dp"/>
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Disfruta miles de libros en la palma"
+            android:textAlignment="center"
+            android:textColor="#636060"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="de tu mano"
+            android:textAlignment="center"
+            android:textColor="#636060"
+            android:textSize="15sp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="25dp"/>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/txt_nombre_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="#787676"
+            app:hintTextColor="#FFFFFF"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <EditText
+                android:id="@+id/registrarNombre"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/customs_editex"
+                android:hint="Nombre Completo"
+                android:inputType="textPersonName"
+                android:paddingStart="20dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#787676"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="5dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/txt_correo_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="#787676"
+            app:hintTextColor="#FFFFFF"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <EditText
+                android:id="@+id/registrarCorreo"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/customs_editex"
+                android:hint="Correo Electronico"
+                android:inputType="textEmailAddress"
+                android:paddingStart="20dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#787676"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="5dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/txt_telefono_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="#787676"
+            app:hintTextColor="#FFFFFF"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <EditText
+                android:id="@+id/registrarTelefono"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/customs_editex"
+                android:hint="Numero Telefono"
+                android:maxLength="10"
+                android:inputType="number"
+                android:paddingStart="20dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#787676"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="5dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/txt_direccion_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="#787676"
+            app:hintTextColor="#FFFFFF"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <EditText
+                android:id="@+id/registrarDireccion"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/customs_editex"
+                android:hint="Direccion"
+                android:inputType="textPostalAddress"
+                android:paddingStart="20dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#787676"
+                />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <View
+            android:layout_width="wrap_content"
+            android:layout_height="5dp"/>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/txt_contrasena_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColorHint="#787676"
+            app:hintTextColor="#FFFFFF"
+            app:passwordToggleEnabled="true"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+
+            <EditText
+                android:id="@+id/registrarContraseña"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@drawable/customs_editex"
+                android:hint="Contraseña"
+                android:inputType="textPassword"
+                android:paddingStart="20dp"
+                android:textColor="#FFFFFF" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="20dp"/>
+        <Button
+            android:id="@+id/btnRegRegistrar"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:background="@drawable/customs_editex"
+            android:textAllCaps="false"
+            android:textSize="20dp"
+            android:textColor="#FFFFFF"
+            android:text="Registrarse" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="40dp"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/textRegistrar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:inputType="textPersonName"
+                android:text="Tienes Cuenta?"
+                android:textAlignment="viewEnd"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/textRegRegistrar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Iniciar Sesion"
+                android:paddingStart="7dp"
+                android:textAlignment="viewStart"
+                android:textColor="#F44336"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+
+    </ScrollView>
+
+</LinearLayout>
