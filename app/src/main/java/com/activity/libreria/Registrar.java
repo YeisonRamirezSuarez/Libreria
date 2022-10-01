@@ -9,14 +9,21 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.activity.libreria.metodos.MetodosUsuario;
 import com.activity.libreria.modelos.Usuario;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 public class Registrar extends AppCompatActivity implements View.OnClickListener {
@@ -88,8 +95,7 @@ public class Registrar extends AppCompatActivity implements View.OnClickListener
                                 if (contraseña.length() < 6){
                                     Toast.makeText(getApplicationContext(), "Error: Ingrese una contraseña minimo 6 digitos", Toast.LENGTH_LONG).show(); //Mostrar error de contraseña
                                 } else {
-                                    if (metodosUsuario.registrarUsuario(usuario) > 0){
-                                        Toast.makeText(getApplicationContext(), "Registro Exitoso!!!", Toast.LENGTH_LONG).show();
+                                    if (validar()){
                                         Intent intent = new Intent(Registrar.this, Login.class);
                                         startActivity(intent);
                                     }
@@ -107,5 +113,32 @@ public class Registrar extends AppCompatActivity implements View.OnClickListener
                 break;
         }
 
+    }
+    public boolean validar(){
+
+        final String nombre=usuario.getNombreUsuario();
+        final String correo=usuario.getCorreoUsuario();
+        final String telefono=usuario.getTelefonoUsuario();
+        final String direccion=usuario.getDireccionUsuario();
+        final String contrasena=usuario.getContraseñaUsuario();
+
+        String url="http://192.168.1.11:80/php/registro_usuario.php?Nombre_Usuario="+nombre+"&CorreoElectronico_Usuario="+correo+"&Telefono_Usuario="+telefono+"&Direccion_Usuario="+direccion+"&Contrasena_Usuario="+contrasena+"";
+        RequestQueue servicio= Volley.newRequestQueue(this);
+        StringRequest respuesta=new StringRequest(
+                Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(getApplicationContext(),
+                        response,Toast.LENGTH_LONG).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(),
+                        "Error comunicación"+error,Toast.LENGTH_SHORT).show();
+            }
+        });
+        servicio.add(respuesta);
+        return true;
     }
 }

@@ -21,11 +21,12 @@
 
     <style name="SearchStyle" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="editTextColor">#FFFFFF</item>
-        <item name="searchHint">#FFFFFF</item>
+        <!-- <item name="searchHint">#FFFFFF</item>-->
         <item name="android:textColor">#FFFFFF</item>
         <item name="android:cacheColorHint">#FFFFFF</item>
         <item name="queryHint">@string/seach_hint</item>
         <item name="android:searchIcon">@drawable/buscador</item>
         <item name="android:closeIcon">@drawable/iclose</item>
     </style>
+
 </resources>

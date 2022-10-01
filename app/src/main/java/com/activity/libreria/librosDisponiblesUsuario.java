@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -19,9 +20,19 @@ import com.activity.libreria.adapter.AdapterUsuarioDisponiblesLibroItems;
 import com.activity.libreria.metodos.MetodosLibros;
 import com.activity.libreria.metodos.MetodosUsuario;
 import com.activity.libreria.modelos.Libros;
+import com.activity.libreria.modelos.LibrosRsp;
 import com.activity.libreria.modelos.Usuario;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class librosDisponiblesUsuario extends AppCompatActivity implements SearchView.OnQueryTextListener, View.OnClickListener {
 
@@ -34,6 +45,7 @@ public class librosDisponiblesUsuario extends AppCompatActivity implements Searc
     TextView nombre_usuario_txt, titulo;
     ImageView mas_funciones_usuario, volver;
     Button btnPrestar;
+    LibrosRsp librosRsp;
 
 
     @Override
@@ -43,7 +55,7 @@ public class librosDisponiblesUsuario extends AppCompatActivity implements Searc
         Context context;
         findElement();
         traerRecyclerView();
-        cargarDatosUsuarios();
+        //cargarDatosUsuarios();
     }
 
     private void findElement() {
@@ -67,6 +79,7 @@ public class librosDisponiblesUsuario extends AppCompatActivity implements Searc
 
     private void traerRecyclerView() {
         //Aqui es donde nos muestra los libros 1 por 1 Disponibles
+        consultaLibros("http://192.168.1.11:80/php/libros_disponibles.php");
         ArrayList<Libros> listaLibros = metodosLibros.almacenarDatosEnArrays();
         adapterUsuarioDisponiblesLibroItems = new AdapterUsuarioDisponiblesLibroItems(this, listaLibros);
         reciclarVista.setAdapter(adapterUsuarioDisponiblesLibroItems);
@@ -99,6 +112,32 @@ public class librosDisponiblesUsuario extends AppCompatActivity implements Searc
         adapterUsuarioDisponiblesLibroItems.filtrado(s);
         return false;
     }
+
+
+    private void consultaLibros(String URL) {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
+                        librosRsp = new LibrosRsp();
+                        Gson gson = new Gson();
+                        librosRsp = gson.fromJson(response, LibrosRsp.class);
+                        Toast.makeText(getApplicationContext(), "Nombre"+ librosRsp.getTitulo_libro(), Toast.LENGTH_SHORT).show();
+
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+
+                    }
+                });
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+
     //Tambien se puede usar
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {

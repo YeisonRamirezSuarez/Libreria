@@ -9,14 +9,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.activity.libreria.metodos.MetodosAdministrador;
 import com.activity.libreria.metodos.MetodosLibros;
 import com.activity.libreria.modelos.Administrador;
 import com.activity.libreria.modelos.Libros;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class AgregarLibros extends AppCompatActivity implements View.OnClickListener {
@@ -34,7 +44,7 @@ public class AgregarLibros extends AppCompatActivity implements View.OnClickList
     Libros libros;
     MetodosAdministrador metodosAdministrador;
     MetodosLibros metodosLibros;
-
+    static int id = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,8 +100,7 @@ public class AgregarLibros extends AppCompatActivity implements View.OnClickList
                     libros.setUrlLibro(urlLibroInput.getText().toString());
                     libros.setUrlImagen(urlImagenInput.getText().toString());
                     libros.setDescripcion(descripcionInput.getText().toString());
-                    if (metodosLibros.guardarLibro(libros)) {
-                        Toast.makeText(this, "REGISTRO GUARDADO", Toast.LENGTH_LONG).show();
+                    if (validar()) {
                         Intent i = new Intent(this, actividadAdministrador.class);
                         startActivity(i);
                     }
@@ -99,7 +108,37 @@ public class AgregarLibros extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(this, "DEBE LLENAR LOS CAMPOS OBLIGATORIOS", Toast.LENGTH_LONG).show();
                 }
             }
+
             break;
         }
+    }
+
+    public boolean validar(){
+
+        final String nombre=libros.getNombreLibro();
+        final String autor=libros.getAutorLibro();
+        final String cantidad=libros.getCantidadLibro();
+        final String urlLibro=libros.getUrlLibro();
+        final String imagen=libros.getUrlImagen();
+        final String descripcion=libros.getDescripcion();
+
+        String url="http://192.168.1.11:80/php/registro_libro.php?Titulo_libro="+nombre+"&Autor_libro="+autor+"&Cantidad_libro="+cantidad+"&Url_libro="+urlLibro+"&Imagen_libro="+imagen+"&Descripcion_libro="+descripcion+"";
+        RequestQueue servicio= Volley.newRequestQueue(this);
+        StringRequest respuesta=new StringRequest(
+                Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                Toast.makeText(getApplicationContext(),
+                        response,Toast.LENGTH_LONG).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(),
+                        "Error comunicación"+error,Toast.LENGTH_SHORT).show();
+            }
+        });
+        servicio.add(respuesta);
+        return true;
     }
 }

@@ -16,6 +16,18 @@ import com.activity.libreria.metodos.MetodosUsuario;
 import com.activity.libreria.metodos.SPreferences;
 import com.activity.libreria.modelos.Administrador;
 import com.activity.libreria.modelos.Usuario;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class Login extends AppCompatActivity implements View.OnClickListener {
@@ -31,18 +43,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     Administrador administrador;
     BDHelper bdHelper;
 
-    String nombreQuemado = "Yeison Fabian Ramirez Suarez";
-    String correoQuemado = "admin@gmail.com";
-    String contraseñaQuemado = "admin";
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.login);
         findElement();
-
-
     }
 
     private void findElement() {
@@ -66,31 +72,15 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btnEntrar: {
-                String correoLogin = correoUsuario.getText().toString().trim();
-                String contraseñaLogin = contraseñaUsuario.getText().toString().trim();
-                usuario.setCorreoUsuario(correoLogin);
-                usuario.setContraseñaUsuario(contraseñaLogin);
+                String correoLogin;
+                String contraseñaLogin;
+                correoLogin = correoUsuario.getText().toString().trim();
+                contraseñaLogin = contraseñaUsuario.getText().toString().trim();
+
                 if (correoLogin.equals("") && contraseñaLogin.equals("")) {
                     Toast.makeText(getApplicationContext(), "ERROR: Campos vacios", Toast.LENGTH_LONG).show();
-                } else if (metodosUsuario.login(usuario) == 1) {
-                    sPreferences.setSharedPreference(correoUsuario.getText().toString());
-                    Toast.makeText(getApplicationContext(), "Datos correctos", Toast.LENGTH_LONG).show();
-                    Intent i2 = new Intent(Login.this, actividadUsuario.class);
-                    startActivity(i2);
-                    //Valido si lo que se esta ingresando en el Editex es igual a los datos que estan quemados
-                } else if (correoUsuario.getText().toString().equals(correoQuemado) && contraseñaUsuario.getText().toString().equals(contraseñaQuemado)) {
-                    administrador.setNombreAdministrador(nombreQuemado);
-                    administrador.setCorreoAdministrador(correoQuemado);
-                    administrador.setContraseñaAdministrador(contraseñaQuemado);
-                    sPreferences.setSharedPreference(correoQuemado);
-                    //Valido si el administrador ya esta registrado
-                    if (metodosAdministrador.login(administrador) == 0) {
-                        metodosAdministrador.registrarAdministrador(administrador);
-                    }
-                    Intent i2 = new Intent(Login.this, actividadAdministrador.class);
-                    startActivity(i2);
                 } else {
-                    Toast.makeText(getApplicationContext(), "DATOS INCORRECTOS", Toast.LENGTH_LONG).show();
+                    validarUsuario("http://192.168.1.11:80/php/validar_usuario.php");
                 }
             }
             break;
@@ -101,4 +91,45 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         }
 
     }
+
+    private void validarUsuario(String URL) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        if (!response.equals("Fail")) {
+                            if (response.equals("usuario")) {
+                                Intent intent = new Intent(getApplicationContext(), actividadUsuario.class);
+                                startActivity(intent);
+                            } else if (response.equals("administrador")) {
+                                Intent intent = new Intent(getApplicationContext(), actividadAdministrador.class);
+                                startActivity(intent);
+                            }
+                        } else {
+                            Toast.makeText(getApplicationContext(), "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
+
+                    }
+                }) {
+
+            @Override
+            public Map<String, String> getParams() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+//               headers.put("Content-Type", "application/x-www-form-urlencoded; charset=utf-8");
+                headers.put("usuario", correoUsuario.getText().toString());
+                headers.put("password", contraseñaUsuario.getText().toString());
+                return headers;
+            }
+        };
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(stringRequest);
+    }
+
+
 }

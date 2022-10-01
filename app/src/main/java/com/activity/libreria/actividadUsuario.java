@@ -54,7 +54,7 @@ public class actividadUsuario extends AppCompatActivity implements View.OnClickL
         Context context;
         findElement();
         traerRecyclerView();
-        cargarDatosUsuarios();
+        //cargarDatosUsuarios();
     }
 
     private void traerRecyclerView() {
