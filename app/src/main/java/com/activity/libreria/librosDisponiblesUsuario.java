@@ -110,10 +110,8 @@ public class librosDisponiblesUsuario extends AppCompatActivity implements Searc
 
     private void cargarDatosUsuarios(Object object) {
         // Aqui es como se muestra el nombre del Usuario que ingreso
-        //ArrayList<Usuario> listaUsuario = metodosUsuario.almacenarDatosEnArraysUsuario();
 
         ListaUsuario lista = (ListaUsuario) object;
-
         rol.setText(lista.getUsuarios().get(0).getRol_Usuario());
         nombre_usuario_txt.setText(lista.getUsuarios().get(0).getNombre_Usuario());
     }
