@@ -16,25 +16,33 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.activity.libreria.Interfaces.Callback;
+import com.activity.libreria.Interfaces.Logica;
 import com.activity.libreria.adapter.AdapterUsuarioDisponiblesLibroItems;
+import com.activity.libreria.bd.Conexion;
 import com.activity.libreria.metodos.MetodosLibros;
 import com.activity.libreria.metodos.MetodosUsuario;
+import com.activity.libreria.metodos.SPreferences;
 import com.activity.libreria.modelos.Libros;
 import com.activity.libreria.modelos.LibrosRsp;
+import com.activity.libreria.modelos.ListaLibros;
+import com.activity.libreria.modelos.ListaUsuario;
 import com.activity.libreria.modelos.Usuario;
+import com.activity.libreria.modelos.UsuarioRsp;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import org.json.JSONObject;
 
-public class librosDisponiblesUsuario extends AppCompatActivity implements SearchView.OnQueryTextListener, View.OnClickListener {
+import java.util.ArrayList;
+
+public class librosDisponiblesUsuario extends AppCompatActivity implements SearchView.OnQueryTextListener, View.OnClickListener, Callback {
 
     //Los llamamos aqui asi:
     SearchView txtBuscar;
@@ -42,10 +50,14 @@ public class librosDisponiblesUsuario extends AppCompatActivity implements Searc
     AdapterUsuarioDisponiblesLibroItems adapterUsuarioDisponiblesLibroItems;
     MetodosUsuario metodosUsuario;
     MetodosLibros metodosLibros;
-    TextView nombre_usuario_txt, titulo;
+    TextView rol,nombre_usuario_txt, titulo;
     ImageView mas_funciones_usuario, volver;
     Button btnPrestar;
-    LibrosRsp librosRsp;
+    ListaLibros listaLibros;
+    ListaUsuario listaUsuario;
+    SPreferences sPreferences;
+    Usuario usuario;
+    Conexion conexion;
 
 
     @Override
@@ -54,18 +66,22 @@ public class librosDisponiblesUsuario extends AppCompatActivity implements Searc
         setContentView(R.layout.libros_disponibles_usuario);
         Context context;
         findElement();
-        traerRecyclerView();
-        //cargarDatosUsuarios();
+
     }
 
     private void findElement() {
         metodosUsuario = new MetodosUsuario(this);
         metodosLibros = new MetodosLibros(this);
+        usuario = new Usuario();
+        sPreferences = new SPreferences(this);
+        listaLibros = new ListaLibros();
+        listaUsuario = new ListaUsuario();
         txtBuscar = findViewById(R.id.txtBuscar);
         txtBuscar.setOnQueryTextListener(this);
         txtBuscar.setVisibility(View.VISIBLE);
         txtBuscar.setQueryHint(Html.fromHtml("<font color = #ffffff>" + getResources().getString(R.string.seach_hint) + "</font>"));
         nombre_usuario_txt = findViewById(R.id.nombre_usuario_txt);
+        rol = findViewById(R.id.rol);
         reciclarVista = findViewById(R.id.reciclarVista);
         mas_funciones_usuario = findViewById(R.id.funcionesUser);
         mas_funciones_usuario.setVisibility(View.GONE);
@@ -75,21 +91,31 @@ public class librosDisponiblesUsuario extends AppCompatActivity implements Searc
         volver = findViewById(R.id.volverLibros);
         volver.setVisibility(View.VISIBLE);
         volver.setOnClickListener(this);
+        conexion = new Conexion();
+        conexion.consultaLibros("http://192.168.1.11:80/php/libros_disponibles.php", this, this);
+        conexion.buscarUsuarios("http://192.168.1.11/php/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
     }
 
-    private void traerRecyclerView() {
+    private void traerRecyclerView(Object object) {
         //Aqui es donde nos muestra los libros 1 por 1 Disponibles
-        consultaLibros("http://192.168.1.11:80/php/libros_disponibles.php");
-        ArrayList<Libros> listaLibros = metodosLibros.almacenarDatosEnArrays();
-        adapterUsuarioDisponiblesLibroItems = new AdapterUsuarioDisponiblesLibroItems(this, listaLibros);
+        //consultaLibros("http://192.168.1.11:80/php/libros_disponibles.php");
+        //getData("http://192.168.1.11:80/php/libros_disponibles.php");
+        ListaLibros lista = (ListaLibros) object;
+        //ArrayList<LibrosRsp> lista = (ListaLibros) object.getClass().get;
+        //ArrayList<Libros> listaLibros = metodosLibros.almacenarDatosEnArrays();
+        adapterUsuarioDisponiblesLibroItems = new AdapterUsuarioDisponiblesLibroItems(this, lista.getLibros());
         reciclarVista.setAdapter(adapterUsuarioDisponiblesLibroItems);
         reciclarVista.setLayoutManager(new GridLayoutManager(this, 2));
     }
 
-    private void cargarDatosUsuarios() {
+    private void cargarDatosUsuarios(Object object) {
         // Aqui es como se muestra el nombre del Usuario que ingreso
-        ArrayList<Usuario> listaUsuario = metodosUsuario.almacenarDatosEnArraysUsuario();
-        nombre_usuario_txt.setText(listaUsuario.get(0).getNombreUsuario());
+        //ArrayList<Usuario> listaUsuario = metodosUsuario.almacenarDatosEnArraysUsuario();
+
+        ListaUsuario lista = (ListaUsuario) object;
+
+        rol.setText(lista.getUsuarios().get(0).getRol_Usuario());
+        nombre_usuario_txt.setText(lista.getUsuarios().get(0).getNombre_Usuario());
     }
 
     @Override
@@ -109,34 +135,21 @@ public class librosDisponiblesUsuario extends AppCompatActivity implements Searc
 
     @Override
     public boolean onQueryTextChange(String s) {
-        adapterUsuarioDisponiblesLibroItems.filtrado(s);
+        //adapterUsuarioDisponiblesLibroItems.filtrado(s);
         return false;
     }
 
 
-    private void consultaLibros(String URL) {
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        Toast.makeText(getApplicationContext(), response, Toast.LENGTH_LONG).show();
-                        librosRsp = new LibrosRsp();
-                        Gson gson = new Gson();
-                        librosRsp = gson.fromJson(response, LibrosRsp.class);
-                        Toast.makeText(getApplicationContext(), "Nombre"+ librosRsp.getTitulo_libro(), Toast.LENGTH_SHORT).show();
-
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
-
-                    }
-                });
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+    @Override
+    public void getLibrosDisponibles(Object object) {
+        traerRecyclerView(object);
     }
+
+    @Override
+    public void getUsuarioActivo(Object object) {
+        cargarDatosUsuarios(object);
+    }
+
 
     //Tambien se puede usar
 //    @Override

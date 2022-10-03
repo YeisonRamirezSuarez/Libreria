@@ -5,11 +5,13 @@
       <map>
         <entry key="..\:/MiRepository/Libreria/app/src/main/res/layout/admin_historial_libros.xml" value="0.3625" />
         <entry key="..\:/Users/WPOSS/Documents/MyRepositorio/Libreria/app/src/main/res/layout/actividad_usuario.xml" value="0.2210144927536232" />
+        <entry key="..\:/Users/WPOSS/Documents/MyRepositorio/Libreria/app/src/main/res/layout/item_banner_user.xml" value="0.2" />
+        <entry key="..\:/Users/WPOSS/Documents/MyRepositorio/Libreria/app/src/main/res/layout/libros_disponibles_usuario.xml" value="0.2" />
         <entry key="..\:/Users/WPOSS/Documents/MyRepositorio/Libreria/app/src/main/res/layout/login.xml" value="0.2210144927536232" />
         <entry key="..\:/Users/WPOSS/Documents/MyRepositorio/Libreria/app/src/main/res/layout/registrarse.xml" value="0.2210144927536232" />
       </map>
     </option>
   </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_X" default="true" project-jdk-name="16" project-jdk-type="JavaSDK" />
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_15" project-jdk-name="16" project-jdk-type="JavaSDK" />
 </project>

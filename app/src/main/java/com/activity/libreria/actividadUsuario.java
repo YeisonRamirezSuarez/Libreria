@@ -18,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.activity.libreria.Interfaces.Callback;
 import com.activity.libreria.adapter.AdapterAdministradorLibroItems;
 import com.activity.libreria.adapter.AdapterUsuarioLibroItems;
 import com.activity.libreria.bd.BDHelper;
@@ -29,7 +30,7 @@ import com.activity.libreria.modelos.Usuario;
 
 import java.util.ArrayList;
 
-public class actividadUsuario extends AppCompatActivity implements View.OnClickListener,MenuItem.OnMenuItemClickListener, PopupMenu.OnMenuItemClickListener, SearchView.OnQueryTextListener {
+public class actividadUsuario extends AppCompatActivity implements View.OnClickListener,MenuItem.OnMenuItemClickListener, PopupMenu.OnMenuItemClickListener, SearchView.OnQueryTextListener, Callback {
 
     //Los llamamos aqui asi:
     SearchView txtBuscar;
@@ -53,8 +54,6 @@ public class actividadUsuario extends AppCompatActivity implements View.OnClickL
         setContentView(R.layout.actividad_usuario);
         Context context;
         findElement();
-        traerRecyclerView();
-        //cargarDatosUsuarios();
     }
 
     private void traerRecyclerView() {
@@ -163,4 +162,13 @@ public class actividadUsuario extends AppCompatActivity implements View.OnClickL
         return false;
     }
 
+    @Override
+    public void getLibrosDisponibles(Object object) {
+        traerRecyclerView();
+    }
+
+    @Override
+    public void getUsuarioActivo(Object object) {
+        cargarDatosUsuarios();
+    }
 }

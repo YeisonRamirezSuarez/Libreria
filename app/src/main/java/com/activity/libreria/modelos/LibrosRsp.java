@@ -1,5 +1,10 @@
 package com.activity.libreria.modelos;
 
+import androidx.annotation.NonNull;
+
+import java.util.ArrayList;
+import java.util.stream.Stream;
+
 public class LibrosRsp {
 
     private int _id;
@@ -65,4 +70,5 @@ public class LibrosRsp {
     public void setDescripcion_libro(String descripcion_libro) {
         Descripcion_libro = descripcion_libro;
     }
+
 }

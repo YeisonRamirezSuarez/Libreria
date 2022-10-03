@@ -15,6 +15,7 @@ import com.activity.libreria.ActualizarLibros;
 import com.activity.libreria.PrestarLibroUsuario;
 import com.activity.libreria.R;
 import com.activity.libreria.modelos.Libros;
+import com.activity.libreria.modelos.LibrosRsp;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -24,12 +25,12 @@ import java.util.stream.Collectors;
 public class AdapterUsuarioDisponiblesLibroItems extends RecyclerView.Adapter<AdapterUsuarioDisponiblesLibroItems.MyViewHolder> {
     //Creamos el proceso para que identifique el la vista de Mi fila
     private Context context;
-    private ArrayList<Libros> listaLibros;
-    private ArrayList<Libros> listaOriginal;
+    private ArrayList<LibrosRsp> listaLibros;
+    private ArrayList<LibrosRsp> listaOriginal;
 
 
 
-    public AdapterUsuarioDisponiblesLibroItems(Context context, ArrayList<Libros> listaLibros) {
+    public AdapterUsuarioDisponiblesLibroItems(Context context, ArrayList<LibrosRsp> listaLibros) {
         this.context = context;
         this.listaLibros = listaLibros;
         listaOriginal = new ArrayList<>();
@@ -52,37 +53,37 @@ public class AdapterUsuarioDisponiblesLibroItems extends RecyclerView.Adapter<Ad
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
         Glide.with(context)
-                .load(listaLibros.get(position).getUrlImagen())
+                .load(listaLibros.get(position).getImagen_libro())
                 .error(R.drawable.error)
                 .into(holder.imageView_txt);
 
-        holder.nombre_libro_txt.setText(String.valueOf(listaLibros.get(position).getNombreLibro()));
-        holder.autor_libro_txt.setText(String.valueOf(listaLibros.get(position).getAutorLibro()));
+        holder.nombre_libro_txt.setText(String.valueOf(listaLibros.get(position).getTitulo_libro()));
+        holder.autor_libro_txt.setText(String.valueOf(listaLibros.get(position).getAutor_libro()));
         //Cargamos la imagen
 
     }
-    public void filtrado(final String txtBuscar) {
-        int longitud = txtBuscar.length();
-        if (longitud == 0) {
-            listaLibros.clear();
-            listaLibros.addAll(listaOriginal);
-        } else {
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                List<Libros> collecion = listaLibros.stream()
-                        .filter(i -> i.getNombreLibro().toLowerCase().contains(txtBuscar.toLowerCase()))
-                        .collect(Collectors.toList());
-                listaLibros.clear();
-                listaLibros.addAll(collecion);
-            } else {
-                for (Libros libros : listaOriginal) {
-                    if (libros.getNombreLibro().toLowerCase().contains(txtBuscar.toLowerCase())) {
-                        listaLibros.add(libros);
-                    }
-                }
-            }
-        }
-        notifyDataSetChanged();
-    }
+//    public void filtrado(final String txtBuscar) {
+//        int longitud = txtBuscar.length();
+//        if (longitud == 0) {
+//            listaLibros.clear();
+//            listaLibros.addAll(listaOriginal);
+//        } else {
+//            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+//                List<Libros> collecion = listaLibros.stream()
+//                        .filter(i -> i.getTitulo_libro().toLowerCase().contains(txtBuscar.toLowerCase()))
+//                        .collect(Collectors.toList());
+//                listaLibros.clear();
+//                listaLibros.addAll(collecion);
+//            } else {
+//                for (Libros libros : listaOriginal) {
+//                    if (libros.getNombreLibro().toLowerCase().contains(txtBuscar.toLowerCase())) {
+//                        listaLibros.add(libros);
+//                    }
+//                }
+//            }
+//        }
+//        notifyDataSetChanged();
+//    }
 
     @Override
     public int getItemCount() {
@@ -109,7 +110,7 @@ public class AdapterUsuarioDisponiblesLibroItems extends RecyclerView.Adapter<Ad
             public void onClick(View view) {
                 Context context = view.getContext();
                 Intent intent = new Intent(context, PrestarLibroUsuario.class);
-                intent.putExtra("ID", listaLibros.get(getAdapterPosition()).getId());
+                intent.putExtra("ID", listaLibros.get(getAdapterPosition()).get_id());
                 context.startActivity(intent);
             }
         });
