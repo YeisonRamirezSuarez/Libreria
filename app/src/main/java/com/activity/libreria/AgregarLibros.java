@@ -3,9 +3,12 @@ package com.activity.libreria;
 import static com.activity.libreria.bd.NetwordHelper.IP_PUBLICA;
 import static com.activity.libreria.bd.NetwordHelper.PUERTO;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -91,6 +94,16 @@ public class AgregarLibros extends AppCompatActivity implements View.OnClickList
 
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+        return true;
+    }
+
 
     private void cargarDatosAdministrador(Object object) {
         // Aqui es como se muestra el nombre del Usuario que ingreso
@@ -161,12 +174,15 @@ public class AgregarLibros extends AppCompatActivity implements View.OnClickList
     }
 
     @Override
-    public void getLibrosDisponibles(Object object) {
-
-    }
+    public void getLibrosDisponibles(Object object) { }
 
     @Override
     public void getUsuarioActivo(Object object) {
         cargarDatosAdministrador(object);
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }

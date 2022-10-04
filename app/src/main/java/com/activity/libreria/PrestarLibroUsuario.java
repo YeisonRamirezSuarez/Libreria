@@ -2,10 +2,13 @@ package com.activity.libreria;
 
 import static com.activity.libreria.bd.NetwordHelper.*;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -99,6 +102,18 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
         conexion.consultaLibros("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_libro_id.php?id="+id+"", this, this);
         conexion.buscarUsuarios("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_usuario.php?correo="+sharedPreferences.getSharedPreference()+"", this, this);
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+        return true;
+    }
+
+
 
     private void traerIdRecyclerView(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
@@ -247,6 +262,11 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
     @Override
     public void getUsuarioActivo(Object object) {
         cargarDatosUsuarios(object);
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }
 

@@ -12,7 +12,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -104,6 +106,16 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
         conexion.consultaLibros("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_libro_id.php?id="+id_libro+"", this, this);
         conexion.buscarUsuarios("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_usuario.php?correo="+sharedPreferences.getSharedPreference()+"", this, this);
     }
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+        return true;
+    }
+
 
     private void traerIdRecyclerView(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
@@ -234,5 +246,11 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
     public void getUsuarioActivo(Object object) {
         cargarDatosUsuarios(object);
     }
+
+    @Override
+    public void onBackPressed() {
+
+    }
+
 }
 

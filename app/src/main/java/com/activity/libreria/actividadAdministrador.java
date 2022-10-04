@@ -8,13 +8,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.SearchView;
@@ -82,6 +85,18 @@ public class actividadAdministrador extends AppCompatActivity implements View.On
         conexion.buscarUsuarios("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
 
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+        return true;
+    }
+
+
 
     private void traerRecyclerView(Object object) {
         //Aqui es donde nos muestra los libros 1 por 1
@@ -189,6 +204,10 @@ public class actividadAdministrador extends AppCompatActivity implements View.On
         cargarDatosAdministrador(object);
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
     //para buscador
 
 

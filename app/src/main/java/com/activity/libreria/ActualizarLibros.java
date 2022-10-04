@@ -3,9 +3,12 @@ package com.activity.libreria;
 import static com.activity.libreria.bd.NetwordHelper.IP_PUBLICA;
 import static com.activity.libreria.bd.NetwordHelper.PUERTO;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -102,6 +105,17 @@ public class ActualizarLibros extends AppCompatActivity implements View.OnClickL
         conexion.buscarUsuarios("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
 
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+        return true;
+    }
+
 
     private void traerIdRecyclerView(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
@@ -293,6 +307,11 @@ public class ActualizarLibros extends AppCompatActivity implements View.OnClickL
     @Override
     public void getUsuarioActivo(Object object) {
         cargarDatosAdministrador(object);
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }
 

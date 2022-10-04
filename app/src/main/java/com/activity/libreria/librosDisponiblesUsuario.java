@@ -7,7 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SearchView;
@@ -98,6 +100,17 @@ public class librosDisponiblesUsuario extends AppCompatActivity implements Searc
         conexion.buscarUsuarios("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+        return true;
+    }
+
+
     private void traerRecyclerView(Object object) {
         //Aqui es donde nos muestra los libros 1 por 1 Disponibles
         //consultaLibros("http://192.168.1.11:80/php/libros_disponibles.php");
@@ -150,7 +163,10 @@ public class librosDisponiblesUsuario extends AppCompatActivity implements Searc
         cargarDatosUsuarios(object);
     }
 
+    @Override
+    public void onBackPressed() {
 
+    }
     //Tambien se puede usar
 //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {

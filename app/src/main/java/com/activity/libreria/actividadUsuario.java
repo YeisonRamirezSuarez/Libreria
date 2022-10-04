@@ -9,7 +9,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
@@ -93,6 +95,17 @@ public class actividadUsuario extends AppCompatActivity implements View.OnClickL
         conexion.consultaLibrosPrestados("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_libro_prestado.php?correo="+sPreferences.getSharedPreference()+"", this, this);
         conexion.buscarUsuarios("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
     }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+        return true;
+    }
+
 
 
     private void traerRecyclerView(Object object) {
@@ -194,5 +207,10 @@ public class actividadUsuario extends AppCompatActivity implements View.OnClickL
     @Override
     public void getUsuarioActivo(Object object) {
         cargarDatosUsuarios(object);
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }

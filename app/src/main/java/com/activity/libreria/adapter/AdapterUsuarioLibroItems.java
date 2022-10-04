@@ -71,7 +71,7 @@ public class AdapterUsuarioLibroItems extends RecyclerView.Adapter<AdapterUsuari
         } else {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                 List<LibrosPrestadosRsp> collecion = listaLibros.stream()
-                        .filter(i -> i.getNombre_Usuario_Prestamo_libro().toLowerCase().contains(txtBuscar.toLowerCase()))
+                        .filter(i -> i.getTitulo_libro_Prestado().toLowerCase().contains(txtBuscar.toLowerCase()))
                         .collect(Collectors.toList());
                 listaLibros.clear();
                 listaLibros.addAll(collecion);

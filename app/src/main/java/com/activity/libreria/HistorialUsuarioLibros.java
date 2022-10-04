@@ -4,9 +4,12 @@ import static com.activity.libreria.bd.NetwordHelper.IP_PUBLICA;
 import static com.activity.libreria.bd.NetwordHelper.PUERTO;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -95,6 +98,16 @@ public class HistorialUsuarioLibros extends AppCompatActivity implements View.On
 
 
     }
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+        return true;
+    }
+
 
     private void traerIdRecyclerView(Bundle savedInstanceState) {
         if (savedInstanceState == null) {
@@ -164,5 +177,10 @@ public class HistorialUsuarioLibros extends AppCompatActivity implements View.On
     @Override
     public void getUsuarioActivo(Object object) {
         cargarDatosAdministrador(object);
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }

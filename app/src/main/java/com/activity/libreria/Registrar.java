@@ -2,10 +2,13 @@ package com.activity.libreria;
 
 import static com.activity.libreria.bd.NetwordHelper.*;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Patterns;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -60,6 +63,16 @@ public class Registrar extends AppCompatActivity implements View.OnClickListener
         textRegRegistrar = findViewById(R.id.textRegRegistrar);
         textRegRegistrar.setOnClickListener(this);
 
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+        return true;
     }
 
     @Override
@@ -142,5 +155,10 @@ public class Registrar extends AppCompatActivity implements View.OnClickListener
         });
         servicio.add(respuesta);
         return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 }
