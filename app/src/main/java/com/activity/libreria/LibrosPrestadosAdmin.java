@@ -1,6 +1,9 @@
 package com.activity.libreria;
 
 
+import static com.activity.libreria.bd.NetwordHelper.IP_PUBLICA;
+import static com.activity.libreria.bd.NetwordHelper.PUERTO;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
@@ -13,16 +16,22 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.activity.libreria.Interfaces.Callback;
 import com.activity.libreria.adapter.AdapterAdministradorLibroPrestadoItems;
+import com.activity.libreria.bd.Conexion;
 import com.activity.libreria.metodos.MetodosAdministrador;
 import com.activity.libreria.metodos.MetodosLibros;
 import com.activity.libreria.metodos.MetodosUsuario;
+import com.activity.libreria.metodos.SPreferences;
 import com.activity.libreria.modelos.Administrador;
 import com.activity.libreria.modelos.Libros;
+import com.activity.libreria.modelos.ListaLibros;
+import com.activity.libreria.modelos.ListaLibrosPrestados;
+import com.activity.libreria.modelos.ListaUsuario;
 
 import java.util.ArrayList;
 
-public class LibrosPrestadosAdmin extends AppCompatActivity implements SearchView.OnQueryTextListener, View.OnClickListener {
+public class LibrosPrestadosAdmin extends AppCompatActivity implements SearchView.OnQueryTextListener, View.OnClickListener , Callback {
 
     //Los llamamos aqui asi:
     SearchView txtBuscar;
@@ -31,38 +40,29 @@ public class LibrosPrestadosAdmin extends AppCompatActivity implements SearchVie
     MetodosUsuario metodosUsuario;
     MetodosAdministrador metodosAdministrador;
     MetodosLibros metodosLibros;
-    TextView nombre_administrador_txt, titulo;
+    TextView nombre_administrador_txt, titulo, rol;
     ImageView mas_funciones_usuario, volver;
-
+    ListaUsuario listaUsuario;
+    ListaLibrosPrestados listaLibrosPrestados;
+    ListaLibros listaLibros;
+    Conexion conexion;
+    SPreferences sPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_libros_prestados);
-
         findElement();
-        traerRecyclerView();
-        cargarDatosAdministrador();
+
     }
 
-    private void cargarDatosAdministrador() {
-        ArrayList<Administrador> listaAdministrador  = metodosAdministrador.selectAdministrador();
-        nombre_administrador_txt.setText(listaAdministrador.get(0).getNombreAdministrador());
-    }
-
-    private void traerRecyclerView() {
-        //Aqui es donde nos muestra los libros 1 por 1 Disponibles
-        ArrayList<Libros> listaLibros = metodosLibros.ArraysLibrosPrestadosAdmin();
-        adapterAdministradorLibroPrestadoItems = new AdapterAdministradorLibroPrestadoItems(LibrosPrestadosAdmin.this, listaLibros);
-        reciclarVista.setAdapter(adapterAdministradorLibroPrestadoItems);
-        reciclarVista.setLayoutManager(new GridLayoutManager(LibrosPrestadosAdmin.this, 2));
-    }
 
     private void findElement() {
         metodosUsuario = new MetodosUsuario(this);
         metodosLibros = new MetodosLibros(this);
         metodosAdministrador = new MetodosAdministrador(this);
         nombre_administrador_txt = findViewById(R.id.nombre_administrador_txt);
+        rol = findViewById(R.id.rol);
         txtBuscar = findViewById(R.id.txtBuscar);
         txtBuscar.setOnQueryTextListener(this);
         txtBuscar.setVisibility(View.VISIBLE);
@@ -75,8 +75,29 @@ public class LibrosPrestadosAdmin extends AppCompatActivity implements SearchVie
         volver.setOnClickListener(this);
         titulo = findViewById(R.id.tituloBanner);
         titulo.setText("Libros Prestados");
+        conexion = new Conexion();
+        sPreferences = new SPreferences(this);
+        listaUsuario = new ListaUsuario();
+        listaLibros = new ListaLibros();
+        listaLibrosPrestados = new ListaLibrosPrestados();
+        conexion.buscarUsuarios("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
+        conexion.consultaLibrosPrestados("http://"+IP_PUBLICA+":"+PUERTO+"/php/libros_prestados_disponibles_por_id.php", this, this);
+    }
+    private void cargarDatosAdministrador(Object object) {
+        // Aqui es como se muestra el nombre del Usuario que ingreso
+
+        listaUsuario= (ListaUsuario) object;
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
     }
 
+    private void traerRecyclerView(Object object) {
+        //Aqui es donde nos muestra los libros 1 por 1 Disponibles
+        listaLibrosPrestados = (ListaLibrosPrestados) object;
+        adapterAdministradorLibroPrestadoItems = new AdapterAdministradorLibroPrestadoItems(LibrosPrestadosAdmin.this, listaLibrosPrestados.getLibros());
+        reciclarVista.setAdapter(adapterAdministradorLibroPrestadoItems);
+        reciclarVista.setLayoutManager(new GridLayoutManager(LibrosPrestadosAdmin.this, 2));
+    }
     @Override
     public void onClick(View view) {
         switch (view.getId()){
@@ -99,4 +120,13 @@ public class LibrosPrestadosAdmin extends AppCompatActivity implements SearchVie
     }
 
 
+    @Override
+    public void getLibrosDisponibles(Object object) {
+        traerRecyclerView(object);
+    }
+
+    @Override
+    public void getUsuarioActivo(Object object) {
+        cargarDatosAdministrador(object);
+    }
 }

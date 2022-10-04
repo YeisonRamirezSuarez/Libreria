@@ -68,6 +68,7 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
     ListaUsuario listaUsuario;
     Conexion conexion;
     int id = 0;
+    int id_libro = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +101,7 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
         titulo.setText("MiLibro");
         sharedPreferences = new SPreferences(this);
         conexion = new Conexion();
-        conexion.consultaLibros("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_libro_id.php?id="+id+"", this, this);
+        conexion.consultaLibros("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_libro_id.php?id="+id_libro+"", this, this);
         conexion.buscarUsuarios("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_usuario.php?correo="+sharedPreferences.getSharedPreference()+"", this, this);
     }
 
@@ -109,11 +110,14 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
             Bundle extras = getIntent().getExtras();
             if (extras == null) {
                 id = Integer.parseInt(null);
+                id_libro = Integer.parseInt(null);
             } else {
                 id = extras.getInt("ID");
+                id_libro = extras.getInt("ID_LIBRO");
             }
         } else {
             id = (int) savedInstanceState.getSerializable("ID");
+            id_libro = (int) savedInstanceState.getSerializable("ID_LIBRO");
         }
     }
 
@@ -157,7 +161,8 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
                 try {
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse(listaLibros.getLibros().get(0).getUrl_libro()));
+                    String url = listaLibros.getLibros().get(0).getUrl_libro();
+                    intent.setData(Uri.parse(url));
                     startActivity(intent);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -170,7 +175,7 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
                 //int suma = sumarLibro(libros.getCantidadLibro());
                 //libros.setCantidadLibro(String.valueOf(suma));
                 //metodosLibros.actualizarCantidadLibro(libros);
-                eliminarLibroPrestado("http://"+IP_PUBLICA+":"+PUERTO+"/php/eliminar_libro_prestado.php?id="+listaLibros.getLibros().get(0).get_id()+"");
+                eliminarLibroPrestado("http://"+IP_PUBLICA+":"+PUERTO+"/php/eliminar_libro_prestado.php?id="+id+"");
 
         }
 
@@ -183,6 +188,7 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
                         Toast.makeText(getApplicationContext(), response, Toast.LENGTH_SHORT).show();
                         Intent intent = new Intent(getApplicationContext(), actividadUsuario.class);
                         startActivity(intent);
+                        InputlibrosCantidad(listaLibros);
                     }
                 },
                 new Response.ErrorListener() {
@@ -196,6 +202,29 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
         requestQueue.add(stringRequest);
     }
 
+    public boolean InputlibrosCantidad(ListaLibros listaLibros){
+        final int id=listaLibros.getLibros().get(0).get_id();
+        final String cantidad= String.valueOf(Integer.parseInt(listaLibros.getLibros().get(0).getCantidad_libro()) + 1);
+
+        String url="http://"+IP_PUBLICA+":"+PUERTO+"/php/actualizar_cantidad_libro.php?id="+id+"&Cantidad_libro="+cantidad+"";
+        RequestQueue servicio= Volley.newRequestQueue(this);
+        StringRequest respuesta=new StringRequest(
+                Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                System.out.println(response);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(),
+                        "Error comunicación"+error,Toast.LENGTH_SHORT).show();
+            }
+        });
+        servicio.add(respuesta);
+        return true;
+    }
     @Override
     public void getLibrosDisponibles(Object object) {
         cargarDatosLibro(object);

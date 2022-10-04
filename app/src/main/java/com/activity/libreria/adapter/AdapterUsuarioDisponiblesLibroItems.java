@@ -62,28 +62,28 @@ public class AdapterUsuarioDisponiblesLibroItems extends RecyclerView.Adapter<Ad
         //Cargamos la imagen
 
     }
-//    public void filtrado(final String txtBuscar) {
-//        int longitud = txtBuscar.length();
-//        if (longitud == 0) {
-//            listaLibros.clear();
-//            listaLibros.addAll(listaOriginal);
-//        } else {
-//            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-//                List<Libros> collecion = listaLibros.stream()
-//                        .filter(i -> i.getTitulo_libro().toLowerCase().contains(txtBuscar.toLowerCase()))
-//                        .collect(Collectors.toList());
-//                listaLibros.clear();
-//                listaLibros.addAll(collecion);
-//            } else {
-//                for (Libros libros : listaOriginal) {
-//                    if (libros.getNombreLibro().toLowerCase().contains(txtBuscar.toLowerCase())) {
-//                        listaLibros.add(libros);
-//                    }
-//                }
-//            }
-//        }
-//        notifyDataSetChanged();
-//    }
+    public void filtrado(final String txtBuscar) {
+        int longitud = txtBuscar.length();
+        if (longitud == 0) {
+            listaLibros.clear();
+            listaLibros.addAll(listaOriginal);
+        } else {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+                List<LibrosRsp> collecion = listaLibros.stream()
+                        .filter(i -> i.getTitulo_libro().toLowerCase().contains(txtBuscar.toLowerCase()))
+                        .collect(Collectors.toList());
+                listaLibros.clear();
+                listaLibros.addAll(collecion);
+            } else {
+                for (LibrosRsp librosRsp : listaOriginal) {
+                    if (librosRsp.getTitulo_libro().toLowerCase().contains(txtBuscar.toLowerCase())) {
+                        listaLibros.add(librosRsp);
+                    }
+                }
+            }
+        }
+        notifyDataSetChanged();
+    }
 
     @Override
     public int getItemCount() {

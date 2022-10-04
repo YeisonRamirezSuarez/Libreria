@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.activity.libreria.ActualizarLibros;
 import com.activity.libreria.R;
 import com.activity.libreria.modelos.Libros;
+import com.activity.libreria.modelos.LibrosRsp;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -23,11 +24,11 @@ import java.util.stream.Collectors;
 public class AdapterAdministradorLibroItems extends RecyclerView.Adapter<AdapterAdministradorLibroItems.MyViewHolder> {
     //Creamos el proceso para que identifique el la vista de Mi fila
     private Context context;
-    private ArrayList<Libros> listaLibros;
-    private ArrayList<Libros> listaOriginal;
+    private ArrayList<LibrosRsp> listaLibros;
+    private ArrayList<LibrosRsp> listaOriginal;
 
 
-    public AdapterAdministradorLibroItems(Context context, ArrayList<Libros> listaLibros) {
+    public AdapterAdministradorLibroItems(Context context, ArrayList<LibrosRsp> listaLibros) {
         this.context = context;
         this.listaLibros = listaLibros;
         listaOriginal = new ArrayList<>();
@@ -48,12 +49,12 @@ public class AdapterAdministradorLibroItems extends RecyclerView.Adapter<Adapter
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
         Glide.with(context)
-                .load(listaLibros.get(position).getUrlImagen())
+                .load(listaLibros.get(position).getImagen_libro())
                 .error(R.drawable.error)
                 .into(holder.imageView_txt);
 
-        holder.nombre_libro_txt.setText(String.valueOf(listaLibros.get(position).getNombreLibro()));
-        holder.autor_libro_txt.setText(String.valueOf(listaLibros.get(position).getAutorLibro()));
+        holder.nombre_libro_txt.setText(String.valueOf(listaLibros.get(position).getTitulo_libro()));
+        holder.autor_libro_txt.setText(String.valueOf(listaLibros.get(position).getAutor_libro()));
         //Cargamos la imagen
 
     }
@@ -65,15 +66,15 @@ public class AdapterAdministradorLibroItems extends RecyclerView.Adapter<Adapter
             listaLibros.addAll(listaOriginal);
         } else {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                List<Libros> collecion = listaLibros.stream()
-                        .filter(i -> i.getNombreLibro().toLowerCase().contains(txtBuscar.toLowerCase()))
+                List<LibrosRsp> collecion = listaLibros.stream()
+                        .filter(i -> i.getTitulo_libro().toLowerCase().contains(txtBuscar.toLowerCase()))
                         .collect(Collectors.toList());
                 listaLibros.clear();
                 listaLibros.addAll(collecion);
             } else {
-                for (Libros libros : listaOriginal) {
-                    if (libros.getNombreLibro().toLowerCase().contains(txtBuscar.toLowerCase())) {
-                        listaLibros.add(libros);
+                for (LibrosRsp librosRsp : listaOriginal) {
+                    if (librosRsp.getTitulo_libro().toLowerCase().contains(txtBuscar.toLowerCase())) {
+                        listaLibros.add(librosRsp);
                     }
                 }
             }
@@ -106,7 +107,7 @@ public class AdapterAdministradorLibroItems extends RecyclerView.Adapter<Adapter
                 public void onClick(View view) {
                     Context context = view.getContext();
                     Intent intent = new Intent(context, ActualizarLibros.class);
-                    intent.putExtra("ID", listaLibros.get(getAdapterPosition()).getId());
+                    intent.putExtra("ID", listaLibros.get(getAdapterPosition()).get_id());
                     context.startActivity(intent);
                 }
             });

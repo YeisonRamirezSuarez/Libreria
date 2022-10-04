@@ -1,5 +1,8 @@
 package com.activity.libreria;
 
+import static com.activity.libreria.bd.NetwordHelper.IP_PUBLICA;
+import static com.activity.libreria.bd.NetwordHelper.PUERTO;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
@@ -11,21 +14,27 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.activity.libreria.Interfaces.Callback;
 import com.activity.libreria.adapter.AdapterAdministradorHistorialLibroPrestadoItems;
+import com.activity.libreria.bd.Conexion;
 import com.activity.libreria.metodos.MetodosAdministrador;
 import com.activity.libreria.metodos.MetodosLibros;
 import com.activity.libreria.metodos.MetodosUsuario;
+import com.activity.libreria.metodos.SPreferences;
 import com.activity.libreria.modelos.Administrador;
 import com.activity.libreria.modelos.Libros;
+import com.activity.libreria.modelos.ListaLibros;
+import com.activity.libreria.modelos.ListaLibrosPrestados;
+import com.activity.libreria.modelos.ListaUsuario;
 import com.activity.libreria.modelos.Usuario;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
 
-public class HistorialUsuarioLibros extends AppCompatActivity implements View.OnClickListener {
+public class HistorialUsuarioLibros extends AppCompatActivity implements View.OnClickListener, Callback {
 
     ImageView imageView_txt;
-    TextView nombre_administrador_txt;
+    TextView nombre_administrador_txt, rol;
     ImageView volverLibros, funciones;
     TextView nombreLibroHistorial_ver;
     AdapterAdministradorHistorialLibroPrestadoItems adapterAdministradorHistorialLibroPrestadoItems;
@@ -37,7 +46,13 @@ public class HistorialUsuarioLibros extends AppCompatActivity implements View.On
     MetodosLibros metodosLibros;
     MetodosAdministrador metodosAdministrador;
     MetodosUsuario metodosUsuario;
+    ListaUsuario listaUsuario;
+    ListaLibros listaLibros;
+    ListaLibrosPrestados listaLibrosPrestados;
+    Conexion conexion;
     int id = 0;
+    SPreferences sPreferences;
+    boolean siExiste = true;
 
 
     @SuppressLint("WrongViewCast")
@@ -47,9 +62,7 @@ public class HistorialUsuarioLibros extends AppCompatActivity implements View.On
         setContentView(R.layout.admin_historial_libros);
         traerIdRecyclerView(savedInstanceState);
         findElement();
-        traerRecyclerView();
-        cargarDatosUsuarios();
-        cargarDatosLibro();
+
     }
 
     private void findElement() {
@@ -60,6 +73,7 @@ public class HistorialUsuarioLibros extends AppCompatActivity implements View.On
         metodosUsuario = new MetodosUsuario(this);
         imageView_txt = findViewById(R.id.imageView_txt);
         nombre_administrador_txt = findViewById(R.id.nombre_administrador_txt);
+        rol = findViewById(R.id.rol);
         nombreLibroHistorial_ver = findViewById(R.id.nombreLibroHistorial_ver);
         reciclarVistaHistorial = findViewById(R.id.reciclarVistaHistorial);
         autorLibroHistorial_ver = findViewById(R.id.autorLibroHistorial_ver);
@@ -71,6 +85,14 @@ public class HistorialUsuarioLibros extends AppCompatActivity implements View.On
         titulo.setText("MiLibro");
         funciones = findViewById(R.id.funcionesUser);
         funciones.setVisibility(View.GONE);
+        conexion = new Conexion();
+        listaUsuario = new ListaUsuario();
+        listaLibros = new ListaLibros();
+        listaLibrosPrestados = new ListaLibrosPrestados();
+        sPreferences = new SPreferences(this);
+        conexion.buscarUsuarios("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
+        conexion.consultaLibros("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_libro_id.php?id="+id+"", this, this);
+
 
     }
 
@@ -85,32 +107,36 @@ public class HistorialUsuarioLibros extends AppCompatActivity implements View.On
         } else id = (int) savedInstanceState.getSerializable("ID");
     }
 
-    private void traerRecyclerView() {
-        ArrayList<Usuario> listaUser = metodosUsuario.correoPrestado(id);
-        metodosUsuario.correoUsuarioPrestado(usuario.getCorreoUsuario());
-        adapterAdministradorHistorialLibroPrestadoItems = new AdapterAdministradorHistorialLibroPrestadoItems(this, listaUser);
+    private void traerRecyclerView(Object object) {
+        listaLibrosPrestados= (ListaLibrosPrestados) object;
+        adapterAdministradorHistorialLibroPrestadoItems = new AdapterAdministradorHistorialLibroPrestadoItems(this, listaLibrosPrestados.getLibros());
         reciclarVistaHistorial.setAdapter(adapterAdministradorHistorialLibroPrestadoItems);
         reciclarVistaHistorial.setLayoutManager(new LinearLayoutManager(this));
+        siExiste = true;
     }
 
-    private void cargarDatosUsuarios() {
-        //Nombre en Vista
-        ArrayList<Administrador> listaAdministrador = metodosAdministrador.selectAdministrador();
-        nombre_administrador_txt.setText(listaAdministrador.get(0).getNombreAdministrador());
+    private void cargarDatosAdministrador(Object object) {
+        // Aqui es como se muestra el nombre del Usuario que ingreso
+
+        listaUsuario= (ListaUsuario) object;
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
     }
 
-    private void cargarDatosLibro() {
-        libros = metodosLibros.verLibro(id);
-
+    private void cargarDatosLibro(Object object) {
+        ListaLibros libros = (ListaLibros) object;
+        listaLibros = libros;
         if (libros != null) {
-            nombreLibroHistorial_ver.setText(libros.getNombreLibro());
-            autorLibroHistorial_ver.setText(libros.getAutorLibro());
-            descripcionLibroHistorial_ver.setText(libros.getDescripcion());
+            nombreLibroHistorial_ver.setText(libros.getLibros().get(0).getTitulo_libro());
+            autorLibroHistorial_ver.setText(libros.getLibros().get(0).getAutor_libro());
+            descripcionLibroHistorial_ver.setText(libros.getLibros().get(0).getDescripcion_libro());
             Glide.with(this)
-                    .load(libros.getUrlImagen())
+                    .load(libros.getLibros().get(0).getImagen_libro())
                     .error(R.drawable.error)
                     .into(imageView_txt);
         }
+        siExiste = false;
+        conexion.consultaLibrosPrestados("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_libros_prestados.php?id="+id+"", this, this);
     }
 
     @Override
@@ -123,5 +149,20 @@ public class HistorialUsuarioLibros extends AppCompatActivity implements View.On
 
 
         }
+    }
+
+    @Override
+    public void getLibrosDisponibles(Object object) {
+        if (siExiste) {
+            cargarDatosLibro(object);
+        }else{
+            traerRecyclerView(object);
+        }
+
+    }
+
+    @Override
+    public void getUsuarioActivo(Object object) {
+        cargarDatosAdministrador(object);
     }
 }

@@ -1,5 +1,8 @@
 package com.activity.libreria;
 
+import static com.activity.libreria.bd.NetwordHelper.IP_PUBLICA;
+import static com.activity.libreria.bd.NetwordHelper.PUERTO;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -12,10 +15,14 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.activity.libreria.Interfaces.Callback;
+import com.activity.libreria.bd.Conexion;
 import com.activity.libreria.metodos.MetodosAdministrador;
 import com.activity.libreria.metodos.MetodosLibros;
+import com.activity.libreria.metodos.SPreferences;
 import com.activity.libreria.modelos.Administrador;
 import com.activity.libreria.modelos.Libros;
+import com.activity.libreria.modelos.ListaUsuario;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -29,7 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 
-public class AgregarLibros extends AppCompatActivity implements View.OnClickListener {
+public class AgregarLibros extends AppCompatActivity implements View.OnClickListener, Callback {
 
     EditText nombreLibroInput;
     EditText autorLibroInput;
@@ -39,11 +46,14 @@ public class AgregarLibros extends AppCompatActivity implements View.OnClickList
     EditText urlImagenInput;
     EditText descripcionInput;
     ImageView volverLibros, funciones;
-    TextView nombre_administrador_txt;
+    TextView nombre_administrador_txt, rol;
     Button guardar_boton;
     Libros libros;
     MetodosAdministrador metodosAdministrador;
     MetodosLibros metodosLibros;
+    Conexion conexion;
+    ListaUsuario listaUsuario;
+    SPreferences sPreferences;
     static int id = 1;
 
     @Override
@@ -51,7 +61,6 @@ public class AgregarLibros extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.admin_agregar_libro);
         findElement();
-        cargarDatosAdministrador();
     }
 
     private void findElement() {
@@ -60,6 +69,7 @@ public class AgregarLibros extends AppCompatActivity implements View.OnClickList
         metodosLibros = new MetodosLibros(this);
         nombreLibroInput = findViewById(R.id.nombreLibro_input);
         nombre_administrador_txt = findViewById(R.id.nombre_administrador_txt);
+        rol = findViewById(R.id.rol);
         autorLibroInput = findViewById(R.id.autorLibro_input);
         cantidadLibroInput = findViewById(R.id.cantidadLibros_input);
         urlLibroInput = findViewById(R.id.urlLibro_input);
@@ -74,11 +84,20 @@ public class AgregarLibros extends AppCompatActivity implements View.OnClickList
         guardar_boton.setOnClickListener(this);
         titulo = findViewById(R.id.tituloBanner);
         titulo.setText("Agregar Libro");
+        conexion = new Conexion();
+        listaUsuario = new ListaUsuario();
+        sPreferences = new SPreferences(this);
+        conexion.buscarUsuarios("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
+
     }
 
-    private void cargarDatosAdministrador() {
-        ArrayList<Administrador> listaAdministrador = metodosAdministrador.selectAdministrador();
-        nombre_administrador_txt.setText(listaAdministrador.get(0).getNombreAdministrador());
+
+    private void cargarDatosAdministrador(Object object) {
+        // Aqui es como se muestra el nombre del Usuario que ingreso
+
+        listaUsuario= (ListaUsuario) object;
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
     }
 
     @Override
@@ -100,10 +119,7 @@ public class AgregarLibros extends AppCompatActivity implements View.OnClickList
                     libros.setUrlLibro(urlLibroInput.getText().toString());
                     libros.setUrlImagen(urlImagenInput.getText().toString());
                     libros.setDescripcion(descripcionInput.getText().toString());
-                    if (validar()) {
-                        Intent i = new Intent(this, actividadAdministrador.class);
-                        startActivity(i);
-                    }
+                    validar();
                 } else {
                     Toast.makeText(this, "DEBE LLENAR LOS CAMPOS OBLIGATORIOS", Toast.LENGTH_LONG).show();
                 }
@@ -122,7 +138,7 @@ public class AgregarLibros extends AppCompatActivity implements View.OnClickList
         final String imagen=libros.getUrlImagen();
         final String descripcion=libros.getDescripcion();
 
-        String url="http://192.168.1.11:80/php/registro_libro.php?Titulo_libro="+nombre+"&Autor_libro="+autor+"&Cantidad_libro="+cantidad+"&Url_libro="+urlLibro+"&Imagen_libro="+imagen+"&Descripcion_libro="+descripcion+"";
+        String url="http://"+IP_PUBLICA+":"+PUERTO+"/php/registro_libro.php?Titulo_libro="+nombre+"&Autor_libro="+autor+"&Cantidad_libro="+cantidad+"&Url_libro="+urlLibro+"&Imagen_libro="+imagen+"&Descripcion_libro="+descripcion+"";
         RequestQueue servicio= Volley.newRequestQueue(this);
         StringRequest respuesta=new StringRequest(
                 Request.Method.POST, url, new Response.Listener<String>() {
@@ -130,6 +146,8 @@ public class AgregarLibros extends AppCompatActivity implements View.OnClickList
             public void onResponse(String response) {
                 Toast.makeText(getApplicationContext(),
                         response,Toast.LENGTH_LONG).show();
+                Intent i = new Intent(getApplicationContext(), actividadAdministrador.class);
+                startActivity(i);
             }
         }, new Response.ErrorListener() {
             @Override
@@ -140,5 +158,15 @@ public class AgregarLibros extends AppCompatActivity implements View.OnClickList
         });
         servicio.add(respuesta);
         return true;
+    }
+
+    @Override
+    public void getLibrosDisponibles(Object object) {
+
+    }
+
+    @Override
+    public void getUsuarioActivo(Object object) {
+        cargarDatosAdministrador(object);
     }
 }

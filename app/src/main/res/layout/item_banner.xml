@@ -3,19 +3,38 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/black"
+    android:layout_height="120dp"
     android:padding="20dp"
+    android:background="@color/black"
+    android:elevation="-20dp"
     android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+
+    <ImageView
+        android:id="@+id/borrar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="280dp"
+        android:elevation="60dp"
+        android:visibility="invisible"
+        android:layout_marginTop="80dp"
+        app:srcCompat="@drawable/ic_baseline_delete_24" />
 
     <ImageView
         android:id="@+id/funcionesUser"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_gravity="end"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="-100dp"
         android:layout_marginEnd="10dp"
         app:srcCompat="@drawable/ic_agregar" />
+
 
     <ImageView
         android:id="@+id/volverLibros"
@@ -23,14 +42,14 @@
         android:layout_height="40dp"
         android:layout_gravity="end"
         android:visibility="gone"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="-100dp"
         android:layout_marginEnd="10dp"
         app:srcCompat="@drawable/ic_flecha_izquierda" />
-
+    </LinearLayout>
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-50dp"
+        android:layout_marginTop="-110dp"
         android:background="@color/black"
 
         android:orientation="horizontal">
@@ -54,7 +73,7 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/textAdministrador"
+                android:id="@+id/rol"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:padding="5dp"
@@ -96,6 +115,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="30dp"
+        android:elevation="-20dp"
         android:layout_marginTop="10dp"
         android:textStyle="bold"
         android:inputType="textPersonName"

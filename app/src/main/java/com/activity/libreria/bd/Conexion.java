@@ -43,14 +43,6 @@ public class Conexion implements Logica{
                         Toast.makeText(context.getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
                     }
                 }) ;
-//                {
-//            protected Map<String, String> getParams() throws AuthFailureError {
-//                Map<String, String> params = new HashMap<String, String>();
-//                params.put("id","1");
-//                params.put("name", "myname");
-//                return params;
-//            };
-        //};
         requestQueue.add(jsObjRequest);
     }
 

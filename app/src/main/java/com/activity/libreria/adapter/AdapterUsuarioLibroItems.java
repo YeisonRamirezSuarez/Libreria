@@ -63,28 +63,28 @@ public class AdapterUsuarioLibroItems extends RecyclerView.Adapter<AdapterUsuari
 
     }
 
-   /* public void filtrado(final String txtBuscar) {
+    public void filtrado(final String txtBuscar) {
         int longitud = txtBuscar.length();
         if (longitud == 0) {
             listaLibros.clear();
             listaLibros.addAll(listaOriginal);
         } else {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                List<Libros> collecion = listaLibros.stream()
+                List<LibrosPrestadosRsp> collecion = listaLibros.stream()
                         .filter(i -> i.getNombre_Usuario_Prestamo_libro().toLowerCase().contains(txtBuscar.toLowerCase()))
                         .collect(Collectors.toList());
                 listaLibros.clear();
                 listaLibros.addAll(collecion);
             } else {
-                for (Libros libros : listaOriginal) {
-                    if (libros.getNombreLibro().toLowerCase().contains(txtBuscar.toLowerCase())) {
+                for (LibrosPrestadosRsp libros : listaOriginal) {
+                    if (libros.getTitulo_libro_Prestado().toLowerCase().contains(txtBuscar.toLowerCase())) {
                         listaLibros.add(libros);
                     }
                 }
             }
         }
         notifyDataSetChanged();
-    }*/
+    }
 
     @Override
     public int getItemCount() {
@@ -113,6 +113,7 @@ public class AdapterUsuarioLibroItems extends RecyclerView.Adapter<AdapterUsuari
                     public void onClick(View view) {
                         Context context = view.getContext();
                         Intent intent = new Intent(context, VerMiLibro.class);
+                        intent.putExtra("ID_LIBRO", listaLibros.get(getAdapterPosition()).get_id_Libro());
                         intent.putExtra("ID", listaLibros.get(getAdapterPosition()).get_id());
                         context.startActivity(intent);
                 }

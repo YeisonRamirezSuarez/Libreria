@@ -20,6 +20,7 @@ import com.activity.libreria.metodos.MetodosUsuario;
 import com.activity.libreria.metodos.SPreferences;
 import com.activity.libreria.modelos.Libros;
 import com.activity.libreria.modelos.ListaLibros;
+import com.activity.libreria.modelos.ListaLibrosPrestados;
 import com.activity.libreria.modelos.ListaUsuario;
 import com.activity.libreria.modelos.Usuario;
 import com.android.volley.Request;
@@ -55,8 +56,10 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
     Conexion conexion;
     ListaUsuario listaUsuario;
     ListaLibros listaLibros;
+    ListaLibrosPrestados listaLibrosPrestados;
     int id = 0;
-
+    boolean siPrestados = true;
+    boolean siExiste = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +76,7 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
         usuario = new Usuario();
         listaUsuario = new ListaUsuario();
         listaLibros = new ListaLibros();
+        listaLibrosPrestados = new ListaLibrosPrestados();
         sharedPreferences = new SPreferences(this);
         nombreLibro_ver = findViewById(R.id.nombreLibro_ver);
         nombre_usuario_txt = findViewById(R.id.nombre_usuario_txt);
@@ -134,11 +138,6 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
         }
     }
 
-    private int restarLibro(){
-        int restar = Integer.parseInt(listaLibros.getLibros().get(0).getCantidad_libro()) - 1;
-        return restar;
-    }
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -147,30 +146,7 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
                 startActivity(i);
                 break;
             case R.id.prestar_libro:
-                ArrayList<Libros> listaPrestado = metodosLibros.ArraysLibrosPre();
-                usuario = metodosUsuario.traerDatos();
-                boolean siExiste = false;
-                for (int j = 0; j < listaPrestado.size(); j++)
-                {
-                    if (listaPrestado.get(j).getCorreoPrestamo().equals(sharedPreferences.getSharedPreference()) && listaPrestado.get(j).getId_libro() == id)
-                    {
-                        siExiste = true;
-                    }
-                }
-                if (siExiste)
-                {
-                    Toast.makeText(this, "Libro ya esta prestado", Toast.LENGTH_SHORT).show();
-                }
-                else
-                {
-                    //metodosLibros.prestarLibro(libros, usuario);
-                    InputlibrosPrestado(listaLibros, listaUsuario);
-                    //libros.setCantidadLibro(String.valueOf(restarLibro()));
-                    //metodosLibros.actualizarCantidadLibro(libros);
-                    //Toast.makeText(getApplicationContext(),"Libro prestado...", Toast.LENGTH_LONG).show();
-
-                }
-
+                conexion.consultaLibrosPrestados("http://"+IP_PUBLICA+":"+PUERTO+"/php/libros_prestados_disponibles.php", this, this);
                 break;
         }
     }
@@ -199,6 +175,7 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
                 Toast.makeText(getApplicationContext(),
                         response,Toast.LENGTH_LONG).show();
                 System.out.println(response);
+                InputlibrosCantidad(listaLibros);
                 Intent i2 = new Intent(getApplicationContext(), actividadUsuario.class);
                 startActivity(i2);
             }
@@ -213,9 +190,58 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
         return true;
     }
 
+    public boolean InputlibrosCantidad(ListaLibros listaLibros){
+        final int id=listaLibros.getLibros().get(0).get_id();
+        final String cantidad= String.valueOf(Integer.parseInt(listaLibros.getLibros().get(0).getCantidad_libro()) - 1);
+
+        String url="http://"+IP_PUBLICA+":"+PUERTO+"/php/actualizar_cantidad_libro.php?id="+id+"&Cantidad_libro="+cantidad+"";
+        RequestQueue servicio= Volley.newRequestQueue(this);
+        StringRequest respuesta=new StringRequest(
+                Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                System.out.println(response);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(getApplicationContext(),
+                        "Error comunicación"+error,Toast.LENGTH_SHORT).show();
+            }
+        });
+        servicio.add(respuesta);
+        return true;
+    }
+
+    private void validar(){
+        for (int j = 0; j < listaLibrosPrestados.getLibros().size(); j++)
+        {
+            if (listaLibrosPrestados.getLibros().get(j).getCorreo_Prestamo_libro().equals(sharedPreferences.getSharedPreference()) && listaLibrosPrestados.getLibros().get(j).get_id_Libro() == id)
+            {
+                siExiste = true;
+            }
+        }
+        if (siExiste)
+        {
+            Toast.makeText(this, "Libro ya esta prestado", Toast.LENGTH_SHORT).show();
+        }
+        else
+        {
+            InputlibrosPrestado(listaLibros, listaUsuario);
+        }
+    }
+
     @Override
     public void getLibrosDisponibles(Object object) {
-        cargarDatosLibro(object);
+        if(!siPrestados){
+            listaLibrosPrestados = (ListaLibrosPrestados) object;
+            validar();
+        }else{
+            cargarDatosLibro(object);
+            siPrestados = false;
+        }
+
     }
 
     @Override

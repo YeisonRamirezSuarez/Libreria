@@ -182,7 +182,7 @@ public class actividadUsuario extends AppCompatActivity implements View.OnClickL
 
     @Override
     public boolean onQueryTextChange(String s) {
-        //adapterUsuarioLibroItems.filtrado(s);
+        adapterUsuarioLibroItems.filtrado(s);
         return false;
     }
 

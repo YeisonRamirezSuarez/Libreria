@@ -135,7 +135,7 @@ public class librosDisponiblesUsuario extends AppCompatActivity implements Searc
 
     @Override
     public boolean onQueryTextChange(String s) {
-        //adapterUsuarioDisponiblesLibroItems.filtrado(s);
+        adapterUsuarioDisponiblesLibroItems.filtrado(s);
         return false;
     }
 
