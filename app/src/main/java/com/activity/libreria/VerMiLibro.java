@@ -3,7 +3,10 @@ package com.activity.libreria;
 import static com.activity.libreria.bd.BDHelper.TABLE_LIBROS;
 import static com.activity.libreria.bd.BDHelper.TABLE_LIBROS_PRESTADOS;
 import static com.activity.libreria.bd.BDHelper.TABLE_USER;
+import static com.activity.libreria.bd.NetwordHelper.IP_PUBLICA;
+import static com.activity.libreria.bd.NetwordHelper.PUERTO;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -17,20 +20,37 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.activity.libreria.Interfaces.Callback;
+import com.activity.libreria.adapter.AdapterUsuarioLibroItems;
 import com.activity.libreria.bd.BDHelper;
+import com.activity.libreria.bd.Conexion;
 import com.activity.libreria.metodos.MetodosLibros;
 import com.activity.libreria.metodos.MetodosUsuario;
+import com.activity.libreria.metodos.SPreferences;
 import com.activity.libreria.modelos.Libros;
+import com.activity.libreria.modelos.ListaLibros;
+import com.activity.libreria.modelos.ListaLibrosPrestados;
+import com.activity.libreria.modelos.ListaUsuario;
 import com.activity.libreria.modelos.Usuario;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-public class VerMiLibro extends AppCompatActivity implements View.OnClickListener {
+public class VerMiLibro extends AppCompatActivity implements View.OnClickListener, Callback {
 
     TextView nombreLibro_ver;
-    TextView nombre_usuario_txt;
+    TextView nombre_usuario_txt, rol;
     TextView autorLibro_ver;
     TextView descripcionLibro_ver, titulo;
     ImageView imageView_txt;
@@ -40,22 +60,26 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
     MetodosUsuario metodosUsuario;
     MetodosLibros metodosLibros;
     Libros libros;
+    SPreferences sharedPreferences;
+    ListaLibros listaLibros;
+    ListaUsuario listaUsuario;
+    Conexion conexion;
     int id = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.vista_usuario_libro);
-        findElement();
         traerIdRecyclerView(savedInstanceState);
-        cargarDatosUsuarios();
-        cargarDatosLibro();
+        findElement();
+
     }
 
     private void findElement() {
         metodosUsuario = new MetodosUsuario(this);
         metodosLibros = new MetodosLibros(this);
         nombre_usuario_txt = findViewById(R.id.nombre_usuario_txt);
+        rol = findViewById(R.id.rol);
         nombreLibro_ver = findViewById(R.id.nombreLibro_ver);
         autorLibro_ver = findViewById(R.id.autorLibro_ver);
         descripcionLibro_ver = findViewById(R.id.descripcionLibro_ver);
@@ -71,7 +95,10 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
         funciones.setVisibility(View.GONE);
         titulo = findViewById(R.id.tituloBannerUser);
         titulo.setText("MiLibro");
-
+        sharedPreferences = new SPreferences(this);
+        conexion = new Conexion();
+        conexion.consultaLibros("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_libro_id.php?id="+id+"", this, this);
+        conexion.buscarUsuarios("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_usuario.php?correo="+sharedPreferences.getSharedPreference()+"", this, this);
     }
 
     private void traerIdRecyclerView(Bundle savedInstanceState) {
@@ -87,21 +114,25 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
         }
     }
 
-    private void cargarDatosUsuarios() {
-        //Aqui obtiene el nombre del usuario
-        ArrayList<Usuario> listaUsuario = metodosUsuario.almacenarDatosEnArraysUsuario();
-        nombre_usuario_txt.setText(listaUsuario.get(0).getNombreUsuario());
+
+
+    private void cargarDatosUsuarios(Object object) {
+        // Aqui es como se muestra el nombre del Usuario que ingreso
+
+        listaUsuario= (ListaUsuario) object;
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
+        nombre_usuario_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
     }
 
-    private void cargarDatosLibro() {
-        libros = metodosLibros.verLibroPrestado(id);
-
+    private void cargarDatosLibro(Object object) {
+        ListaLibros libros = (ListaLibros) object;
+        listaLibros = libros;
         if (libros != null) {
-            nombreLibro_ver.setText(libros.getNombreLibro());
-            autorLibro_ver.setText(libros.getAutorLibro());
-            descripcionLibro_ver.setText(libros.getDescripcion());
+            nombreLibro_ver.setText(libros.getLibros().get(0).getTitulo_libro());
+            autorLibro_ver.setText(libros.getLibros().get(0).getAutor_libro());
+            descripcionLibro_ver.setText(libros.getLibros().get(0).getDescripcion_libro());
             Glide.with(this)
-                    .load(libros.getUrlImagen())
+                    .load(libros.getLibros().get(0).getImagen_libro())
                     .error(R.drawable.error)
                     .into(imageView_txt);
         }
@@ -123,7 +154,7 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
                 try {
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_VIEW);
-                    intent.setData(Uri.parse(libros.getUrlLibro()));
+                    intent.setData(Uri.parse(listaLibros.getLibros().get(0).getUrl_libro()));
                     startActivity(intent);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -131,15 +162,53 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
                 }
                 break;
             case R.id.devolver_boton:
-                metodosLibros.eliminarLibroPrestado(libros);
-                libros = metodosLibros.traerDatosCantidadd(libros.getId_libro());
-                int suma = sumarLibro(libros.getCantidadLibro());
-                libros.setCantidadLibro(String.valueOf(suma));
-                metodosLibros.actualizarCantidadLibro(libros);
-                Intent i3 = new Intent(this, actividadUsuario.class);
-                startActivity(i3);
+               // metodosLibros.eliminarLibroPrestado(libros);
+                //libros = metodosLibros.traerDatosCantidadd(libros.getId_libro());
+                //int suma = sumarLibro(libros.getCantidadLibro());
+                //libros.setCantidadLibro(String.valueOf(suma));
+                //metodosLibros.actualizarCantidadLibro(libros);
+                eliminarLibroPrestado("http://"+IP_PUBLICA+":"+PUERTO+"/php/eliminar_libro_prestado.php?id="+id+"");
+
         }
 
+    }
+    public void eliminarLibroPrestado(String URL) {
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET,URL,null,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(getApplicationContext(), response.toString(), Toast.LENGTH_SHORT).show();
+                        Intent i3 = new Intent(getApplicationContext(), actividadUsuario.class);
+                        startActivity(i3);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        System.out.println(error);
+                        Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }) ;
+//                {
+//            protected Map<String, String> getParams() throws AuthFailureError {
+//                Map<String, String> params = new HashMap<String, String>();
+//                params.put("id","1");
+//                params.put("name", "myname");
+//                return params;
+//            };
+        //};
+        requestQueue.add(jsObjRequest);
+    }
+
+    @Override
+    public void getLibrosDisponibles(Object object) {
+        cargarDatosLibro(object);
+    }
+
+    @Override
+    public void getUsuarioActivo(Object object) {
+        cargarDatosUsuarios(object);
     }
 }
 

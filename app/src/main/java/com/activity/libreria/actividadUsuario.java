@@ -56,6 +56,8 @@ public class actividadUsuario extends AppCompatActivity implements View.OnClickL
     SPreferences sPreferences;
     Usuario usuario;
     Conexion conexion;
+    ListaUsuario listaUsuario;
+    ListaLibrosPrestados listaLibrosPrestados;
 
 
     @Override
@@ -85,16 +87,18 @@ public class actividadUsuario extends AppCompatActivity implements View.OnClickL
         titulo = findViewById(R.id.tituloBannerUser);
         titulo.setText("Mis Libros Prestados");
         conexion = new Conexion();
-
-        conexion.consultaLibrosPrestados("http://"+IP_PUBLICA+":"+PUERTO+"/php/libros_prestados_disponibles.php", this, this);
+        listaUsuario = new ListaUsuario();
+        listaLibrosPrestados = new ListaLibrosPrestados();
+        //conexion.consultaLibrosPrestados("http://"+IP_PUBLICA+":"+PUERTO+"/php/libros_prestados_disponibles.php", this, this);
+        conexion.consultaLibrosPrestados("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_libro_prestado.php?correo="+sPreferences.getSharedPreference()+"", this, this);
         conexion.buscarUsuarios("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
     }
 
 
     private void traerRecyclerView(Object object) {
         //Aqui es donde nos muestra los libros 1 por 1 Disponibles
-        ListaLibrosPrestados lista = (ListaLibrosPrestados) object;
-        adapterUsuarioLibroItems = new AdapterUsuarioLibroItems(actividadUsuario.this, lista.getLibros());
+        listaLibrosPrestados = (ListaLibrosPrestados) object;
+        adapterUsuarioLibroItems = new AdapterUsuarioLibroItems(actividadUsuario.this, listaLibrosPrestados.getLibros());
         reciclarVistaUsuario.setAdapter(adapterUsuarioLibroItems);
         reciclarVistaUsuario.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -102,9 +106,9 @@ public class actividadUsuario extends AppCompatActivity implements View.OnClickL
     private void cargarDatosUsuarios(Object object) {
         // Aqui es como se muestra el nombre del Usuario que ingreso
 
-        ListaUsuario lista = (ListaUsuario) object;
-        rol.setText(lista.getUsuarios().get(0).getRol_Usuario());
-        nombre_usuario_txt.setText(lista.getUsuarios().get(0).getNombre_Usuario());
+        listaUsuario= (ListaUsuario) object;
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
+        nombre_usuario_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
     }
 
 
