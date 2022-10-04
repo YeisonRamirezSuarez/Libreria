@@ -50,16 +50,16 @@ public class Libros {
         return cantidadLibro;
     }
 
+    public void setCantidadLibro(String cantidadLibro) {
+        this.cantidadLibro = cantidadLibro;
+    }
+
     public String getUrlLibro() {
         return urlLibro;
     }
 
     public void setUrlLibro(String urlLibro) {
         this.urlLibro = urlLibro;
-    }
-
-    public void setCantidadLibro(String cantidadLibro) {
-        this.cantidadLibro = cantidadLibro;
     }
 
     public String getUrlImagen() {
@@ -85,7 +85,6 @@ public class Libros {
     public void setFechaPrestamo(String fechaPrestamo) {
         this.fechaPrestamo = fechaPrestamo;
     }
-
 
     public String getNombrePrestamo() {
         return nombrePrestamo;

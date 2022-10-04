@@ -1,5 +1,7 @@
 package com.activity.libreria;
 
+import static com.activity.libreria.bd.NetwordHelper.*;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -60,8 +62,8 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.prestar_libro_usuario);
-        findElement();
         traerIdRecyclerView(savedInstanceState);
+        findElement();
 
     }
 
@@ -90,8 +92,8 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
         titulo = findViewById(R.id.tituloBannerUser);
         titulo.setText("Prestar Libro");
         conexion = new Conexion();
-        conexion.consultaLibros("http://192.168.1.11:80/php/libros_disponibles.php", this, this);
-        conexion.buscarUsuarios("http://192.168.1.11/php/consulta_usuario.php?correo="+sharedPreferences.getSharedPreference()+"", this, this);
+        conexion.consultaLibros("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_libro_id.php?id="+id+"", this, this);
+        conexion.buscarUsuarios("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_usuario.php?correo="+sharedPreferences.getSharedPreference()+"", this, this);
     }
 
     private void traerIdRecyclerView(Bundle savedInstanceState) {
@@ -113,27 +115,27 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
         //Aqui obtiene el nombre del usuario
 
         ListaUsuario lista = (ListaUsuario) object;
+        listaUsuario = lista;
         rol.setText(lista.getUsuarios().get(0).getRol_Usuario());
         nombre_usuario_txt.setText(lista.getUsuarios().get(0).getNombre_Usuario());
     }
 
     private void cargarDatosLibro(Object object) {
         ListaLibros libros = (ListaLibros) object;
-
+        listaLibros = libros;
         if (libros != null) {
-            id--;
-            nombreLibro_ver.setText(libros.getLibros().get(id).getTitulo_libro());
-            autorLibro_ver.setText(libros.getLibros().get(id).getAutor_libro());
-            descripcionLibro_ver.setText(libros.getLibros().get(id).getDescripcion_libro());
+            nombreLibro_ver.setText(libros.getLibros().get(0).getTitulo_libro());
+            autorLibro_ver.setText(libros.getLibros().get(0).getAutor_libro());
+            descripcionLibro_ver.setText(libros.getLibros().get(0).getDescripcion_libro());
             Glide.with(this)
-                    .load(libros.getLibros().get(id).getImagen_libro())
+                    .load(libros.getLibros().get(0).getImagen_libro())
                     .error(R.drawable.error)
                     .into(imageView_txt);
         }
     }
 
     private int restarLibro(){
-        int restar = Integer.parseInt(libros.getCantidadLibro()) - 1;
+        int restar = Integer.parseInt(listaLibros.getLibros().get(0).getCantidad_libro()) - 1;
         return restar;
     }
 
@@ -145,15 +147,7 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
                 startActivity(i);
                 break;
             case R.id.prestar_libro:
-                InputlibrosPrestado(listaLibros, listaUsuario);
-                DateFormat df = new SimpleDateFormat(" d MMM yyyy, HH:mm"); //definir formato para fecha
-                String fecha_registro = df.format(Calendar.getInstance().getTime()); //obtener fecha
                 ArrayList<Libros> listaPrestado = metodosLibros.ArraysLibrosPre();
-                libros.setId_libro(id);
-                libros.setFechaPrestamo(fecha_registro);
-                libros.setNombreLibro(nombreLibro_ver.getText().toString());
-                libros.setAutorLibro(autorLibro_ver.getText().toString());
-                libros.setDescripcion(descripcionLibro_ver.getText().toString());
                 usuario = metodosUsuario.traerDatos();
                 boolean siExiste = false;
                 for (int j = 0; j < listaPrestado.size(); j++)
@@ -171,9 +165,9 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
                 {
                     //metodosLibros.prestarLibro(libros, usuario);
                     InputlibrosPrestado(listaLibros, listaUsuario);
-                    libros.setCantidadLibro(String.valueOf(restarLibro()));
-                    metodosLibros.actualizarCantidadLibro(libros);
-                    Toast.makeText(getApplicationContext(),"Libro prestado...", Toast.LENGTH_LONG).show();
+                    //libros.setCantidadLibro(String.valueOf(restarLibro()));
+                    //metodosLibros.actualizarCantidadLibro(libros);
+                    //Toast.makeText(getApplicationContext(),"Libro prestado...", Toast.LENGTH_LONG).show();
 
                 }
 
@@ -183,18 +177,19 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
     public boolean InputlibrosPrestado(ListaLibros listaLibros, ListaUsuario listaUsuario){
         DateFormat df = new SimpleDateFormat(" d MMM yyyy, HH:mm"); //definir formato para fecha
         String fecha_registro = df.format(Calendar.getInstance().getTime()); //obtener fecha
-        final String nombre=listaLibros.getLibros().get(id).getTitulo_libro();
-        final String autor=listaLibros.getLibros().get(id).getAutor_libro();
-        final String cantidad=listaLibros.getLibros().get(id).getCantidad_libro();
-        final String urlLibro=listaLibros.getLibros().get(id).getUrl_libro();
-        final String imagen=listaLibros.getLibros().get(id).getImagen_libro();
-        final String descripcion=listaLibros.getLibros().get(id).getDescripcion_libro();
+        final int id=listaLibros.getLibros().get(0).get_id();
+        final String nombre=listaLibros.getLibros().get(0).getTitulo_libro();
+        final String autor=listaLibros.getLibros().get(0).getAutor_libro();
+        final String cantidad=listaLibros.getLibros().get(0).getCantidad_libro();
+        final String urlLibro=listaLibros.getLibros().get(0).getUrl_libro();
+        final String imagen=listaLibros.getLibros().get(0).getImagen_libro();
+        final String descripcion=listaLibros.getLibros().get(0).getDescripcion_libro();
         final String Fecha_Prestamo_libro=fecha_registro;
-        final String Correo_Prestamo_libro=listaUsuario.getUsuarios().get(id).getCorreo_Electronico();
-        final String Nombre_Usuario_Prestamo_libro=listaUsuario.getUsuarios().get(id).getNombre_Usuario();
-        final String Telefono_Usuario_Prestamo_libro =listaUsuario.getUsuarios().get(id).getTelefono_Usuario();
+        final String Correo_Prestamo_libro=listaUsuario.getUsuarios().get(0).getCorreo_Electronico();
+        final String Nombre_Usuario_Prestamo_libro=listaUsuario.getUsuarios().get(0).getNombre_Usuario();
+        final String Telefono_Usuario_Prestamo_libro =listaUsuario.getUsuarios().get(0).getTelefono_Usuario();
 
-        String url="http://192.168.1.21:80/php/registro_libro.php?Titulo_libro="+nombre+"&Autor_libro="+autor+"&Cantidad_libro="+cantidad+"&Url_libro="+urlLibro+"&Imagen_libro="+imagen+"&Descripcion_libro="+descripcion+"" +
+        String url="http://"+IP_PUBLICA+":"+PUERTO+"/php/registro_libro_prestado.php?id="+id+"&Titulo_libro="+nombre+"&Autor_libro="+autor+"&Cantidad_libro="+cantidad+"&Url_libro="+urlLibro+"&Imagen_libro="+imagen+"&Descripcion_libro="+descripcion+"" +
                 "&Fecha_Prestamo_libro="+Fecha_Prestamo_libro+"&Correo_Prestamo_libro="+Correo_Prestamo_libro+"&Nombre_Usuario_Prestamo_libro="+Nombre_Usuario_Prestamo_libro+"&Telefono_Usuario_Prestamo_libro="+Telefono_Usuario_Prestamo_libro+"";
        RequestQueue servicio= Volley.newRequestQueue(this);
         StringRequest respuesta=new StringRequest(
@@ -203,6 +198,7 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
             public void onResponse(String response) {
                 Toast.makeText(getApplicationContext(),
                         response,Toast.LENGTH_LONG).show();
+                System.out.println(response);
                 Intent i2 = new Intent(getApplicationContext(), actividadUsuario.class);
                 startActivity(i2);
             }

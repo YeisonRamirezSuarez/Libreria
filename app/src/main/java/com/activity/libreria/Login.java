@@ -1,5 +1,7 @@
 package com.activity.libreria;
 
+import static com.activity.libreria.bd.NetwordHelper.*;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -11,12 +13,13 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.activity.libreria.bd.BDHelper;
+
 import com.activity.libreria.metodos.MetodosAdministrador;
 import com.activity.libreria.metodos.MetodosUsuario;
 import com.activity.libreria.metodos.SPreferences;
 import com.activity.libreria.modelos.Administrador;
 import com.activity.libreria.modelos.Usuario;
-import com.android.volley.AuthFailureError;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -80,7 +83,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 if (correoLogin.equals("") && contraseñaLogin.equals("")) {
                     Toast.makeText(getApplicationContext(), "ERROR: Campos vacios", Toast.LENGTH_LONG).show();
                 } else {
-                    validarUsuario("http://192.168.1.11:80/php/validar_usuario.php");
+                    validarUsuario("http://"+IP_PUBLICA+":"+PUERTO+"/php/validar_usuario.php");
+                    sPreferences.setSharedPreference(correoLogin);
                 }
             }
             break;

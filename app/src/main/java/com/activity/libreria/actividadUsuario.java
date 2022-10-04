@@ -1,6 +1,9 @@
 package com.activity.libreria;
 
 
+import static com.activity.libreria.bd.NetwordHelper.IP_PUBLICA;
+import static com.activity.libreria.bd.NetwordHelper.PUERTO;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -15,17 +18,23 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.activity.libreria.Interfaces.Callback;
 import com.activity.libreria.adapter.AdapterAdministradorLibroItems;
+import com.activity.libreria.adapter.AdapterUsuarioDisponiblesLibroItems;
 import com.activity.libreria.adapter.AdapterUsuarioLibroItems;
 import com.activity.libreria.bd.BDHelper;
+import com.activity.libreria.bd.Conexion;
 import com.activity.libreria.metodos.MetodosLibros;
 import com.activity.libreria.metodos.MetodosUsuario;
 import com.activity.libreria.metodos.SPreferences;
 import com.activity.libreria.modelos.Libros;
+import com.activity.libreria.modelos.ListaLibros;
+import com.activity.libreria.modelos.ListaLibrosPrestados;
+import com.activity.libreria.modelos.ListaUsuario;
 import com.activity.libreria.modelos.Usuario;
 
 import java.util.ArrayList;
@@ -41,11 +50,12 @@ public class actividadUsuario extends AppCompatActivity implements View.OnClickL
     AdapterAdministradorLibroItems adapterAdministradorLibroItems;
     MetodosUsuario metodosUsuario;
     MetodosLibros metodosLibros;
-    TextView nombre_usuario_txt;
+    TextView nombre_usuario_txt, rol;
     ImageView mas_informacion;
     Button btnPrestar;
     SPreferences sPreferences;
     Usuario usuario;
+    Conexion conexion;
 
 
     @Override
@@ -56,13 +66,6 @@ public class actividadUsuario extends AppCompatActivity implements View.OnClickL
         findElement();
     }
 
-    private void traerRecyclerView() {
-        //Aqui es donde nos muestra los libros 1 por 1 Disponibles
-        ArrayList<Libros> listaLibros = metodosLibros.ArraysLibrosPrestados();
-        adapterUsuarioLibroItems = new AdapterUsuarioLibroItems(actividadUsuario.this, listaLibros);
-        reciclarVistaUsuario.setAdapter(adapterUsuarioLibroItems);
-        reciclarVistaUsuario.setLayoutManager(new LinearLayoutManager(actividadUsuario.this));
-    }
 
     private void findElement() {
         sPreferences = new SPreferences(this);
@@ -73,6 +76,7 @@ public class actividadUsuario extends AppCompatActivity implements View.OnClickL
         txtBuscar.setQueryHint(Html.fromHtml("<font color = #ffffff>" + getResources().getString(R.string.seach_hint) + "</font>"));
         txtBuscar.setVisibility(View.VISIBLE);
         nombre_usuario_txt = findViewById(R.id.nombre_usuario_txt);
+        rol = findViewById(R.id.rol);
         reciclarVistaUsuario = findViewById(R.id.reciclarVistaUsuario);
         mas_informacion = findViewById(R.id.funcionesUser);
         mas_informacion.setOnClickListener(this);
@@ -80,13 +84,29 @@ public class actividadUsuario extends AppCompatActivity implements View.OnClickL
         btnPrestar.setOnClickListener(this);
         titulo = findViewById(R.id.tituloBannerUser);
         titulo.setText("Mis Libros Prestados");
+        conexion = new Conexion();
+
+        conexion.consultaLibrosPrestados("http://"+IP_PUBLICA+":"+PUERTO+"/php/libros_prestados_disponibles.php", this, this);
+        conexion.buscarUsuarios("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
     }
 
-    private void cargarDatosUsuarios() {
-        // Aqui es como se muestra el nombre del Usuario que ingreso
-        ArrayList<Usuario> listaUsuario = metodosUsuario.almacenarDatosEnArraysUsuario();
-        nombre_usuario_txt.setText(listaUsuario.get(0).getNombreUsuario());
+
+    private void traerRecyclerView(Object object) {
+        //Aqui es donde nos muestra los libros 1 por 1 Disponibles
+        ListaLibrosPrestados lista = (ListaLibrosPrestados) object;
+        adapterUsuarioLibroItems = new AdapterUsuarioLibroItems(actividadUsuario.this, lista.getLibros());
+        reciclarVistaUsuario.setAdapter(adapterUsuarioLibroItems);
+        reciclarVistaUsuario.setLayoutManager(new LinearLayoutManager(this));
     }
+
+    private void cargarDatosUsuarios(Object object) {
+        // Aqui es como se muestra el nombre del Usuario que ingreso
+
+        ListaUsuario lista = (ListaUsuario) object;
+        rol.setText(lista.getUsuarios().get(0).getRol_Usuario());
+        nombre_usuario_txt.setText(lista.getUsuarios().get(0).getNombre_Usuario());
+    }
+
 
     @Override
     public void onClick(View view) {
@@ -158,17 +178,17 @@ public class actividadUsuario extends AppCompatActivity implements View.OnClickL
 
     @Override
     public boolean onQueryTextChange(String s) {
-        adapterUsuarioLibroItems.filtrado(s);
+        //adapterUsuarioLibroItems.filtrado(s);
         return false;
     }
 
     @Override
     public void getLibrosDisponibles(Object object) {
-        traerRecyclerView();
+        traerRecyclerView(object);
     }
 
     @Override
     public void getUsuarioActivo(Object object) {
-        cargarDatosUsuarios();
+        cargarDatosUsuarios(object);
     }
 }

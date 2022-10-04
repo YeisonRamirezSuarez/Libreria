@@ -1,6 +1,8 @@
 package com.activity.libreria;
 
 
+import static com.activity.libreria.bd.NetwordHelper.*;
+
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -92,8 +94,8 @@ public class librosDisponiblesUsuario extends AppCompatActivity implements Searc
         volver.setVisibility(View.VISIBLE);
         volver.setOnClickListener(this);
         conexion = new Conexion();
-        conexion.consultaLibros("http://192.168.1.11:80/php/libros_disponibles.php", this, this);
-        conexion.buscarUsuarios("http://192.168.1.11/php/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
+        conexion.consultaLibros("http://"+IP_PUBLICA+":"+PUERTO+"/php/libros_disponibles.php", this, this);
+        conexion.buscarUsuarios("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
     }
 
     private void traerRecyclerView(Object object) {

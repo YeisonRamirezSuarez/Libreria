@@ -15,6 +15,7 @@ import com.activity.libreria.ActualizarLibros;
 import com.activity.libreria.R;
 import com.activity.libreria.VerMiLibro;
 import com.activity.libreria.modelos.Libros;
+import com.activity.libreria.modelos.LibrosPrestadosRsp;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -24,11 +25,11 @@ import java.util.stream.Collectors;
 public class AdapterUsuarioLibroItems extends RecyclerView.Adapter<AdapterUsuarioLibroItems.MyViewHolder> {
     //Creamos el proceso para que identifique el la vista de Mi fila
     private Context context;
-    private ArrayList<Libros> listaLibros;
-    private ArrayList<Libros> listaOriginal;
+    private ArrayList<LibrosPrestadosRsp> listaLibros;
+    private ArrayList<LibrosPrestadosRsp> listaOriginal;
 
 
-    public AdapterUsuarioLibroItems(Context context, ArrayList<Libros> listaLibros) {
+    public AdapterUsuarioLibroItems(Context context, ArrayList<LibrosPrestadosRsp> listaLibros) {
         this.context = context;
         this.listaLibros = listaLibros;
         listaOriginal = new ArrayList<>();
@@ -52,17 +53,17 @@ public class AdapterUsuarioLibroItems extends RecyclerView.Adapter<AdapterUsuari
 
         //Cargamos la imagen
         Glide.with(context)
-                .load(listaLibros.get(position).getUrlImagen())
+                .load(listaLibros.get(position).getImagen_libro_Prestado())
                 .error(R.drawable.error)
                 .into(holder.imageView_txt_prestado);
 
-        holder.nombre_libro_txt_prestado.setText(String.valueOf(listaLibros.get(position).getNombreLibro()));
-        holder.autor_libro_txt_prestado.setText(String.valueOf(listaLibros.get(position).getAutorLibro()));
-        holder.fecha_prestamo_libro_txt_prestado.setText(String.valueOf(listaLibros.get(position).getFechaPrestamo()));
+        holder.nombre_libro_txt_prestado.setText(String.valueOf(listaLibros.get(position).getTitulo_libro_Prestado()));
+        holder.autor_libro_txt_prestado.setText(String.valueOf(listaLibros.get(position).getAutor_libro_Prestado()));
+        holder.fecha_prestamo_libro_txt_prestado.setText(String.valueOf(listaLibros.get(position).getFecha_Prestamo_libro()));
 
     }
 
-    public void filtrado(final String txtBuscar) {
+   /* public void filtrado(final String txtBuscar) {
         int longitud = txtBuscar.length();
         if (longitud == 0) {
             listaLibros.clear();
@@ -70,7 +71,7 @@ public class AdapterUsuarioLibroItems extends RecyclerView.Adapter<AdapterUsuari
         } else {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                 List<Libros> collecion = listaLibros.stream()
-                        .filter(i -> i.getNombreLibro().toLowerCase().contains(txtBuscar.toLowerCase()))
+                        .filter(i -> i.getNombre_Usuario_Prestamo_libro().toLowerCase().contains(txtBuscar.toLowerCase()))
                         .collect(Collectors.toList());
                 listaLibros.clear();
                 listaLibros.addAll(collecion);
@@ -83,7 +84,7 @@ public class AdapterUsuarioLibroItems extends RecyclerView.Adapter<AdapterUsuari
             }
         }
         notifyDataSetChanged();
-    }
+    }*/
 
     @Override
     public int getItemCount() {
@@ -112,7 +113,7 @@ public class AdapterUsuarioLibroItems extends RecyclerView.Adapter<AdapterUsuari
                     public void onClick(View view) {
                         Context context = view.getContext();
                         Intent intent = new Intent(context, VerMiLibro.class);
-                    intent.putExtra("ID", listaLibros.get(getAdapterPosition()).getId());
+                    intent.putExtra("ID", listaLibros.get(getAdapterPosition()).get_id());
                     context.startActivity(intent);
                 }
             });
