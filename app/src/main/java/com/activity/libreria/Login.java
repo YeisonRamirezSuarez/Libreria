@@ -96,7 +96,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 if (correoLogin.equals("") && contraseñaLogin.equals("")) {
                     Toast.makeText(getApplicationContext(), "ERROR: Campos vacios", Toast.LENGTH_LONG).show();
                 } else {
-                    validarUsuario("http://"+IP_PUBLICA+":"+PUERTO+"/php/validar_usuario.php");
+                    validarUsuario("https://"+IP_PUBLICA+"/validar_usuario.php");
                     sPreferences.setSharedPreference(correoLogin);
                 }
             }

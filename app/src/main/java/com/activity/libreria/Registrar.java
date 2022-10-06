@@ -137,7 +137,7 @@ public class Registrar extends AppCompatActivity implements View.OnClickListener
         final String direccion=usuario.getDireccionUsuario();
         final String contrasena=usuario.getContraseñaUsuario();
 
-        String url="http://"+IP_PUBLICA+":"+PUERTO+"/php/registro_usuario.php?Nombre_Usuario="+nombre+"&CorreoElectronico_Usuario="+correo+"&Telefono_Usuario="+telefono+"&Direccion_Usuario="+direccion+"&Contrasena_Usuario="+contrasena+"";
+        String url="http://"+IP_PUBLICA+"/registro_usuario.php?Nombre_Usuario="+nombre+"&CorreoElectronico_Usuario="+correo+"&Telefono_Usuario="+telefono+"&Direccion_Usuario="+direccion+"&Contrasena_Usuario="+contrasena+"";
         RequestQueue servicio= Volley.newRequestQueue(this);
         StringRequest respuesta=new StringRequest(
                 Request.Method.POST, url, new Response.Listener<String>() {

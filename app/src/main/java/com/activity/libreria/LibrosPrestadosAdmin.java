@@ -83,8 +83,8 @@ public class LibrosPrestadosAdmin extends AppCompatActivity implements SearchVie
         listaUsuario = new ListaUsuario();
         listaLibros = new ListaLibros();
         listaLibrosPrestados = new ListaLibrosPrestados();
-        conexion.buscarUsuarios("http://"+IP_PUBLICA+":"+PUERTO+"/php/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
-        conexion.consultaLibrosPrestados("http://"+IP_PUBLICA+":"+PUERTO+"/php/libros_prestados_disponibles_por_id.php", this, this);
+        conexion.buscarUsuarios("http://"+IP_PUBLICA+"/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
+        conexion.consultaLibrosPrestados("http://"+IP_PUBLICA+"/libros_prestados_disponibles_por_id.php", this, this);
     }
 
     @Override
