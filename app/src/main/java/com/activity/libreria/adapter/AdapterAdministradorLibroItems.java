@@ -1,20 +1,22 @@
 package com.activity.libreria.adapter;
 
+import static com.activity.libreria.modelos.Constantes.*;
+
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.activity.libreria.ActualizarLibros;
+import com.activity.libreria.MVP.Interfaces.CallbackLibro;
 import com.activity.libreria.R;
-import com.activity.libreria.modelos.Libros;
 import com.activity.libreria.modelos.LibrosRsp;
+import com.activity.libreria.modelos.UsuarioRsp;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -26,13 +28,18 @@ public class AdapterAdministradorLibroItems extends RecyclerView.Adapter<Adapter
     private Context context;
     private ArrayList<LibrosRsp> listaLibros;
     private ArrayList<LibrosRsp> listaOriginal;
+    CallbackLibro callbackLibro;
+    String screen;
 
 
-    public AdapterAdministradorLibroItems(Context context, ArrayList<LibrosRsp> listaLibros) {
+    public AdapterAdministradorLibroItems(Context context, ArrayList<LibrosRsp> listaLibros, CallbackLibro callbackLibro, String screen) {
         this.context = context;
         this.listaLibros = listaLibros;
+        this.callbackLibro = callbackLibro;
         listaOriginal = new ArrayList<>();
         listaOriginal.addAll(listaLibros);
+        this.screen = screen;
+
     }
 
     //Aqui agregamos la vista
@@ -47,7 +54,7 @@ public class AdapterAdministradorLibroItems extends RecyclerView.Adapter<Adapter
     //Aqui diferenciamos entre el que guardamos y lo que traeremos en la Vista de mi fila
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-
+        LibrosRsp librosRsp = listaLibros.get(position);
         Glide.with(context)
                 .load(listaLibros.get(position).getImagen_libro())
                 .error(R.drawable.error)
@@ -55,6 +62,7 @@ public class AdapterAdministradorLibroItems extends RecyclerView.Adapter<Adapter
 
         holder.nombre_libro_txt.setText(String.valueOf(listaLibros.get(position).getTitulo_libro()));
         holder.autor_libro_txt.setText(String.valueOf(listaLibros.get(position).getAutor_libro()));
+        holder.mainLayoutMenu.setOnClickListener(v -> callbackLibro.clickListener(librosRsp, screen));
         //Cargamos la imagen
 
     }
@@ -93,16 +101,16 @@ public class AdapterAdministradorLibroItems extends RecyclerView.Adapter<Adapter
         TextView nombre_libro_txt;
         TextView autor_libro_txt;
         ImageView imageView_txt;
-
+        LinearLayout mainLayoutMenu;
 
         public MyViewHolder(@NonNull View itemView) {
             super(itemView);
             nombre_libro_txt = itemView.findViewById(R.id.nombre_libro_txt);
             autor_libro_txt = itemView.findViewById(R.id.autor_libro_txt);
             imageView_txt = itemView.findViewById(R.id.imageView_txt);
+            mainLayoutMenu = itemView.findViewById(R.id.mainLayoutLibrosDisponibles);
 
-
-            itemView.setOnClickListener(new View.OnClickListener() {
+           /* itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Context context = view.getContext();
@@ -110,7 +118,7 @@ public class AdapterAdministradorLibroItems extends RecyclerView.Adapter<Adapter
                     intent.putExtra("ID", listaLibros.get(getAdapterPosition()).get_id());
                     context.startActivity(intent);
                 }
-            });
+            });*/
 
 
         }

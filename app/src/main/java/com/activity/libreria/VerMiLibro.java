@@ -84,7 +84,7 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
     private void findElement() {
         metodosUsuario = new MetodosUsuario(this);
         metodosLibros = new MetodosLibros(this);
-        nombre_usuario_txt = findViewById(R.id.nombre_usuario_txt);
+       // nombre_usuario_txt = findViewById(R.id.nombre_usuario_txt);
         rol = findViewById(R.id.rol);
         nombreLibro_ver = findViewById(R.id.nombreLibro_ver);
         autorLibro_ver = findViewById(R.id.autorLibro_ver);

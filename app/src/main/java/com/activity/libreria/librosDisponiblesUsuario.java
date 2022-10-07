@@ -84,7 +84,7 @@ public class librosDisponiblesUsuario extends AppCompatActivity implements Searc
         txtBuscar.setOnQueryTextListener(this);
         txtBuscar.setVisibility(View.VISIBLE);
         txtBuscar.setQueryHint(Html.fromHtml("<font color = #ffffff>" + getResources().getString(R.string.seach_hint) + "</font>"));
-        nombre_usuario_txt = findViewById(R.id.nombre_usuario_txt);
+       // nombre_usuario_txt = findViewById(R.id.nombre_usuario_txt);
         rol = findViewById(R.id.rol);
         reciclarVista = findViewById(R.id.reciclarVista);
         mas_funciones_usuario = findViewById(R.id.funcionesUser);

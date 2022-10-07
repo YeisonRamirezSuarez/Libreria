@@ -82,7 +82,7 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
         listaLibrosPrestados = new ListaLibrosPrestados();
         sharedPreferences = new SPreferences(this);
         nombreLibro_ver = findViewById(R.id.nombreLibro_ver);
-        nombre_usuario_txt = findViewById(R.id.nombre_usuario_txt);
+       // nombre_usuario_txt = findViewById(R.id.nombre_usuario_txt);
         rol = findViewById(R.id.rol);
         autorLibro_ver = findViewById(R.id.autorLibro_ver);
         descripcionLibro_ver = findViewById(R.id.descripcionLibro_ver);

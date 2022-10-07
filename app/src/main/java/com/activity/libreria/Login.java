@@ -12,9 +12,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.window.SplashScreen;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.activity.libreria.MVP.Interfaces.interfaces;
+import com.activity.libreria.MVP.Presenter.Presenter;
 import com.activity.libreria.bd.BDHelper;
 
 import com.activity.libreria.metodos.MetodosAdministrador;
@@ -23,6 +26,7 @@ import com.activity.libreria.metodos.SPreferences;
 import com.activity.libreria.modelos.Administrador;
 import com.activity.libreria.modelos.Usuario;
 
+import com.activity.libreria.modelos.UsuarioRsp;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -48,7 +52,9 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     SPreferences sPreferences;
     Administrador administrador;
     BDHelper bdHelper;
+    interfaces.Presenter presenter;
 
+    UsuarioRsp usuarioRsp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +66,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     private void findElement() {
         bdHelper = new BDHelper(this);
         usuario = new Usuario();
+        usuarioRsp = new UsuarioRsp();
         metodosUsuario = new MetodosUsuario(this);
         administrador = new Administrador();
         metodosAdministrador = new MetodosAdministrador(this);
@@ -70,7 +77,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
         btnEntrar.setOnClickListener(this);
         textRegistrar = findViewById(R.id.textRegistrar);
         textRegistrar.setOnClickListener(this);
-
+        //presenter = new Presenter(this, this);
+       // splashscreen = new splashscreen(this, this);
 
     }
     @Override
@@ -92,12 +100,16 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 String contraseñaLogin;
                 correoLogin = correoUsuario.getText().toString().trim();
                 contraseñaLogin = contraseñaUsuario.getText().toString().trim();
+                usuarioRsp.setCorreo_Electronico(correoLogin);
+                usuarioRsp.setContrasena_Usuario(contraseñaLogin);
 
                 if (correoLogin.equals("") && contraseñaLogin.equals("")) {
                     Toast.makeText(getApplicationContext(), "ERROR: Campos vacios", Toast.LENGTH_LONG).show();
                 } else {
-                    validarUsuario("https://"+IP_PUBLICA+"/validar_usuario.php");
                     sPreferences.setSharedPreference(correoLogin);
+                    presenter.consultarDatosLogin(usuarioRsp);
+                    //validarUsuario("https://"+IP_PUBLICA+"/validar_usuario.php");
+
                 }
             }
             break;
@@ -116,10 +128,12 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                     public void onResponse(String response) {
                         if (!response.equals("Fail")) {
                             if (response.equals("usuario")) {
-                                Intent intent = new Intent(getApplicationContext(), actividadUsuario.class);
+                                Intent intent = new Intent(getApplicationContext(), splashscreen.class);
+                                intent.putExtra("ACCION", response);
                                 startActivity(intent);
                             } else if (response.equals("administrador")) {
-                                Intent intent = new Intent(getApplicationContext(), actividadAdministrador.class);
+                                Intent intent = new Intent(getApplicationContext(), splashscreen.class);
+                                intent.putExtra("ACCION", response);
                                 startActivity(intent);
                             }
                         } else {
@@ -154,4 +168,25 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
     }
 
 
+//    @Override
+//    public void llevarDatosLogin(String respuesta) {
+//        if (!respuesta.equals("Fail")) {
+//            if (respuesta.equals("usuario")) {
+//                Intent intent = new Intent(getApplicationContext(), splashscreen.class);
+//                intent.putExtra("ACCION", respuesta);
+//                startActivity(intent);
+//            } else if (respuesta.equals("administrador")) {
+//                Intent intent = new Intent(getApplicationContext(), splashscreen.class);
+//                intent.putExtra("ACCION", respuesta);
+//                startActivity(intent);
+//            }
+//        } else {
+//            Toast.makeText(getApplicationContext(), "Usuario o contraseña incorrectos", Toast.LENGTH_SHORT).show();
+//        }
+//    }
+
+//    @Override
+//    public void libros(Object object) {
+//
+//    }
 }

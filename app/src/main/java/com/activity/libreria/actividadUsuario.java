@@ -79,7 +79,7 @@ public class actividadUsuario extends AppCompatActivity implements View.OnClickL
         txtBuscar.setOnQueryTextListener(actividadUsuario.this);
         txtBuscar.setQueryHint(Html.fromHtml("<font color = #ffffff>" + getResources().getString(R.string.seach_hint) + "</font>"));
         txtBuscar.setVisibility(View.VISIBLE);
-        nombre_usuario_txt = findViewById(R.id.nombre_usuario_txt);
+        //nombre_usuario_txt = findViewById(R.id.nombre_usuario_txt);
         rol = findViewById(R.id.rol);
         reciclarVistaUsuario = findViewById(R.id.reciclarVistaUsuario);
         mas_informacion = findViewById(R.id.funcionesUser);

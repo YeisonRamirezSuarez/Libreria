@@ -1,9 +1,6 @@
 package com.activity.libreria;
 
 
-import static com.activity.libreria.bd.NetwordHelper.IP_PUBLICA;
-import static com.activity.libreria.bd.NetwordHelper.PUERTO;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -11,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
 import android.content.Intent;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.MenuItem;
@@ -26,19 +22,18 @@ import android.widget.Toast;
 
 
 import com.activity.libreria.Interfaces.Callback;
+import com.activity.libreria.MVP.Interfaces.CallbackLibro;
+import com.activity.libreria.MVP.Interfaces.interfaces;
 import com.activity.libreria.adapter.AdapterAdministradorLibroItems;
 import com.activity.libreria.bd.Conexion;
 import com.activity.libreria.metodos.MetodosAdministrador;
 import com.activity.libreria.metodos.MetodosLibros;
 import com.activity.libreria.metodos.SPreferences;
 import com.activity.libreria.modelos.Administrador;
-import com.activity.libreria.modelos.Libros;
 import com.activity.libreria.modelos.ListaLibros;
 import com.activity.libreria.modelos.ListaUsuario;
 
-import java.util.ArrayList;
-
-public class actividadAdministrador extends AppCompatActivity implements View.OnClickListener,MenuItem.OnMenuItemClickListener, PopupMenu.OnMenuItemClickListener, SearchView.OnQueryTextListener , Callback {
+public class actividadAdministrador extends AppCompatActivity implements View.OnClickListener,MenuItem.OnMenuItemClickListener, PopupMenu.OnMenuItemClickListener, SearchView.OnQueryTextListener , CallbackLibro, Callback {
 
     //Los llamamos aqui asi:
     SearchView txtBuscar;
@@ -54,7 +49,7 @@ public class actividadAdministrador extends AppCompatActivity implements View.On
     SPreferences sPreferences;
     ListaUsuario listaUsuario;
     ListaLibros listaLibros;
-
+    interfaces.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +76,9 @@ public class actividadAdministrador extends AppCompatActivity implements View.On
         listaLibros = new ListaLibros();
         conexion = new Conexion();
         sPreferences = new SPreferences(this);
-        conexion.consultaLibros("https://"+IP_PUBLICA+"/libros_disponibles.php", this, this);
-        conexion.buscarUsuarios("https://"+IP_PUBLICA+"/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
+
+       // conexion.consultaLibros("https://"+IP_PUBLICA+"/libros_disponibles.php", this, this);
+        //conexion.buscarUsuarios("https://"+IP_PUBLICA+"/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
 
     }
 
@@ -101,7 +97,7 @@ public class actividadAdministrador extends AppCompatActivity implements View.On
     private void traerRecyclerView(Object object) {
         //Aqui es donde nos muestra los libros 1 por 1
         listaLibros = (ListaLibros) object;
-        adapterAdministradorLibroItems = new AdapterAdministradorLibroItems(actividadAdministrador.this, listaLibros.getLibros());
+        adapterAdministradorLibroItems = new AdapterAdministradorLibroItems(actividadAdministrador.this, listaLibros.getLibros(), actividadAdministrador.this::clickListener, "");
         reciclarVista.setAdapter(adapterAdministradorLibroItems);
         reciclarVista.setLayoutManager(new GridLayoutManager(actividadAdministrador.this, 2));
     }
@@ -208,6 +204,22 @@ public class actividadAdministrador extends AppCompatActivity implements View.On
     public void onBackPressed() {
 
     }
+
+    @Override
+    public void clickListener(Object object, String screen) {
+
+    }
+
+
+//    @Override
+//    public void llevarDatosLogin(String respuesta) {
+//
+//    }
+
+//    @Override
+//    public void libros(Object object) {
+//        traerRecyclerView(object);
+//    }
     //para buscador
 
 
