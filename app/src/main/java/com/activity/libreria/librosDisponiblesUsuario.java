@@ -96,8 +96,8 @@ public class librosDisponiblesUsuario extends AppCompatActivity implements Searc
         volver.setVisibility(View.VISIBLE);
         volver.setOnClickListener(this);
         conexion = new Conexion();
-        conexion.consultaLibros("http://"+IP_PUBLICA+"/libros_disponibles.php", this, this);
-        conexion.buscarUsuarios("http://"+IP_PUBLICA+"/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
+        conexion.consultaLibros("https://"+IP_PUBLICA+"/libros_disponibles.php", this, this);
+        conexion.buscarUsuarios("https://"+IP_PUBLICA+"/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
     }
 
     @Override

@@ -90,7 +90,7 @@ public class AgregarLibros extends AppCompatActivity implements View.OnClickList
         conexion = new Conexion();
         listaUsuario = new ListaUsuario();
         sPreferences = new SPreferences(this);
-        conexion.buscarUsuarios("http://"+IP_PUBLICA+"/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
+        conexion.buscarUsuarios("https://"+IP_PUBLICA+"/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
 
     }
 
@@ -151,7 +151,7 @@ public class AgregarLibros extends AppCompatActivity implements View.OnClickList
         final String imagen=libros.getUrlImagen();
         final String descripcion=libros.getDescripcion();
 
-        String url="http://"+IP_PUBLICA+"/registro_libro.php?Titulo_libro="+nombre+"&Autor_libro="+autor+"&Cantidad_libro="+cantidad+"&Url_libro="+urlLibro+"&Imagen_libro="+imagen+"&Descripcion_libro="+descripcion+"";
+        String url="https://"+IP_PUBLICA+"/registro_libro.php?Titulo_libro="+nombre+"&Autor_libro="+autor+"&Cantidad_libro="+cantidad+"&Url_libro="+urlLibro+"&Imagen_libro="+imagen+"&Descripcion_libro="+descripcion+"";
         RequestQueue servicio= Volley.newRequestQueue(this);
         StringRequest respuesta=new StringRequest(
                 Request.Method.POST, url, new Response.Listener<String>() {

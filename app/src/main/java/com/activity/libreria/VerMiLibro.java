@@ -103,8 +103,8 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
         titulo.setText("MiLibro");
         sharedPreferences = new SPreferences(this);
         conexion = new Conexion();
-        conexion.consultaLibros("http://"+IP_PUBLICA+"/consulta_libro_id.php?id="+id_libro+"", this, this);
-        conexion.buscarUsuarios("http://"+IP_PUBLICA+"/consulta_usuario.php?correo="+sharedPreferences.getSharedPreference()+"", this, this);
+        conexion.consultaLibros("https://"+IP_PUBLICA+"/consulta_libro_id.php?id="+id_libro+"", this, this);
+        conexion.buscarUsuarios("https://"+IP_PUBLICA+"/consulta_usuario.php?correo="+sharedPreferences.getSharedPreference()+"", this, this);
     }
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -187,7 +187,7 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
                 //int suma = sumarLibro(libros.getCantidadLibro());
                 //libros.setCantidadLibro(String.valueOf(suma));
                 //metodosLibros.actualizarCantidadLibro(libros);
-                eliminarLibroPrestado("http://"+IP_PUBLICA+"/eliminar_libro_prestado.php?id="+id+"");
+                eliminarLibroPrestado("https://"+IP_PUBLICA+"/eliminar_libro_prestado.php?id="+id+"");
 
         }
 
@@ -218,7 +218,7 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
         final int id=listaLibros.getLibros().get(0).get_id();
         final String cantidad= String.valueOf(Integer.parseInt(listaLibros.getLibros().get(0).getCantidad_libro()) + 1);
 
-        String url="http://"+IP_PUBLICA+"/actualizar_cantidad_libro.php?id="+id+"&Cantidad_libro="+cantidad+"";
+        String url="https://"+IP_PUBLICA+"/actualizar_cantidad_libro.php?id="+id+"&Cantidad_libro="+cantidad+"";
         RequestQueue servicio= Volley.newRequestQueue(this);
         StringRequest respuesta=new StringRequest(
                 Request.Method.POST, url, new Response.Listener<String>() {

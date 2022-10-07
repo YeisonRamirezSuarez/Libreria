@@ -131,7 +131,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(getApplicationContext(), error.toString(), Toast.LENGTH_LONG).show();
-
+                        System.out.printf(error.toString());
                     }
                 }) {
 

@@ -77,7 +77,6 @@
                     android:hint="Correo Electronico"
                     android:inputType="textEmailAddress"
                     android:paddingStart="20dp"
-                    android:text="admin@wposs.com"
                     android:textColor="#FFFFFF"
                     android:textColorHint="#787676" />
 
@@ -102,7 +101,6 @@
                     android:layout_height="60dp"
                     android:background="@drawable/customs_editex"
                     android:hint="Contraseña"
-                    android:text="admin1234"
                     android:inputType="textPassword"
                     android:paddingStart="20dp"
                     android:textColor="#FFFFFF" />

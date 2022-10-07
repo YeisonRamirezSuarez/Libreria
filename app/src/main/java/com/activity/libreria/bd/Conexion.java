@@ -8,6 +8,7 @@ import com.activity.libreria.Interfaces.Logica;
 import com.activity.libreria.modelos.ListaLibros;
 import com.activity.libreria.modelos.ListaLibrosPrestados;
 import com.activity.libreria.modelos.ListaUsuario;
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -18,6 +19,9 @@ import com.google.gson.Gson;
 
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Conexion implements Logica{
 
     ListaLibros listaLibros;
@@ -26,7 +30,7 @@ public class Conexion implements Logica{
 
     @Override
     public void consultaLibros(String URL, Context context, Callback callback) {
-        RequestQueue requestQueue = Volley.newRequestQueue(context);
+
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET,URL,null,
                 new Response.Listener<JSONObject>() {
                     @Override
@@ -43,7 +47,17 @@ public class Conexion implements Logica{
                         Toast.makeText(context.getApplicationContext(), error.toString(), Toast.LENGTH_SHORT).show();
                     }
                 }) ;
+        //{
+//            protected Map<String, String> getParams() throws AuthFailureError {
+//                Map<String, String> params = new HashMap<String, String>();
+//               params.put("id","1");
+//               params.put("name", "myname");
+//               return params;
+//            }
+//        };
+        RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(jsObjRequest);
+
     }
 
     @Override
