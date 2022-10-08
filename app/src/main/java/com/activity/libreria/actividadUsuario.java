@@ -111,7 +111,7 @@ public class actividadUsuario extends AppCompatActivity implements View.OnClickL
     private void traerRecyclerView(Object object) {
         //Aqui es donde nos muestra los libros 1 por 1 Disponibles
         listaLibrosPrestados = (ListaLibrosPrestados) object;
-        adapterUsuarioLibroItems = new AdapterUsuarioLibroItems(actividadUsuario.this, listaLibrosPrestados.getLibros());
+        //adapterUsuarioLibroItems = new AdapterUsuarioLibroItems(actividadUsuario.this, listaLibrosPrestados.getLibros());
         reciclarVistaUsuario.setAdapter(adapterUsuarioLibroItems);
         reciclarVistaUsuario.setLayoutManager(new LinearLayoutManager(this));
     }

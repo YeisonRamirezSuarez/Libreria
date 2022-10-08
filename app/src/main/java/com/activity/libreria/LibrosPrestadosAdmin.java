@@ -109,7 +109,7 @@ public class LibrosPrestadosAdmin extends AppCompatActivity implements SearchVie
     private void traerRecyclerView(Object object) {
         //Aqui es donde nos muestra los libros 1 por 1 Disponibles
         listaLibrosPrestados = (ListaLibrosPrestados) object;
-        adapterAdministradorLibroPrestadoItems = new AdapterAdministradorLibroPrestadoItems(LibrosPrestadosAdmin.this, listaLibrosPrestados.getLibros());
+       // adapterAdministradorLibroPrestadoItems = new AdapterAdministradorLibroPrestadoItems(LibrosPrestadosAdmin.this, listaLibrosPrestados.getLibros());
         reciclarVista.setAdapter(adapterAdministradorLibroPrestadoItems);
         reciclarVista.setLayoutManager(new GridLayoutManager(LibrosPrestadosAdmin.this, 2));
     }

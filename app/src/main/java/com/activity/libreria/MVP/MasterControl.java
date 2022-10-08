@@ -1,8 +1,10 @@
 package com.activity.libreria.MVP;
 
+import static com.activity.libreria.bd.NetwordHelper.IP_PUBLICA;
 import static com.activity.libreria.modelos.Constantes.*;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
@@ -18,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.activity.libreria.LibrosPrestadosAdmin;
@@ -26,22 +29,40 @@ import com.activity.libreria.MVP.Interfaces.interfaces;
 import com.activity.libreria.MVP.Presenter.Presenter;
 import com.activity.libreria.R;
 import com.activity.libreria.actividadAdministrador;
+import com.activity.libreria.actividadUsuario;
+import com.activity.libreria.adapter.AdapterAdministradorHistorialLibroPrestadoItems;
 import com.activity.libreria.adapter.AdapterAdministradorLibroItems;
+import com.activity.libreria.adapter.AdapterAdministradorLibroPrestadoItems;
+import com.activity.libreria.adapter.AdapterUsuarioDisponiblesLibroItems;
+import com.activity.libreria.adapter.AdapterUsuarioLibroItems;
 import com.activity.libreria.bd.Conexion;
+import com.activity.libreria.metodos.MetodosAdministrador;
+import com.activity.libreria.metodos.MetodosLibros;
+import com.activity.libreria.metodos.MetodosUsuario;
 import com.activity.libreria.metodos.SPreferences;
+import com.activity.libreria.modelos.Libros;
+import com.activity.libreria.modelos.LibrosPrestadosRsp;
 import com.activity.libreria.modelos.LibrosRsp;
 import com.activity.libreria.modelos.ListaLibros;
 import com.activity.libreria.modelos.ListaLibrosPrestados;
 import com.activity.libreria.modelos.ListaUsuario;
+import com.activity.libreria.modelos.Usuario;
 import com.activity.libreria.modelos.UsuarioRsp;
+import com.bumptech.glide.Glide;
 
 public class MasterControl extends AppCompatActivity implements interfaces.View , PopupMenu.OnMenuItemClickListener, CallbackLibro, SearchView.OnQueryTextListener {
 
     interfaces.Presenter presenter;
     ListaUsuario listaUsuario;
     ListaLibros listaLibros;
+    ListaLibrosPrestados listaLibrosPrestados;
+    LibrosPrestadosRsp librosPrestadosRsp;
     LibrosRsp librosRsp;
     AdapterAdministradorLibroItems adapterAdministradorLibroItems;
+    AdapterAdministradorLibroPrestadoItems adapterAdministradorLibroPrestadoItems;
+    AdapterAdministradorHistorialLibroPrestadoItems adapterAdministradorHistorialLibroPrestadoItems;
+    AdapterUsuarioDisponiblesLibroItems adapterUsuarioDisponiblesLibroItems;
+    AdapterUsuarioLibroItems adapterUsuarioLibroItems;
     String SCREEN = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +71,7 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
         showScreen(SCREEN_LOGIN, "", "");
         listaUsuario = new ListaUsuario();
         librosRsp = new LibrosRsp();
+        librosPrestadosRsp = new LibrosPrestadosRsp();
 
 
 
@@ -100,7 +122,7 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
     }
 
     @Override
-    public void verUsuario() {
+    public void verUsuario(Object object) {
         setContentView(R.layout.actividad_usuario);
         SearchView txtBuscar = findViewById(R.id.txtBuscar);
         RecyclerView reciclarVista =  findViewById(R.id.reciclarVistaUsuario);
@@ -112,11 +134,6 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
         nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
         ImageView mas_informacion = findViewById(R.id.funcionesUser);
         Button btnPrestar = findViewById(R.id.btnPrestar);
-        Conexion conexion;
-        SPreferences sPreferences;
-        ListaUsuario listaUsuario;
-        ListaLibros listaLibros;
-        ListaLibrosPrestados listaLibrosPrestados;
         txtBuscar = findViewById(R.id.txtBuscar);
         txtBuscar.setOnQueryTextListener(this);
         txtBuscar.setQueryHint(Html.fromHtml("<font color = #ffffff>" + getResources().getString(R.string.seach_hint) + "</font>"));
@@ -128,12 +145,16 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
                 showPopup(view, SCREEN_USUARIO);
             }
         });
-
-
-        conexion = new Conexion();
-        listaUsuario = new ListaUsuario();
-        listaLibrosPrestados = new ListaLibrosPrestados();
-
+        listaLibrosPrestados = (ListaLibrosPrestados) object;
+        adapterUsuarioLibroItems = new AdapterUsuarioLibroItems(this, listaLibrosPrestados.getLibros(), MasterControl.this::clickListener, SCREEN_VER_LIBRO);
+        reciclarVista.setAdapter(adapterUsuarioLibroItems);
+        reciclarVista.setLayoutManager(new LinearLayoutManager(this));
+        btnPrestar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.pedirLibros(SCREEN_LIBROS_DISPONIBLES);
+            }
+        });
 
     }
 
@@ -303,6 +324,213 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
     }
 
     @Override
+    public void verLibrosPrestadosAdmin(Object object) {
+        setContentView(R.layout.admin_libros_prestados);
+        TextView nombre_administrador_txt = findViewById(R.id.nombre_administrador_txt);
+        TextView rol = findViewById(R.id.rol);
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        SearchView txtBuscar = findViewById(R.id.txtBuscar);
+        txtBuscar.setOnQueryTextListener(this);
+        txtBuscar.setVisibility(View.VISIBLE);
+        txtBuscar.setQueryHint(Html.fromHtml("<font color = #ffffff>" + getResources().getString(R.string.seach_hint) + "</font>"));
+        RecyclerView reciclarVista = findViewById(R.id.reciclarVista);
+        ImageView mas_funciones_usuario = findViewById(R.id.funcionesUser);
+        mas_funciones_usuario.setVisibility(View.GONE);
+        ImageView volver = findViewById(R.id.volverLibros);
+        volver.setVisibility(View.VISIBLE);
+        volver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showScreen(SCREEN_PANTALLA_CARGA, SCREEN_LIBROS_DISPONIBLES, SCREEN_ADMINISTRADOR);
+            }
+        });
+        TextView titulo = findViewById(R.id.tituloBanner);
+        titulo.setText("Libros Prestados");
+        listaLibrosPrestados = (ListaLibrosPrestados) object;
+        adapterAdministradorLibroPrestadoItems = new AdapterAdministradorLibroPrestadoItems(this, listaLibrosPrestados.getLibros(), MasterControl.this::clickListener, SCREEN_LIBROS_PRESTADOS_ADMIN);
+        reciclarVista.setAdapter(adapterAdministradorLibroPrestadoItems);
+        reciclarVista.setLayoutManager(new GridLayoutManager(this, 2));
+    }
+
+    @Override
+    public void verHistorialLibrosPrestados(Object object, Object object2) {
+        setContentView(R.layout.admin_historial_libros);
+        ImageView imageView_txt = findViewById(R.id.imageView_txt);
+        TextView nombre_administrador_txt = findViewById(R.id.nombre_administrador_txt);
+        TextView rol = findViewById(R.id.rol);
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        TextView nombreLibroHistorial_ver = findViewById(R.id.nombreLibroHistorial_ver);
+        RecyclerView reciclarVistaHistorial = findViewById(R.id.reciclarVistaHistorial);
+        TextView autorLibroHistorial_ver = findViewById(R.id.autorLibroHistorial_ver);
+        TextView descripcionLibroHistorial_ver = findViewById(R.id.descripcionLibroHistorial_ver);
+        ImageView volverLibros = findViewById(R.id.volverLibros);
+        volverLibros.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showScreen(SCREEN_PANTALLA_CARGA, SCREEN_LIBROS_PRESTADOS_ADMIN, SCREEN_LIBROS_PRESTADOS_ADMIN);
+            }
+        });
+        volverLibros.setVisibility(View.VISIBLE);
+        TextView titulo = findViewById(R.id.tituloBanner);
+        titulo.setText("MiLibro");
+        ImageView funciones = findViewById(R.id.funcionesUser);
+        funciones.setVisibility(View.GONE);
+        librosPrestadosRsp = (LibrosPrestadosRsp) object;
+        if (librosPrestadosRsp != null) {
+            nombreLibroHistorial_ver.setText(librosPrestadosRsp.getTitulo_libro_Prestado());
+            autorLibroHistorial_ver.setText(librosPrestadosRsp.getAutor_libro_Prestado());
+            descripcionLibroHistorial_ver.setText(librosPrestadosRsp.getDescripcion_libro_Prestado());
+            Glide.with(this)
+                    .load(librosPrestadosRsp.getImagen_libro_Prestado())
+                    .error(R.drawable.error)
+                    .into(imageView_txt);
+        }
+
+        listaLibrosPrestados= (ListaLibrosPrestados) object2;
+        adapterAdministradorHistorialLibroPrestadoItems = new AdapterAdministradorHistorialLibroPrestadoItems(this, listaLibrosPrestados.getLibros());
+        reciclarVistaHistorial.setAdapter(adapterAdministradorHistorialLibroPrestadoItems);
+        reciclarVistaHistorial.setLayoutManager(new LinearLayoutManager(this));
+
+    }
+
+    @Override
+    public void verLibrosDisponiblesUsuario(Object object) {
+        setContentView(R.layout.libros_disponibles_usuario);
+        SearchView txtBuscar = findViewById(R.id.txtBuscar);
+        txtBuscar.setOnQueryTextListener(this);
+        txtBuscar.setVisibility(View.VISIBLE);
+        txtBuscar.setQueryHint(Html.fromHtml("<font color = #ffffff>" + getResources().getString(R.string.seach_hint) + "</font>"));
+        TextView nombre_administrador_txt = findViewById(R.id.nombre_administrador_txt);
+        TextView rol = findViewById(R.id.rol);
+        RecyclerView reciclarVista = findViewById(R.id.reciclarVista);
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        ImageView mas_funciones_usuario = findViewById(R.id.funcionesUser);
+        mas_funciones_usuario.setVisibility(View.GONE);
+        Button btnPrestar = findViewById(R.id.btnPrestar);
+        TextView titulo = findViewById(R.id.tituloBannerUser);
+        titulo.setText("Libros Disponibles");
+        ImageView volver = findViewById(R.id.volverLibros);
+        volver.setVisibility(View.VISIBLE);
+        volver.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showScreen(SCREEN_PANTALLA_CARGA, SCREEN_LIBROS_PRESTADOS, SCREEN_USUARIO);
+            }
+        });
+        ListaLibros lista = (ListaLibros) object;
+        adapterUsuarioDisponiblesLibroItems = new AdapterUsuarioDisponiblesLibroItems(this, lista.getLibros(), MasterControl.this::clickListener, SCREEN_LIBROS_DISPONIBLES);
+        reciclarVista.setAdapter(adapterUsuarioDisponiblesLibroItems);
+        reciclarVista.setLayoutManager(new GridLayoutManager(this, 2));
+    }
+
+    @Override
+    public void verPrestarLibro(Object object) {
+        setContentView(R.layout.prestar_libro_usuario);
+        librosRsp = (LibrosRsp) object;
+        TextView nombreLibro_ver = findViewById(R.id.nombreLibro_ver);
+        TextView nombre_administrador_txt = findViewById(R.id.nombre_administrador_txt);
+        TextView rol = findViewById(R.id.rol);
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        TextView autorLibro_ver = findViewById(R.id.autorLibro_ver);
+        TextView descripcionLibro_ver = findViewById(R.id.descripcionLibro_ver);
+        TextView nombreUser = findViewById(R.id.nombre_usuario_historial_txt);
+        TextView telefonoUser = findViewById(R.id.telefono_historial_txt);
+        ImageView imageView_txt = findViewById(R.id.imageView_txt);
+        Button prestar_libro = findViewById(R.id.prestar_libro);
+        prestar_libro.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.consultarLibroPrestado(SCREEN_CONSULTA_PRESTAR);
+                //presenter.prestarLibro(listaUsuario, librosRsp, SCREEN_PRESTAR_LIBRO);
+            }
+        });
+        ImageView volverLibros = findViewById(R.id.volverLibros);
+        volverLibros.setVisibility(View.VISIBLE);
+        volverLibros.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.pedirLibros(SCREEN_LIBROS_DISPONIBLES);
+            }
+        });
+        ImageView funciones = findViewById(R.id.funcionesUser);
+        funciones.setVisibility(View.GONE);
+        TextView titulo = findViewById(R.id.tituloBannerUser);
+        titulo.setText("Prestar Libro");
+
+        if (librosRsp != null) {
+            nombreLibro_ver.setText(librosRsp.getTitulo_libro());
+            autorLibro_ver.setText(librosRsp.getAutor_libro());
+            descripcionLibro_ver.setText(librosRsp.getDescripcion_libro());
+            Glide.with(this)
+                    .load(librosRsp.getImagen_libro())
+                    .error(R.drawable.error)
+                    .into(imageView_txt);
+        }
+    }
+
+    @Override
+    public void verLeerLibro(Object object) {
+        setContentView(R.layout.vista_usuario_libro);
+        librosPrestadosRsp = (LibrosPrestadosRsp) object;
+        TextView nombre_administrador_txt = findViewById(R.id.nombre_administrador_txt);
+        TextView rol = findViewById(R.id.rol);
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        TextView nombreLibro_ver = findViewById(R.id.nombreLibro_ver);
+        TextView autorLibro_ver = findViewById(R.id.autorLibro_ver);
+        TextView descripcionLibro_ver = findViewById(R.id.descripcionLibro_ver);
+        ImageView imageView_txt = findViewById(R.id.imageView_txt);
+        ImageView volverLibros = findViewById(R.id.volverLibros);
+        volverLibros.setVisibility(View.VISIBLE);
+        volverLibros.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showScreen(SCREEN_PANTALLA_CARGA, SCREEN_LIBROS_PRESTADOS, SCREEN_USUARIO);
+            }
+        });
+        Button devolver_boton = findViewById(R.id.devolver_boton);
+        devolver_boton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                presenter.borrarLibroPrestado(librosPrestadosRsp, SCREEN_ELIMINAR_LIBRO_PRESTADO_USUARIO);
+            }
+        });
+        Button ver_libro_boton = findViewById(R.id.ver_libro_boton);
+        ver_libro_boton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Intent intent = new Intent();
+                    intent.setAction(Intent.ACTION_VIEW);
+                    String url = librosPrestadosRsp.getUrl_libro_Prestado();
+                    intent.setData(Uri.parse(url));
+                    startActivity(intent);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "URL NO EXISTENTE...", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+        ImageView funciones = findViewById(R.id.funcionesUser);
+        funciones.setVisibility(View.GONE);
+        TextView titulo = findViewById(R.id.tituloBannerUser);
+        titulo.setText("MiLibro");
+        if (listaLibrosPrestados != null) {
+            nombreLibro_ver.setText(librosPrestadosRsp.getTitulo_libro_Prestado());
+            autorLibro_ver.setText(librosPrestadosRsp.getAutor_libro_Prestado());
+            descripcionLibro_ver.setText(librosPrestadosRsp.getDescripcion_libro_Prestado());
+            Glide.with(this)
+                    .load(librosPrestadosRsp.getImagen_libro_Prestado())
+                    .error(R.drawable.error)
+                    .into(imageView_txt);
+        }
+    }
+
+    @Override
     public void mostrarUsuario(Object object) {
         // Aqui es como se muestra el nombre del Usuario que ingreso
         listaUsuario= (ListaUsuario) object;
@@ -313,6 +541,12 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
             case SCREEN_LIBROS_DISPONIBLES:
                 presenter.pedirLibros(typo);
                 break;
+            case SCREEN_LIBROS_PRESTADOS_ADMIN:
+                presenter.pedirLibrosPrestados(typo);
+                break;
+            case SCREEN_LIBROS_PRESTADOS:
+                presenter.pedirLibrosPrestadosUsuario(typo);
+                break;
         }
     }
 
@@ -322,7 +556,7 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
             case SCREEN_LOGIN:
                 if (!respuesta.equals("Fail")) {
                     if (respuesta.equals("usuario")) {
-                        showScreen(SCREEN_PANTALLA_CARGA, "", SCREEN_USUARIO);
+                        showScreen(SCREEN_PANTALLA_CARGA, SCREEN_LIBROS_PRESTADOS, SCREEN_USUARIO);
                     } else if (respuesta.equals("administrador")) {
                         showScreen(SCREEN_PANTALLA_CARGA, SCREEN_LIBROS_DISPONIBLES, SCREEN_ADMINISTRADOR);
                     }
@@ -344,19 +578,53 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
                             "Fallo la actualizacion correctamente",Toast.LENGTH_LONG).show();
                 }
                 break;
+            case SCREEN_PRESTAR_LIBRO:
+            case SCREEN_ELIMINAR_LIBRO_PRESTADO_USUARIO:
+                Toast.makeText(this, respuesta, Toast.LENGTH_SHORT).show();
+                showScreen(SCREEN_PANTALLA_CARGA, SCREEN_LIBROS_PRESTADOS, SCREEN_USUARIO);
+                break;
         }
 
     }
 
     @Override
-    public void libros(Object object, String screen) {
+    public void libros(Object object, Object object2, String screen) {
         switch (screen){
             case SCREEN_USUARIO:
-                verUsuario();
+                verUsuario(object);
                 break;
             case SCREEN_ADMINISTRADOR:
                 verAdministrador(object);
                 break;
+            case SCREEN_LIBROS_PRESTADOS_ADMIN:
+                verLibrosPrestadosAdmin(object);
+                break;
+            case SCREEN_LIBROS_PRESTADOS_HISTORIAL:
+                verHistorialLibrosPrestados(object, object2);
+                break;
+            case SCREEN_LIBROS_DISPONIBLES:
+                verLibrosDisponiblesUsuario(object);
+                break;
+            case SCREEN_CONSULTA_PRESTAR:
+                boolean siExiste = false;
+                listaLibrosPrestados = (ListaLibrosPrestados) object;
+                for (int j = 0; j < listaLibrosPrestados.getLibros().size(); j++)
+                {
+                    if (listaLibrosPrestados.getLibros().get(j).getCorreo_Prestamo_libro().equals(object2) && listaLibrosPrestados.getLibros().get(j).get_id_Libro() == librosRsp.get_id())
+                    {
+                        siExiste = true;
+                    }
+                }
+                if (siExiste)
+                {
+                    Toast.makeText(this, "Libro ya esta prestado", Toast.LENGTH_SHORT).show();
+                }
+                else
+                {
+                    presenter.prestarLibro(listaUsuario, librosRsp, SCREEN_PRESTAR_LIBRO);
+                }
+                break;
+
         }
     }
 
@@ -382,9 +650,11 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()){
             case R.id.prestadosLibros:
-                Toast.makeText(this, "Libros Prestados", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(this, LibrosPrestadosAdmin.class);
-                startActivity(intent);
+                showScreen(SCREEN_PANTALLA_CARGA, SCREEN_LIBROS_PRESTADOS_ADMIN, SCREEN_LIBROS_PRESTADOS_ADMIN);
+                //showScreen(SCREEN_LIBROS_PRESTADOS_ADMIN, "", "");
+                //Toast.makeText(this, "Libros Prestados", Toast.LENGTH_SHORT).show();
+                //Intent intent = new Intent(this, LibrosPrestadosAdmin.class);
+                //startActivity(intent);
                 return true;
             case R.id.agregarLibros:
                 showScreen(SCREEN_CREAR_LIBRO, "", "");
@@ -406,10 +676,21 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
     @Override
     public void clickListener(Object object, String screen) {
         //if (screen.equals(SCREEN_LIBROS_DISPONIBLES)){
-            LibrosRsp librosRsp = (LibrosRsp) object;
             switch (screen){
                 case SCREEN_ACTUALIZAR_LIBRO:
                     verActualizarLibro(object);
+                    break;
+                case SCREEN_LIBROS_PRESTADOS_ADMIN:
+                    presenter.pedirLibrosPrestadosId(object, SCREEN_LIBROS_PRESTADOS_HISTORIAL);
+                    //verHistorialLibrosPrestados(object, ob);
+                    break;
+                case SCREEN_LIBROS_DISPONIBLES:
+                    //presenter.pedirLibrosPrestadosId(object, SCREEN_LIBROS_PRESTADOS_HISTORIAL);
+                    verPrestarLibro(object);
+                    //verHistorialLibrosPrestados(object, ob);
+                    break;
+                case SCREEN_VER_LIBRO:
+                    verLeerLibro(object);
                     break;
             }
        // }

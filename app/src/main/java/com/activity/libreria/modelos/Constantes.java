@@ -13,5 +13,10 @@ public class Constantes {
     public static final String SCREEN_ACTUALIZAR_LIBRO_PRESTADO = "actualizar-libro-prestado";
     public static final String SCREEN_ELIMINAR_LIBRO = "actualizar-libro";
     public static final String SCREEN_ELIMINAR_LIBRO_PRESTADO = "actualizar-libro-prestado";
-
+    public static final String SCREEN_LIBROS_PRESTADOS_ADMIN = "libros_prestados-admin";
+    public static final String SCREEN_LIBROS_PRESTADOS_HISTORIAL = "libros_prestados-historial";
+    public static final String SCREEN_PRESTAR_LIBRO = "prestar_libro";
+    public static final String SCREEN_CONSULTA_PRESTAR = "consulta_prestar_libro";
+    public static final String SCREEN_VER_LIBRO = "ver_libro";
+    public static final String SCREEN_ELIMINAR_LIBRO_PRESTADO_USUARIO = "actualizar-libro-prestado-usuario";
 }

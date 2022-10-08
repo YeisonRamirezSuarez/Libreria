@@ -118,7 +118,7 @@ public class librosDisponiblesUsuario extends AppCompatActivity implements Searc
         ListaLibros lista = (ListaLibros) object;
         //ArrayList<LibrosRsp> lista = (ListaLibros) object.getClass().get;
         //ArrayList<Libros> listaLibros = metodosLibros.almacenarDatosEnArrays();
-        adapterUsuarioDisponiblesLibroItems = new AdapterUsuarioDisponiblesLibroItems(this, lista.getLibros());
+        //adapterUsuarioDisponiblesLibroItems = new AdapterUsuarioDisponiblesLibroItems(this, lista.getLibros());
         reciclarVista.setAdapter(adapterUsuarioDisponiblesLibroItems);
         reciclarVista.setLayoutManager(new GridLayoutManager(this, 2));
     }
