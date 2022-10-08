@@ -263,7 +263,7 @@ public class Model implements interfaces.Model{
                 Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                InputlibrosCantidad(listaLibros);
+                InputlibrosCantidadRestar(listaLibros);
                 presenter.respuesta(response, screen);
             }
         }, new Response.ErrorListener() {
@@ -276,9 +276,33 @@ public class Model implements interfaces.Model{
         servicio.add(respuesta);
     }
 
-    public boolean InputlibrosCantidad(ListaLibros listaLibros){
+    public boolean InputlibrosCantidadRestar(ListaLibros listaLibros){
         final int id=listaLibros.getLibros().get(0).get_id();
         final String cantidad= String.valueOf(Integer.parseInt(listaLibros.getLibros().get(0).getCantidad_libro()) - 1);
+
+        String url="https://"+IP_PUBLICA+"/actualizar_cantidad_libro.php?id="+id+"&Cantidad_libro="+cantidad+"";
+        RequestQueue servicio= Volley.newRequestQueue(context);
+        StringRequest respuesta=new StringRequest(
+                Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                System.out.println(response);
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context,
+                        "Error comunicación"+error,Toast.LENGTH_SHORT).show();
+            }
+        });
+        servicio.add(respuesta);
+        return true;
+    }
+
+    public boolean InputlibrosCantidadSumar(ListaLibros listaLibros){
+        final int id=listaLibros.getLibros().get(0).get_id();
+        final String cantidad= String.valueOf(Integer.parseInt(listaLibros.getLibros().get(0).getCantidad_libro()) + 1);
 
         String url="https://"+IP_PUBLICA+"/actualizar_cantidad_libro.php?id="+id+"&Cantidad_libro="+cantidad+"";
         RequestQueue servicio= Volley.newRequestQueue(context);
@@ -505,7 +529,7 @@ public class Model implements interfaces.Model{
                     public void onResponse(JSONObject response) {
                         Gson gson = new Gson();
                         listaLibros = gson.fromJson(String.valueOf(response), ListaLibros.class);
-                        InputlibrosCantidad(listaLibros);
+                        InputlibrosCantidadSumar(listaLibros);
                     }
                 },
                 new Response.ErrorListener() {
