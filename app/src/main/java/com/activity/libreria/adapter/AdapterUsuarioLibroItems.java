@@ -77,10 +77,10 @@ public class AdapterUsuarioLibroItems extends RecyclerView.Adapter<AdapterUsuari
             listaLibros.addAll(listaOriginal);
         } else {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                List<LibrosPrestadosRsp> collecion = listaLibros.stream()
+                listaLibros.clear();
+                List<LibrosPrestadosRsp> collecion = listaOriginal.stream()
                         .filter(i -> i.getTitulo_libro_Prestado().toLowerCase().contains(txtBuscar.toLowerCase()))
                         .collect(Collectors.toList());
-                listaLibros.clear();
                 listaLibros.addAll(collecion);
             } else {
                 for (LibrosPrestadosRsp libros : listaOriginal) {

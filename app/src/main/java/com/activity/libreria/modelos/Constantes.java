@@ -3,6 +3,7 @@ package com.activity.libreria.modelos;
 public class Constantes {
 
     public static final String SCREEN_LOGIN = "login";
+    public static final String SCREEN_REGISTRAR = "registrarse";
     public static final String SCREEN_USUARIO = "usuario";
     public static final String SCREEN_ADMINISTRADOR = "administrador";
     public static final String SCREEN_PANTALLA_CARGA = "cargando";

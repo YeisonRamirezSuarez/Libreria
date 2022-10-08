@@ -74,10 +74,10 @@ public class AdapterAdministradorLibroItems extends RecyclerView.Adapter<Adapter
             listaLibros.addAll(listaOriginal);
         } else {
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
-                List<LibrosRsp> collecion = listaLibros.stream()
+                listaLibros.clear();
+                List<LibrosRsp> collecion = listaOriginal.stream()
                         .filter(i -> i.getTitulo_libro().toLowerCase().contains(txtBuscar.toLowerCase()))
                         .collect(Collectors.toList());
-                listaLibros.clear();
                 listaLibros.addAll(collecion);
             } else {
                 for (LibrosRsp librosRsp : listaOriginal) {

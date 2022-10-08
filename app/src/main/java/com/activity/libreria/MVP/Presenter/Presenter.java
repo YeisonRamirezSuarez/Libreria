@@ -76,6 +76,11 @@ public class Presenter implements interfaces.Presenter {
     }
 
     @Override
+    public void registrarUsuario(UsuarioRsp usuarioRsp) {
+        model.peticionCrearUsuario(usuarioRsp);
+    }
+
+    @Override
     public void actualizarLibro(LibrosRsp librosRsp, String screen) {
         model.peticionActualizarLibro(librosRsp, screen);
     }

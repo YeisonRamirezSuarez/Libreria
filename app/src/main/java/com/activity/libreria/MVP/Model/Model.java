@@ -114,6 +114,34 @@ public class Model implements interfaces.Model{
     }
 
     @Override
+    public void peticionCrearUsuario(UsuarioRsp usuarioRsp) {
+        final String nombre=usuarioRsp.getNombre_Usuario();
+        final String correo=usuarioRsp.getCorreo_Electronico();
+        final String telefono=usuarioRsp.getTelefono_Usuario();
+        final String direccion=usuarioRsp.getDireccion_Usuario();
+        final String contrasena=usuarioRsp.getContrasena_Usuario();
+
+        String url="https://"+IP_PUBLICA+"/registro_usuario.php?Nombre_Usuario="+nombre+"&CorreoElectronico_Usuario="+correo+"&Telefono_Usuario="+telefono+"&Direccion_Usuario="+direccion+"&Contrasena_Usuario="+contrasena+"";
+        RequestQueue servicio= Volley.newRequestQueue(context);
+        StringRequest respuesta=new StringRequest(
+                Request.Method.POST, url, new Response.Listener<String>() {
+                    @Override
+                public void onResponse(String response) {
+                   presenter.respuesta(response, SCREEN_REGISTRAR);
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(context,
+                            "Error comunicación"+error,Toast.LENGTH_SHORT).show();
+                }
+            });
+            servicio.add(respuesta);
+
+    }
+
+
+    @Override
     public void peticionActualizarLibro(LibrosRsp librosRsp, String screen) {
         if (screen.equals(SCREEN_ACTUALIZAR_LIBRO)) {
             int id_libro = librosRsp.get_id();

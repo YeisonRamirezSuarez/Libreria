@@ -3,13 +3,17 @@ package com.activity.libreria.MVP;
 import static com.activity.libreria.bd.NetwordHelper.IP_PUBLICA;
 import static com.activity.libreria.modelos.Constantes.*;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Html;
+import android.util.Patterns;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -24,10 +28,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.activity.libreria.LibrosPrestadosAdmin;
+import com.activity.libreria.Login;
 import com.activity.libreria.MVP.Interfaces.CallbackLibro;
 import com.activity.libreria.MVP.Interfaces.interfaces;
 import com.activity.libreria.MVP.Presenter.Presenter;
 import com.activity.libreria.R;
+import com.activity.libreria.Registrar;
 import com.activity.libreria.actividadAdministrador;
 import com.activity.libreria.actividadUsuario;
 import com.activity.libreria.adapter.AdapterAdministradorHistorialLibroPrestadoItems;
@@ -50,6 +56,10 @@ import com.activity.libreria.modelos.Usuario;
 import com.activity.libreria.modelos.UsuarioRsp;
 import com.bumptech.glide.Glide;
 
+import java.util.regex.Pattern;
+
+import pl.droidsonroids.gif.GifImageView;
+
 public class MasterControl extends AppCompatActivity implements interfaces.View , PopupMenu.OnMenuItemClickListener, CallbackLibro, SearchView.OnQueryTextListener {
 
     interfaces.Presenter presenter;
@@ -58,12 +68,14 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
     ListaLibrosPrestados listaLibrosPrestados;
     LibrosPrestadosRsp librosPrestadosRsp;
     LibrosRsp librosRsp;
+    UsuarioRsp usuarioRsp;
     AdapterAdministradorLibroItems adapterAdministradorLibroItems;
     AdapterAdministradorLibroPrestadoItems adapterAdministradorLibroPrestadoItems;
     AdapterAdministradorHistorialLibroPrestadoItems adapterAdministradorHistorialLibroPrestadoItems;
     AdapterUsuarioDisponiblesLibroItems adapterUsuarioDisponiblesLibroItems;
     AdapterUsuarioLibroItems adapterUsuarioLibroItems;
     String SCREEN = "";
+    boolean filtro = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,18 +83,28 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
         showScreen(SCREEN_LOGIN, "", "");
         listaUsuario = new ListaUsuario();
         librosRsp = new LibrosRsp();
+        usuarioRsp = new UsuarioRsp();
         librosPrestadosRsp = new LibrosPrestadosRsp();
-
-
-
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+        return true;
+    }
 
     @Override
     public void showScreen(String screen, Object object, String typo) {
         switch (screen) {
             case SCREEN_LOGIN:
                 verLogin();
+                break;
+            case SCREEN_REGISTRAR:
+                verRegistrar();
                 break;
             case SCREEN_CREAR_LIBRO:
                 verCrearLibro();
@@ -119,6 +141,79 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
             }
         });
 
+        textRegistrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showScreen(SCREEN_REGISTRAR, "", "");
+            }
+        });
+
+    }
+
+    @Override
+    public void verRegistrar() {
+        setContentView(R.layout.registrarse);
+        MetodosUsuario metodosUsuario = new MetodosUsuario(this);
+        EditText correoUsuario = findViewById(R.id.registrarCorreo);
+        EditText contraseñaUsuario = findViewById(R.id.registrarContraseña);
+        EditText nombreUsuario = findViewById(R.id.registrarNombre);
+        EditText telefonoUsuario = findViewById(R.id.registrarTelefono);
+        EditText dirreccionUsuario = findViewById(R.id.registrarDireccion);
+        Button botonRegistrar = findViewById(R.id.btnRegRegistrar);
+        botonRegistrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                    //cetiando
+                    String correo = correoUsuario.getText().toString();
+                    String contraseña = contraseñaUsuario.getText().toString();
+                    String nombre = nombreUsuario.getText().toString();
+                    String telefono = telefonoUsuario.getText().toString();
+                    String direccion = dirreccionUsuario.getText().toString();
+
+                    usuarioRsp.setCorreo_Electronico(correo);
+                    usuarioRsp.setContrasena_Usuario(contraseña);
+                    usuarioRsp.setNombre_Usuario(nombre);
+                    usuarioRsp.setTelefono_Usuario(telefono);
+                    usuarioRsp.setDireccion_Usuario(direccion);
+
+                    //Validaciones
+                    if (usuarioRsp.getCorreo_Electronico().isEmpty() || usuarioRsp.getContrasena_Usuario().isEmpty() || usuarioRsp.getNombre_Usuario().isEmpty() || usuarioRsp.getTelefono_Usuario().isEmpty()) {
+                        Toast.makeText(getApplicationContext(), "Error: Campos vacios", Toast.LENGTH_LONG).show(); //Mostrar error de campos vacios
+                    } else {
+                        if (!metodosUsuario.contieneSoloLetras(nombre)){
+                            Toast.makeText(getApplicationContext(), "Error: El nombre no debe contener numeros", Toast.LENGTH_LONG).show(); //Mostrar error de nombre que no lleve numeros
+                        } else {
+                            if (!metodosUsuario.validarTelefono(telefono)){
+                                Toast.makeText(getApplicationContext(), "Error: El numero de telefono debe tener 10 digitos", Toast.LENGTH_LONG).show(); //Mostrar error de telefono debe empezar por 57
+                            } else {
+                                Pattern pattern = Patterns.EMAIL_ADDRESS;
+                                if (!pattern.matcher(correo).matches()){
+                                    Toast.makeText(getApplicationContext(), "Error: Ingrese un Email Valido", Toast.LENGTH_LONG).show(); //Mostrando correo invalido
+                                } else {
+                                    if (contraseña.length() < 6){
+                                        Toast.makeText(getApplicationContext(), "Error: Ingrese una contraseña minimo 6 digitos", Toast.LENGTH_LONG).show(); //Mostrar error de contraseña
+                                    } else {
+                                        presenter.registrarUsuario(usuarioRsp);
+                                       /* if (validar()){
+                                            Intent intent = new Intent(Registrar.this, Login.class);
+                                            startActivity(intent);
+                                        }*/
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+        });
+        TextView textRegRegistrar = findViewById(R.id.textRegRegistrar);
+        textRegRegistrar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showScreen(SCREEN_LOGIN, "", "");
+            }
+        });
     }
 
     @Override
@@ -136,6 +231,8 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
         Button btnPrestar = findViewById(R.id.btnPrestar);
         txtBuscar = findViewById(R.id.txtBuscar);
         txtBuscar.setOnQueryTextListener(this);
+        filtro = true;
+        SCREEN = SCREEN_USUARIO;
         txtBuscar.setQueryHint(Html.fromHtml("<font color = #ffffff>" + getResources().getString(R.string.seach_hint) + "</font>"));
         txtBuscar.setVisibility(View.VISIBLE);
         titulo.setText("Mis Libros Prestados");
@@ -193,7 +290,7 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
     @Override
     public void verPantallaCarga(String screen, Object object, String typo) {
         setContentView(R.layout.splashscreen);
-        ImageView imageView = findViewById(R.id.logo);
+        GifImageView imageView = findViewById(R.id.logo);
         presenter.pedirUsuario();
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -332,6 +429,7 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
         nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
         SearchView txtBuscar = findViewById(R.id.txtBuscar);
         txtBuscar.setOnQueryTextListener(this);
+        SCREEN = SCREEN_LIBROS_PRESTADOS_ADMIN;
         txtBuscar.setVisibility(View.VISIBLE);
         txtBuscar.setQueryHint(Html.fromHtml("<font color = #ffffff>" + getResources().getString(R.string.seach_hint) + "</font>"));
         RecyclerView reciclarVista = findViewById(R.id.reciclarVista);
@@ -399,6 +497,7 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
     public void verLibrosDisponiblesUsuario(Object object) {
         setContentView(R.layout.libros_disponibles_usuario);
         SearchView txtBuscar = findViewById(R.id.txtBuscar);
+        SCREEN = SCREEN_LIBROS_DISPONIBLES;
         txtBuscar.setOnQueryTextListener(this);
         txtBuscar.setVisibility(View.VISIBLE);
         txtBuscar.setQueryHint(Html.fromHtml("<font color = #ffffff>" + getResources().getString(R.string.seach_hint) + "</font>"));
@@ -570,8 +669,8 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
                 showScreen(SCREEN_PANTALLA_CARGA, SCREEN_LIBROS_DISPONIBLES, SCREEN_ADMINISTRADOR);
                 break;
             case SCREEN_ACTUALIZAR_LIBRO:
-                if(respuesta.equals("correcto"))
-                {
+                if(respuesta.equals("correcto")) {
+                    Toast.makeText(this, "Libro actualizado corrctamente", Toast.LENGTH_SHORT).show();
                     showScreen(SCREEN_PANTALLA_CARGA, SCREEN_LIBROS_DISPONIBLES, SCREEN_ADMINISTRADOR);
                 }else if(respuesta.equals("Fallo")){
                     Toast.makeText(getApplicationContext(),
@@ -582,6 +681,10 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
             case SCREEN_ELIMINAR_LIBRO_PRESTADO_USUARIO:
                 Toast.makeText(this, respuesta, Toast.LENGTH_SHORT).show();
                 showScreen(SCREEN_PANTALLA_CARGA, SCREEN_LIBROS_PRESTADOS, SCREEN_USUARIO);
+                break;
+            case SCREEN_REGISTRAR:
+                Toast.makeText(this, respuesta, Toast.LENGTH_SHORT).show();
+                showScreen(SCREEN_LOGIN, "", "");
                 break;
         }
 
@@ -608,19 +711,15 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
             case SCREEN_CONSULTA_PRESTAR:
                 boolean siExiste = false;
                 listaLibrosPrestados = (ListaLibrosPrestados) object;
-                for (int j = 0; j < listaLibrosPrestados.getLibros().size(); j++)
-                {
-                    if (listaLibrosPrestados.getLibros().get(j).getCorreo_Prestamo_libro().equals(object2) && listaLibrosPrestados.getLibros().get(j).get_id_Libro() == librosRsp.get_id())
-                    {
+                for (int j = 0; j < listaLibrosPrestados.getLibros().size(); j++) {
+                    if (listaLibrosPrestados.getLibros().get(j).getCorreo_Prestamo_libro().equals(object2) && listaLibrosPrestados.getLibros().get(j).get_id_Libro() == librosRsp.get_id()) {
                         siExiste = true;
                     }
                 }
-                if (siExiste)
-                {
+                if (siExiste) {
                     Toast.makeText(this, "Libro ya esta prestado", Toast.LENGTH_SHORT).show();
                 }
-                else
-                {
+                else {
                     presenter.prestarLibro(listaUsuario, librosRsp, SCREEN_PRESTAR_LIBRO);
                 }
                 break;
@@ -643,7 +742,6 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
                 popupMenu1.show();
                 break;
         }
-
     }
 
     @Override
@@ -651,22 +749,12 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
         switch (item.getItemId()){
             case R.id.prestadosLibros:
                 showScreen(SCREEN_PANTALLA_CARGA, SCREEN_LIBROS_PRESTADOS_ADMIN, SCREEN_LIBROS_PRESTADOS_ADMIN);
-                //showScreen(SCREEN_LIBROS_PRESTADOS_ADMIN, "", "");
-                //Toast.makeText(this, "Libros Prestados", Toast.LENGTH_SHORT).show();
-                //Intent intent = new Intent(this, LibrosPrestadosAdmin.class);
-                //startActivity(intent);
                 return true;
             case R.id.agregarLibros:
                 showScreen(SCREEN_CREAR_LIBRO, "", "");
-               /* Toast.makeText(this, "Agregar Libros", Toast.LENGTH_SHORT).show();
-                Intent intent1 = new Intent(this, AgregarLibros.class);
-                startActivity(intent1);*/
                 return true;
             case R.id.salirLogin:
                 showScreen(SCREEN_LOGIN, "", "");
-              /*  Toast.makeText(this, "Cerrar Sesion", Toast.LENGTH_SHORT).show();
-                Intent intent2 = new Intent(this, Login.class);
-                startActivity(intent2);*/
                 return true;
             default:
                 return false;
@@ -675,39 +763,49 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
 
     @Override
     public void clickListener(Object object, String screen) {
-        //if (screen.equals(SCREEN_LIBROS_DISPONIBLES)){
             switch (screen){
                 case SCREEN_ACTUALIZAR_LIBRO:
                     verActualizarLibro(object);
                     break;
                 case SCREEN_LIBROS_PRESTADOS_ADMIN:
                     presenter.pedirLibrosPrestadosId(object, SCREEN_LIBROS_PRESTADOS_HISTORIAL);
-                    //verHistorialLibrosPrestados(object, ob);
                     break;
                 case SCREEN_LIBROS_DISPONIBLES:
-                    //presenter.pedirLibrosPrestadosId(object, SCREEN_LIBROS_PRESTADOS_HISTORIAL);
                     verPrestarLibro(object);
-                    //verHistorialLibrosPrestados(object, ob);
                     break;
                 case SCREEN_VER_LIBRO:
                     verLeerLibro(object);
                     break;
             }
-       // }
-
     }
 
     @Override
     public boolean onQueryTextSubmit(String s) {
-
-                    adapterAdministradorLibroItems.filtrado(s);
-
-
         return false;
     }
 
     @Override
     public boolean onQueryTextChange(String s) {
+
+        switch (SCREEN){
+            case SCREEN_USUARIO:
+                adapterUsuarioLibroItems.filtrado(s);
+                break;
+            case SCREEN_ADMINISTRADOR:
+                adapterAdministradorLibroItems.filtrado(s);
+                break;
+            case SCREEN_LIBROS_PRESTADOS_ADMIN:
+                adapterAdministradorLibroPrestadoItems.filtrado(s);
+                break;
+            case SCREEN_LIBROS_DISPONIBLES:
+                adapterUsuarioDisponiblesLibroItems.filtrado(s);
+                break;
+        }
+
         return false;
+    }
+
+    @Override
+    public void onBackPressed() {
     }
 }

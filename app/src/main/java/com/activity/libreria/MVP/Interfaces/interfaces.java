@@ -8,6 +8,7 @@ import com.activity.libreria.modelos.UsuarioRsp;
 public interface interfaces {
     interface View{
         void verLogin();
+        void verRegistrar();
         void verUsuario(Object object);
         void verAdministrador(Object object);
         void verPantallaCarga(String screen, Object object, String typo);
@@ -42,6 +43,7 @@ public interface interfaces {
         void respuestaLibrosPrestados(Object object, Object object2, String screen);
 
         void registrarLibro(LibrosRsp librosRsp);
+        void registrarUsuario(UsuarioRsp usuarioRsp);
 
         void actualizarLibro(LibrosRsp librosRsp, String screen);
 
@@ -55,6 +57,7 @@ public interface interfaces {
     interface Model{
         void peticionValidarLogin(UsuarioRsp usuarioRsp);
         void peticionCrearLibro(LibrosRsp librosRsp);
+        void peticionCrearUsuario(UsuarioRsp usuarioRsp);
         void peticionActualizarLibro(LibrosRsp librosRsp,  String screen);
         void peticionEliminarLibro(LibrosRsp librosRsp, String screen);
         void peticionEliminarLibroPrestado(LibrosPrestadosRsp librosPrestadosRsp,String screen);
