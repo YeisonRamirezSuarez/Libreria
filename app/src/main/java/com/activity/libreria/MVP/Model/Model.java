@@ -158,9 +158,9 @@ public class Model implements interfaces.Model{
                     Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    if (response.equals("correcto")) {
+                    if (response.equals("\tcorrecto")) {
                         presenter.respuesta(response, screen);
-                    } else if (response.equals("Fallo")) {
+                    } else if (response.equals("\tFallo")) {
                         Toast.makeText(context,
                                 "Fallo la actualizacion correctamente", Toast.LENGTH_LONG).show();
                     }
@@ -230,7 +230,7 @@ public class Model implements interfaces.Model{
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            presenter.respuesta(response, SCREEN_ACTUALIZAR_LIBRO_PRESTADO);
+                            presenter.respuesta("Libro eliminado", SCREEN_ACTUALIZAR_LIBRO_PRESTADO);
                         }
                     },
                     new Response.ErrorListener() {

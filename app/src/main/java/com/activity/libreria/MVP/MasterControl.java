@@ -653,10 +653,10 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
     public void respuestas(String respuesta, String screen) {
         switch (screen){
             case SCREEN_LOGIN:
-                if (!respuesta.equals("Fail")) {
-                    if (respuesta.equals("usuario")) {
+                if (!respuesta.equals("\tFail")) {
+                    if (respuesta.equals("\tusuario")) {
                         showScreen(SCREEN_PANTALLA_CARGA, SCREEN_LIBROS_PRESTADOS, SCREEN_USUARIO);
-                    } else if (respuesta.equals("administrador")) {
+                    } else if (respuesta.equals("\tadministrador")) {
                         showScreen(SCREEN_PANTALLA_CARGA, SCREEN_LIBROS_DISPONIBLES, SCREEN_ADMINISTRADOR);
                     }
                 } else {
@@ -669,10 +669,10 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
                 showScreen(SCREEN_PANTALLA_CARGA, SCREEN_LIBROS_DISPONIBLES, SCREEN_ADMINISTRADOR);
                 break;
             case SCREEN_ACTUALIZAR_LIBRO:
-                if(respuesta.equals("correcto")) {
+                if(respuesta.equals("\tcorrecto")) {
                     Toast.makeText(this, "Libro actualizado corrctamente", Toast.LENGTH_SHORT).show();
                     showScreen(SCREEN_PANTALLA_CARGA, SCREEN_LIBROS_DISPONIBLES, SCREEN_ADMINISTRADOR);
-                }else if(respuesta.equals("Fallo")){
+                }else if(respuesta.equals("\tFallo")){
                     Toast.makeText(getApplicationContext(),
                             "Fallo la actualizacion correctamente",Toast.LENGTH_LONG).show();
                 }
