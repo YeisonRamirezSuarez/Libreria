@@ -4,7 +4,6 @@ import static com.activity.libreria.bd.NetwordHelper.*;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -36,7 +35,6 @@ import com.bumptech.glide.Glide;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 
 public class PrestarLibroUsuario extends AppCompatActivity implements View.OnClickListener, Callback {
@@ -135,19 +133,19 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
 
         ListaUsuario lista = (ListaUsuario) object;
         listaUsuario = lista;
-        rol.setText(lista.getUsuarios().get(0).getRol_Usuario());
-        nombre_usuario_txt.setText(lista.getUsuarios().get(0).getNombre_Usuario());
+        rol.setText(lista.getUsuarios().get(0).getRol());
+        nombre_usuario_txt.setText(lista.getUsuarios().get(0).getName());
     }
 
     private void cargarDatosLibro(Object object) {
         ListaLibros libros = (ListaLibros) object;
         listaLibros = libros;
         if (libros != null) {
-            nombreLibro_ver.setText(libros.getLibros().get(0).getTitulo_libro());
-            autorLibro_ver.setText(libros.getLibros().get(0).getAutor_libro());
-            descripcionLibro_ver.setText(libros.getLibros().get(0).getDescripcion_libro());
+            nombreLibro_ver.setText(libros.getLibros().get(0).getTitle());
+            autorLibro_ver.setText(libros.getLibros().get(0).getAuthor());
+            descripcionLibro_ver.setText(libros.getLibros().get(0).getDescription());
             Glide.with(this)
-                    .load(libros.getLibros().get(0).getImagen_libro())
+                    .load(libros.getLibros().get(0).getImage_url())
                     .error(R.drawable.error)
                     .into(imageView_txt);
         }
@@ -168,17 +166,17 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
     public boolean InputlibrosPrestado(ListaLibros listaLibros, ListaUsuario listaUsuario){
         DateFormat df = new SimpleDateFormat(" d MMM yyyy, HH:mm"); //definir formato para fecha
         String fecha_registro = df.format(Calendar.getInstance().getTime()); //obtener fecha
-        final int id=listaLibros.getLibros().get(0).get_id();
-        final String nombre=listaLibros.getLibros().get(0).getTitulo_libro();
-        final String autor=listaLibros.getLibros().get(0).getAutor_libro();
-        final String cantidad=listaLibros.getLibros().get(0).getCantidad_libro();
-        final String urlLibro=listaLibros.getLibros().get(0).getUrl_libro();
-        final String imagen=listaLibros.getLibros().get(0).getImagen_libro();
-        final String descripcion=listaLibros.getLibros().get(0).getDescripcion_libro();
+        final int id=listaLibros.getLibros().get(0).getId();
+        final String nombre=listaLibros.getLibros().get(0).getTitle();
+        final String autor=listaLibros.getLibros().get(0).getAuthor();
+        final String cantidad=listaLibros.getLibros().get(0).getQuantity();
+        final String urlLibro=listaLibros.getLibros().get(0).getBook_url();
+        final String imagen=listaLibros.getLibros().get(0).getImage_url();
+        final String descripcion=listaLibros.getLibros().get(0).getDescription();
         final String Fecha_Prestamo_libro=fecha_registro;
-        final String Correo_Prestamo_libro=listaUsuario.getUsuarios().get(0).getCorreo_Electronico();
-        final String Nombre_Usuario_Prestamo_libro=listaUsuario.getUsuarios().get(0).getNombre_Usuario();
-        final String Telefono_Usuario_Prestamo_libro =listaUsuario.getUsuarios().get(0).getTelefono_Usuario();
+        final String Correo_Prestamo_libro=listaUsuario.getUsuarios().get(0).getEmail();
+        final String Nombre_Usuario_Prestamo_libro=listaUsuario.getUsuarios().get(0).getName();
+        final String Telefono_Usuario_Prestamo_libro =listaUsuario.getUsuarios().get(0).getPhone();
 
         String url="https://"+IP_PUBLICA+"/registro_libro_prestado.php?id="+id+"&Titulo_libro="+nombre+"&Autor_libro="+autor+"&Cantidad_libro="+cantidad+"&Url_libro="+urlLibro+"&Imagen_libro="+imagen+"&Descripcion_libro="+descripcion+"" +
                 "&Fecha_Prestamo_libro="+Fecha_Prestamo_libro+"&Correo_Prestamo_libro="+Correo_Prestamo_libro+"&Nombre_Usuario_Prestamo_libro="+Nombre_Usuario_Prestamo_libro+"&Telefono_Usuario_Prestamo_libro="+Telefono_Usuario_Prestamo_libro+"";
@@ -206,8 +204,8 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
     }
 
     public boolean InputlibrosCantidad(ListaLibros listaLibros){
-        final int id=listaLibros.getLibros().get(0).get_id();
-        final String cantidad= String.valueOf(Integer.parseInt(listaLibros.getLibros().get(0).getCantidad_libro()) - 1);
+        final int id=listaLibros.getLibros().get(0).getId();
+        final String cantidad= String.valueOf(Integer.parseInt(listaLibros.getLibros().get(0).getQuantity()) - 1);
 
         String url="https://"+IP_PUBLICA+"/actualizar_cantidad_libro.php?id="+id+"&Cantidad_libro="+cantidad+"";
         RequestQueue servicio= Volley.newRequestQueue(this);

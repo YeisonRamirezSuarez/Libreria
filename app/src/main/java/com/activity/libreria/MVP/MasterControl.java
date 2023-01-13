@@ -1,6 +1,5 @@
 package com.activity.libreria.MVP;
 
-import static com.activity.libreria.bd.NetwordHelper.IP_PUBLICA;
 import static com.activity.libreria.modelos.Constantes.*;
 
 import android.content.Context;
@@ -27,32 +26,22 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.activity.libreria.LibrosPrestadosAdmin;
-import com.activity.libreria.Login;
 import com.activity.libreria.MVP.Interfaces.CallbackLibro;
 import com.activity.libreria.MVP.Interfaces.interfaces;
 import com.activity.libreria.MVP.Presenter.Presenter;
 import com.activity.libreria.R;
-import com.activity.libreria.Registrar;
-import com.activity.libreria.actividadAdministrador;
-import com.activity.libreria.actividadUsuario;
 import com.activity.libreria.adapter.AdapterAdministradorHistorialLibroPrestadoItems;
 import com.activity.libreria.adapter.AdapterAdministradorLibroItems;
 import com.activity.libreria.adapter.AdapterAdministradorLibroPrestadoItems;
 import com.activity.libreria.adapter.AdapterUsuarioDisponiblesLibroItems;
 import com.activity.libreria.adapter.AdapterUsuarioLibroItems;
-import com.activity.libreria.bd.Conexion;
-import com.activity.libreria.metodos.MetodosAdministrador;
-import com.activity.libreria.metodos.MetodosLibros;
 import com.activity.libreria.metodos.MetodosUsuario;
 import com.activity.libreria.metodos.SPreferences;
-import com.activity.libreria.modelos.Libros;
 import com.activity.libreria.modelos.LibrosPrestadosRsp;
 import com.activity.libreria.modelos.LibrosRsp;
 import com.activity.libreria.modelos.ListaLibros;
 import com.activity.libreria.modelos.ListaLibrosPrestados;
 import com.activity.libreria.modelos.ListaUsuario;
-import com.activity.libreria.modelos.Usuario;
 import com.activity.libreria.modelos.UsuarioRsp;
 import com.bumptech.glide.Glide;
 
@@ -130,12 +119,12 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
         btnEntrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                usuarioRsp.setCorreo_Electronico(correo.getText().toString());
-                usuarioRsp.setContrasena_Usuario(contraseña.getText().toString());
-                if (usuarioRsp.getCorreo_Electronico().equals("") && usuarioRsp.getCorreo_Electronico().equals("")) {
+                usuarioRsp.setEmail(correo.getText().toString());
+                usuarioRsp.setPassword(contraseña.getText().toString());
+                if (usuarioRsp.getEmail().equals("") && usuarioRsp.getEmail().equals("")) {
                     Toast.makeText(getApplicationContext(), "ERROR: Campos vacios", Toast.LENGTH_LONG).show();
                 } else {
-                    sPreferences.setSharedPreference(usuarioRsp.getCorreo_Electronico());
+                    sPreferences.setSharedPreference(usuarioRsp.getEmail());
                     presenter.consultarDatosLogin(usuarioRsp);
                 }
             }
@@ -171,14 +160,14 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
                     String telefono = telefonoUsuario.getText().toString();
                     String direccion = dirreccionUsuario.getText().toString();
 
-                    usuarioRsp.setCorreo_Electronico(correo);
-                    usuarioRsp.setContrasena_Usuario(contraseña);
-                    usuarioRsp.setNombre_Usuario(nombre);
-                    usuarioRsp.setTelefono_Usuario(telefono);
-                    usuarioRsp.setDireccion_Usuario(direccion);
+                    usuarioRsp.setEmail(correo);
+                    usuarioRsp.setPassword(contraseña);
+                    usuarioRsp.setName(nombre);
+                    usuarioRsp.setPhone(telefono);
+                    usuarioRsp.setAddress(direccion);
 
                     //Validaciones
-                    if (usuarioRsp.getCorreo_Electronico().isEmpty() || usuarioRsp.getContrasena_Usuario().isEmpty() || usuarioRsp.getNombre_Usuario().isEmpty() || usuarioRsp.getTelefono_Usuario().isEmpty()) {
+                    if (usuarioRsp.getEmail().isEmpty() || usuarioRsp.getPassword().isEmpty() || usuarioRsp.getName().isEmpty() || usuarioRsp.getPhone().isEmpty()) {
                         Toast.makeText(getApplicationContext(), "Error: Campos vacios", Toast.LENGTH_LONG).show(); //Mostrar error de campos vacios
                     } else {
                         if (!metodosUsuario.contieneSoloLetras(nombre)){
@@ -225,8 +214,8 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
         AdapterAdministradorLibroItems adapterAdministradorLibroItems;
         TextView nombre_administrador_txt = findViewById(R.id.nombre_administrador_txt);
         TextView rol = findViewById(R.id.rol);
-        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
-        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getName());
         ImageView mas_informacion = findViewById(R.id.funcionesUser);
         Button btnPrestar = findViewById(R.id.btnPrestar);
         txtBuscar = findViewById(R.id.txtBuscar);
@@ -269,8 +258,8 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
         titulo.setText("Libros Disponibles");
         TextView nombre_administrador_txt = findViewById(R.id.nombre_administrador_txt);
         TextView rol = findViewById(R.id.rol);
-        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
-        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getName());
         ListaLibros listaLibros;
         mas_informacion.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -305,8 +294,8 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
         setContentView(R.layout.admin_agregar_libro);
         TextView nombre_administrador_txt = findViewById(R.id.nombre_administrador_txt);
         TextView rol = findViewById(R.id.rol);
-        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
-        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getName());
         LibrosRsp librosRsp;
         librosRsp = new LibrosRsp();
         EditText nombreLibroInput = findViewById(R.id.nombreLibro_input);
@@ -336,12 +325,12 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
                         && !urlLibroInput.getText().toString().equals("")
                         && !urlImagenInput.getText().toString().equals("")
                         && !descripcionInput.getText().toString().equals("")) {
-                    librosRsp.setTitulo_libro(nombreLibroInput.getText().toString());
-                    librosRsp.setAutor_libro(autorLibroInput.getText().toString());
-                    librosRsp.setCantidad_libro(cantidadLibroInput.getText().toString());
-                    librosRsp.setUrl_libro(urlLibroInput.getText().toString());
-                    librosRsp.setImagen_libro(urlImagenInput.getText().toString());
-                    librosRsp.setDescripcion_libro(descripcionInput.getText().toString());
+                    librosRsp.setTitle(nombreLibroInput.getText().toString());
+                    librosRsp.setAuthor(autorLibroInput.getText().toString());
+                    librosRsp.setQuantity(cantidadLibroInput.getText().toString());
+                    librosRsp.setBook_url(urlLibroInput.getText().toString());
+                    librosRsp.setImage_url(urlImagenInput.getText().toString());
+                    librosRsp.setDescription(descripcionInput.getText().toString());
                     presenter.registrarLibro(librosRsp);
                 } else {
                     Toast.makeText(getApplicationContext(), "DEBE LLENAR LOS CAMPOS OBLIGATORIOS", Toast.LENGTH_LONG).show();
@@ -358,8 +347,8 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
         librosRsp = (LibrosRsp) object;
         TextView nombre_administrador_txt = findViewById(R.id.nombre_administrador_txt);
         TextView rol = findViewById(R.id.rol);
-        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
-        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getName());
         EditText nombreLibroView = findViewById(R.id.nombreLibro_view);
         EditText autorLibroView = findViewById(R.id.autorLibro_view);
         EditText cantidadLibroView = findViewById(R.id.cantidadLibros_view);
@@ -381,24 +370,24 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
         Button actualizar_boton = findViewById(R.id.actualizar_boton);
         TextView titulo = findViewById(R.id.tituloBanner);
         titulo.setText("Actualizar Libros");
-        int id = librosRsp.get_id();
-        nombreLibroView.setText(librosRsp.getTitulo_libro());
-        autorLibroView.setText(librosRsp.getAutor_libro());
-        cantidadLibroView.setText(librosRsp.getCantidad_libro());
-        urlLibroView.setText(librosRsp.getUrl_libro());
-        urlImagenView.setText(librosRsp.getImagen_libro());
-        descripcionView.setText(librosRsp.getDescripcion_libro());
+        int id = librosRsp.getId();
+        nombreLibroView.setText(librosRsp.getTitle());
+        autorLibroView.setText(librosRsp.getAuthor());
+        cantidadLibroView.setText(librosRsp.getQuantity());
+        urlLibroView.setText(librosRsp.getBook_url());
+        urlImagenView.setText(librosRsp.getImage_url());
+        descripcionView.setText(librosRsp.getDescription());
         actualizar_boton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 librosRsp = new LibrosRsp();
-                librosRsp.set_id(id);
-                librosRsp.setTitulo_libro(nombreLibroView.getText().toString().trim());
-                librosRsp.setAutor_libro(autorLibroView.getText().toString().trim());
-                librosRsp.setCantidad_libro(cantidadLibroView.getText().toString().trim());
-                librosRsp.setUrl_libro(urlLibroView.getText().toString().trim());
-                librosRsp.setImagen_libro(urlImagenView.getText().toString().trim());
-                librosRsp.setDescripcion_libro(descripcionView.getText().toString().trim());
+                librosRsp.setId(id);
+                librosRsp.setTitle(nombreLibroView.getText().toString().trim());
+                librosRsp.setAuthor(autorLibroView.getText().toString().trim());
+                librosRsp.setQuantity(cantidadLibroView.getText().toString().trim());
+                librosRsp.setBook_url(urlLibroView.getText().toString().trim());
+                librosRsp.setImage_url(urlImagenView.getText().toString().trim());
+                librosRsp.setDescription(descripcionView.getText().toString().trim());
                 if (!nombreLibroView.getText().toString().equals("") && !autorLibroView.getText().toString().equals("")
                         && !cantidadLibroView.getText().toString().equals("")
                         && !urlLibroView.getText().toString().equals("")
@@ -425,8 +414,8 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
         setContentView(R.layout.admin_libros_prestados);
         TextView nombre_administrador_txt = findViewById(R.id.nombre_administrador_txt);
         TextView rol = findViewById(R.id.rol);
-        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
-        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getName());
         SearchView txtBuscar = findViewById(R.id.txtBuscar);
         txtBuscar.setOnQueryTextListener(this);
         SCREEN = SCREEN_LIBROS_PRESTADOS_ADMIN;
@@ -457,8 +446,8 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
         ImageView imageView_txt = findViewById(R.id.imageView_txt);
         TextView nombre_administrador_txt = findViewById(R.id.nombre_administrador_txt);
         TextView rol = findViewById(R.id.rol);
-        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
-        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getName());
         TextView nombreLibroHistorial_ver = findViewById(R.id.nombreLibroHistorial_ver);
         RecyclerView reciclarVistaHistorial = findViewById(R.id.reciclarVistaHistorial);
         TextView autorLibroHistorial_ver = findViewById(R.id.autorLibroHistorial_ver);
@@ -504,8 +493,8 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
         TextView nombre_administrador_txt = findViewById(R.id.nombre_administrador_txt);
         TextView rol = findViewById(R.id.rol);
         RecyclerView reciclarVista = findViewById(R.id.reciclarVista);
-        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
-        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getName());
         ImageView mas_funciones_usuario = findViewById(R.id.funcionesUser);
         mas_funciones_usuario.setVisibility(View.GONE);
         Button btnPrestar = findViewById(R.id.btnPrestar);
@@ -532,8 +521,8 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
         TextView nombreLibro_ver = findViewById(R.id.nombreLibro_ver);
         TextView nombre_administrador_txt = findViewById(R.id.nombre_administrador_txt);
         TextView rol = findViewById(R.id.rol);
-        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
-        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getName());
         TextView autorLibro_ver = findViewById(R.id.autorLibro_ver);
         TextView descripcionLibro_ver = findViewById(R.id.descripcionLibro_ver);
         TextView nombreUser = findViewById(R.id.nombre_usuario_historial_txt);
@@ -561,11 +550,11 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
         titulo.setText("Prestar Libro");
 
         if (librosRsp != null) {
-            nombreLibro_ver.setText(librosRsp.getTitulo_libro());
-            autorLibro_ver.setText(librosRsp.getAutor_libro());
-            descripcionLibro_ver.setText(librosRsp.getDescripcion_libro());
+            nombreLibro_ver.setText(librosRsp.getTitle());
+            autorLibro_ver.setText(librosRsp.getAuthor());
+            descripcionLibro_ver.setText(librosRsp.getDescription());
             Glide.with(this)
-                    .load(librosRsp.getImagen_libro())
+                    .load(librosRsp.getImage_url())
                     .error(R.drawable.error)
                     .into(imageView_txt);
         }
@@ -577,8 +566,8 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
         librosPrestadosRsp = (LibrosPrestadosRsp) object;
         TextView nombre_administrador_txt = findViewById(R.id.nombre_administrador_txt);
         TextView rol = findViewById(R.id.rol);
-        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
-        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getName());
         TextView nombreLibro_ver = findViewById(R.id.nombreLibro_ver);
         TextView autorLibro_ver = findViewById(R.id.autorLibro_ver);
         TextView descripcionLibro_ver = findViewById(R.id.descripcionLibro_ver);
@@ -653,10 +642,10 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
     public void respuestas(String respuesta, String screen) {
         switch (screen){
             case SCREEN_LOGIN:
-                if (!respuesta.equals("\tFail")) {
-                    if (respuesta.equals("\tusuario")) {
+                if (!respuesta.equals("No se encontro al usuario.")) {
+                    if (respuesta.equals("usuario")) {
                         showScreen(SCREEN_PANTALLA_CARGA, SCREEN_LIBROS_PRESTADOS, SCREEN_USUARIO);
-                    } else if (respuesta.equals("\tadministrador")) {
+                    } else if (respuesta.equals("administrador")) {
                         showScreen(SCREEN_PANTALLA_CARGA, SCREEN_LIBROS_DISPONIBLES, SCREEN_ADMINISTRADOR);
                     }
                 } else {
@@ -712,7 +701,7 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
                 boolean siExiste = false;
                 listaLibrosPrestados = (ListaLibrosPrestados) object;
                 for (int j = 0; j < listaLibrosPrestados.getLibros().size(); j++) {
-                    if (listaLibrosPrestados.getLibros().get(j).getCorreo_Prestamo_libro().equals(object2) && listaLibrosPrestados.getLibros().get(j).get_id_Libro() == librosRsp.get_id()) {
+                    if (listaLibrosPrestados.getLibros().get(j).getCorreo_Prestamo_libro().equals(object2) && listaLibrosPrestados.getLibros().get(j).get_id_Libro() == librosRsp.getId()) {
                         siExiste = true;
                     }
                 }

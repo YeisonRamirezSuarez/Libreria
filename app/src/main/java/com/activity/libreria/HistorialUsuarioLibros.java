@@ -1,7 +1,6 @@
 package com.activity.libreria;
 
 import static com.activity.libreria.bd.NetwordHelper.IP_PUBLICA;
-import static com.activity.libreria.bd.NetwordHelper.PUERTO;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -24,15 +23,12 @@ import com.activity.libreria.metodos.MetodosAdministrador;
 import com.activity.libreria.metodos.MetodosLibros;
 import com.activity.libreria.metodos.MetodosUsuario;
 import com.activity.libreria.metodos.SPreferences;
-import com.activity.libreria.modelos.Administrador;
 import com.activity.libreria.modelos.Libros;
 import com.activity.libreria.modelos.ListaLibros;
 import com.activity.libreria.modelos.ListaLibrosPrestados;
 import com.activity.libreria.modelos.ListaUsuario;
 import com.activity.libreria.modelos.Usuario;
 import com.bumptech.glide.Glide;
-
-import java.util.ArrayList;
 
 public class HistorialUsuarioLibros extends AppCompatActivity implements View.OnClickListener, Callback {
 
@@ -132,19 +128,19 @@ public class HistorialUsuarioLibros extends AppCompatActivity implements View.On
         // Aqui es como se muestra el nombre del Usuario que ingreso
 
         listaUsuario= (ListaUsuario) object;
-        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
-        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getName());
     }
 
     private void cargarDatosLibro(Object object) {
         ListaLibros libros = (ListaLibros) object;
         listaLibros = libros;
         if (libros != null) {
-            nombreLibroHistorial_ver.setText(libros.getLibros().get(0).getTitulo_libro());
-            autorLibroHistorial_ver.setText(libros.getLibros().get(0).getAutor_libro());
-            descripcionLibroHistorial_ver.setText(libros.getLibros().get(0).getDescripcion_libro());
+            nombreLibroHistorial_ver.setText(libros.getLibros().get(0).getTitle());
+            autorLibroHistorial_ver.setText(libros.getLibros().get(0).getAuthor());
+            descripcionLibroHistorial_ver.setText(libros.getLibros().get(0).getDescription());
             Glide.with(this)
-                    .load(libros.getLibros().get(0).getImagen_libro())
+                    .load(libros.getLibros().get(0).getImage_url())
                     .error(R.drawable.error)
                     .into(imageView_txt);
         }

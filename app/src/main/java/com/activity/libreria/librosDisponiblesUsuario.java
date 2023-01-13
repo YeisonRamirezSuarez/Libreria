@@ -14,37 +14,20 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.activity.libreria.Interfaces.Callback;
-import com.activity.libreria.Interfaces.Logica;
 import com.activity.libreria.adapter.AdapterUsuarioDisponiblesLibroItems;
 import com.activity.libreria.bd.Conexion;
 import com.activity.libreria.metodos.MetodosLibros;
 import com.activity.libreria.metodos.MetodosUsuario;
 import com.activity.libreria.metodos.SPreferences;
-import com.activity.libreria.modelos.Libros;
-import com.activity.libreria.modelos.LibrosRsp;
 import com.activity.libreria.modelos.ListaLibros;
 import com.activity.libreria.modelos.ListaUsuario;
 import com.activity.libreria.modelos.Usuario;
-import com.activity.libreria.modelos.UsuarioRsp;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
-
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 
 public class librosDisponiblesUsuario extends AppCompatActivity implements SearchView.OnQueryTextListener, View.OnClickListener, Callback {
 
@@ -127,8 +110,8 @@ public class librosDisponiblesUsuario extends AppCompatActivity implements Searc
         // Aqui es como se muestra el nombre del Usuario que ingreso
 
         ListaUsuario lista = (ListaUsuario) object;
-        rol.setText(lista.getUsuarios().get(0).getRol_Usuario());
-        nombre_usuario_txt.setText(lista.getUsuarios().get(0).getNombre_Usuario());
+        rol.setText(lista.getUsuarios().get(0).getRol());
+        nombre_usuario_txt.setText(lista.getUsuarios().get(0).getName());
     }
 
     @Override

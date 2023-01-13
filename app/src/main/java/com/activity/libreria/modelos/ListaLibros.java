@@ -3,13 +3,13 @@ package com.activity.libreria.modelos;
 import java.util.ArrayList;
 
 public class ListaLibros {
-ArrayList<LibrosRsp> libros;
+ArrayList<LibrosRsp> data;
 
     public ArrayList<LibrosRsp> getLibros() {
-        return libros;
+        return data;
     }
 
     public void setLibros(ArrayList<LibrosRsp> libros) {
-        this.libros = libros;
+        this.data = libros;
     }
 }

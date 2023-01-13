@@ -1,7 +1,6 @@
 package com.activity.libreria;
 
 import static com.activity.libreria.bd.NetwordHelper.IP_PUBLICA;
-import static com.activity.libreria.bd.NetwordHelper.PUERTO;
 
 import android.content.Context;
 import android.content.Intent;
@@ -132,8 +131,8 @@ public class ActualizarLibros extends AppCompatActivity implements View.OnClickL
         // Aqui es como se muestra el nombre del Usuario que ingreso
 
         listaUsuario= (ListaUsuario) object;
-        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
-        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getName());
     }
 
     private void cargarDatosLibro(Object object) {
@@ -141,12 +140,12 @@ public class ActualizarLibros extends AppCompatActivity implements View.OnClickL
         listaLibros = libros;
 
         if (libros != null) {
-            nombreLibroView.setText(listaLibros.getLibros().get(0).getTitulo_libro());
-            autorLibroView.setText(listaLibros.getLibros().get(0).getAutor_libro());
-            cantidadLibroView.setText(listaLibros.getLibros().get(0).getCantidad_libro());
-            urlLibroView.setText(listaLibros.getLibros().get(0).getUrl_libro());
-            urlImagenView.setText(listaLibros.getLibros().get(0).getImagen_libro());
-            descripcionView.setText(listaLibros.getLibros().get(0).getDescripcion_libro());
+            nombreLibroView.setText(listaLibros.getLibros().get(0).getTitle());
+            autorLibroView.setText(listaLibros.getLibros().get(0).getAuthor());
+            cantidadLibroView.setText(listaLibros.getLibros().get(0).getQuantity());
+            urlLibroView.setText(listaLibros.getLibros().get(0).getBook_url());
+            urlImagenView.setText(listaLibros.getLibros().get(0).getImage_url());
+            descripcionView.setText(listaLibros.getLibros().get(0).getDescription());
         }
     }
 
@@ -176,22 +175,22 @@ public class ActualizarLibros extends AppCompatActivity implements View.OnClickL
     }
 
     private void seteo() {
-        librosRsp.setTitulo_libro(nombreLibroView.getText().toString().trim());
-        librosRsp.setAutor_libro(autorLibroView.getText().toString().trim());
-        librosRsp.setCantidad_libro(cantidadLibroView.getText().toString().trim());
-        librosRsp.setUrl_libro(urlLibroView.getText().toString().trim());
-        librosRsp.setImagen_libro(urlImagenView.getText().toString().trim());
-        librosRsp.setDescripcion_libro(descripcionView.getText().toString().trim());
+        librosRsp.setTitle(nombreLibroView.getText().toString().trim());
+        librosRsp.setAuthor(autorLibroView.getText().toString().trim());
+        librosRsp.setQuantity(cantidadLibroView.getText().toString().trim());
+        librosRsp.setBook_url(urlLibroView.getText().toString().trim());
+        librosRsp.setImage_url(urlImagenView.getText().toString().trim());
+        librosRsp.setDescription(descripcionView.getText().toString().trim());
     }
 
     public boolean actualizarLibro(){
 
-         String nombre=librosRsp.getTitulo_libro();
-         String autor=librosRsp.getAutor_libro();
-         String cantidad=librosRsp.getCantidad_libro();
-         String urlLibro=librosRsp.getUrl_libro();
-         String imagen=librosRsp.getImagen_libro();
-         String descripcion=librosRsp.getDescripcion_libro();
+         String nombre=librosRsp.getTitle();
+         String autor=librosRsp.getAuthor();
+         String cantidad=librosRsp.getQuantity();
+         String urlLibro=librosRsp.getBook_url();
+         String imagen=librosRsp.getImage_url();
+         String descripcion=librosRsp.getDescription();
 
         String url="https://"+IP_PUBLICA+"/actualizar_libro.php?id="+ id_libro +"&Titulo_libro="+nombre+"&Autor_libro="+autor+"&Cantidad_libro="+cantidad+"&Url_libro="+urlLibro+"&Imagen_libro="+imagen+"&Descripcion_libro="+descripcion+"";
         RequestQueue servicio= Volley.newRequestQueue(this);
@@ -224,12 +223,12 @@ public class ActualizarLibros extends AppCompatActivity implements View.OnClickL
 
     public boolean actualizar_libro_prestado(){
 
-        String nombre=librosRsp.getTitulo_libro();
-        String autor=librosRsp.getAutor_libro();
-        String cantidad=librosRsp.getCantidad_libro();
-        String urlLibro=librosRsp.getUrl_libro();
-        String imagen=librosRsp.getImagen_libro();
-        String descripcion=librosRsp.getDescripcion_libro();
+        String nombre=librosRsp.getTitle();
+        String autor=librosRsp.getAuthor();
+        String cantidad=librosRsp.getQuantity();
+        String urlLibro=librosRsp.getBook_url();
+        String imagen=librosRsp.getImage_url();
+        String descripcion=librosRsp.getDescription();
 
         String url="https://"+IP_PUBLICA+"/actualizar_libro_prestado.php?id="+ id_libro +"&Titulo_libro="+nombre+"&Autor_libro="+autor+"&Cantidad_libro="+cantidad+"&Url_libro="+urlLibro+"&Imagen_libro="+imagen+"&Descripcion_libro="+descripcion+"";
         RequestQueue servicio= Volley.newRequestQueue(this);

@@ -106,8 +106,8 @@ public class actividadAdministrador extends AppCompatActivity implements View.On
         // Aqui es como se muestra el nombre del Usuario que ingreso
 
         listaUsuario= (ListaUsuario) object;
-        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
-        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getName());
     }
 
     @Override

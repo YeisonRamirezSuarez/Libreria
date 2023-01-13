@@ -2,7 +2,6 @@ package com.activity.libreria;
 
 
 import static com.activity.libreria.bd.NetwordHelper.IP_PUBLICA;
-import static com.activity.libreria.bd.NetwordHelper.PUERTO;
 
 import android.content.Context;
 import android.content.Intent;
@@ -26,13 +25,9 @@ import com.activity.libreria.metodos.MetodosAdministrador;
 import com.activity.libreria.metodos.MetodosLibros;
 import com.activity.libreria.metodos.MetodosUsuario;
 import com.activity.libreria.metodos.SPreferences;
-import com.activity.libreria.modelos.Administrador;
-import com.activity.libreria.modelos.Libros;
 import com.activity.libreria.modelos.ListaLibros;
 import com.activity.libreria.modelos.ListaLibrosPrestados;
 import com.activity.libreria.modelos.ListaUsuario;
-
-import java.util.ArrayList;
 
 public class LibrosPrestadosAdmin extends AppCompatActivity implements SearchView.OnQueryTextListener, View.OnClickListener , Callback {
 
@@ -102,8 +97,8 @@ public class LibrosPrestadosAdmin extends AppCompatActivity implements SearchVie
         // Aqui es como se muestra el nombre del Usuario que ingreso
 
         listaUsuario= (ListaUsuario) object;
-        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
-        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getName());
     }
 
     private void traerRecyclerView(Object object) {

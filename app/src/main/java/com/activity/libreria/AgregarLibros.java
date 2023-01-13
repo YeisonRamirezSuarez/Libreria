@@ -1,7 +1,6 @@
 package com.activity.libreria;
 
 import static com.activity.libreria.bd.NetwordHelper.IP_PUBLICA;
-import static com.activity.libreria.bd.NetwordHelper.PUERTO;
 
 import android.content.Context;
 import android.content.Intent;
@@ -15,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.activity.libreria.Interfaces.Callback;
@@ -23,20 +21,14 @@ import com.activity.libreria.bd.Conexion;
 import com.activity.libreria.metodos.MetodosAdministrador;
 import com.activity.libreria.metodos.MetodosLibros;
 import com.activity.libreria.metodos.SPreferences;
-import com.activity.libreria.modelos.Administrador;
 import com.activity.libreria.modelos.Libros;
 import com.activity.libreria.modelos.ListaUsuario;
-import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class AgregarLibros extends AppCompatActivity implements View.OnClickListener, Callback {
@@ -109,8 +101,8 @@ public class AgregarLibros extends AppCompatActivity implements View.OnClickList
         // Aqui es como se muestra el nombre del Usuario que ingreso
 
         listaUsuario= (ListaUsuario) object;
-        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
-        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol());
+        nombre_administrador_txt.setText(listaUsuario.getUsuarios().get(0).getName());
     }
 
     @Override

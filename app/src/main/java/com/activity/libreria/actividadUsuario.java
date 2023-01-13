@@ -2,7 +2,6 @@ package com.activity.libreria;
 
 
 import static com.activity.libreria.bd.NetwordHelper.IP_PUBLICA;
-import static com.activity.libreria.bd.NetwordHelper.PUERTO;
 
 import android.content.Context;
 import android.content.Intent;
@@ -20,26 +19,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.activity.libreria.Interfaces.Callback;
 import com.activity.libreria.adapter.AdapterAdministradorLibroItems;
-import com.activity.libreria.adapter.AdapterUsuarioDisponiblesLibroItems;
 import com.activity.libreria.adapter.AdapterUsuarioLibroItems;
 import com.activity.libreria.bd.BDHelper;
 import com.activity.libreria.bd.Conexion;
 import com.activity.libreria.metodos.MetodosLibros;
 import com.activity.libreria.metodos.MetodosUsuario;
 import com.activity.libreria.metodos.SPreferences;
-import com.activity.libreria.modelos.Libros;
-import com.activity.libreria.modelos.ListaLibros;
 import com.activity.libreria.modelos.ListaLibrosPrestados;
 import com.activity.libreria.modelos.ListaUsuario;
 import com.activity.libreria.modelos.Usuario;
-
-import java.util.ArrayList;
 
 public class actividadUsuario extends AppCompatActivity implements View.OnClickListener,MenuItem.OnMenuItemClickListener, PopupMenu.OnMenuItemClickListener, SearchView.OnQueryTextListener, Callback {
 
@@ -120,8 +113,8 @@ public class actividadUsuario extends AppCompatActivity implements View.OnClickL
         // Aqui es como se muestra el nombre del Usuario que ingreso
 
         listaUsuario= (ListaUsuario) object;
-        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
-        nombre_usuario_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol());
+        nombre_usuario_txt.setText(listaUsuario.getUsuarios().get(0).getName());
     }
 
 

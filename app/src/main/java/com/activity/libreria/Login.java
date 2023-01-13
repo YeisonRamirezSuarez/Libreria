@@ -1,7 +1,5 @@
 package com.activity.libreria;
 
-import static com.activity.libreria.bd.NetwordHelper.*;
-
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,12 +10,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.window.SplashScreen;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.activity.libreria.MVP.Interfaces.interfaces;
-import com.activity.libreria.MVP.Presenter.Presenter;
 import com.activity.libreria.bd.BDHelper;
 
 import com.activity.libreria.metodos.MetodosAdministrador;
@@ -33,8 +29,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
-import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -100,8 +94,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 String contraseñaLogin;
                 correoLogin = correoUsuario.getText().toString().trim();
                 contraseñaLogin = contraseñaUsuario.getText().toString().trim();
-                usuarioRsp.setCorreo_Electronico(correoLogin);
-                usuarioRsp.setContrasena_Usuario(contraseñaLogin);
+                usuarioRsp.setEmail(correoLogin);
+                usuarioRsp.setPassword(contraseñaLogin);
 
                 if (correoLogin.equals("") && contraseñaLogin.equals("")) {
                     Toast.makeText(getApplicationContext(), "ERROR: Campos vacios", Toast.LENGTH_LONG).show();

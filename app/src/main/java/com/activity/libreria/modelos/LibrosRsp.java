@@ -1,74 +1,69 @@
 package com.activity.libreria.modelos;
 
-import androidx.annotation.NonNull;
-
-import java.util.ArrayList;
-import java.util.stream.Stream;
-
 public class LibrosRsp {
 
-    private int _id;
-    private String Titulo_libro;
-    private String Autor_libro;
-    private String Cantidad_libro;
-    private String Url_libro;
-    private String Imagen_libro;
-    private String Descripcion_libro;
+    private int id;
+    private String title;
+    private String author;
+    private String quantity;
+    private String book_url;
+    private String image_url;
+    private String description;
 
-    public int get_id() {
-        return _id;
+    public int getId() {
+        return id;
     }
 
-    public void set_id(int _id) {
-        this._id = _id;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getTitulo_libro() {
-        return Titulo_libro;
+    public String getTitle() {
+        return title;
     }
 
-    public void setTitulo_libro(String titulo_libro) {
-        Titulo_libro = titulo_libro;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public String getAutor_libro() {
-        return Autor_libro;
+    public String getAuthor() {
+        return author;
     }
 
-    public void setAutor_libro(String autor_libro) {
-        Autor_libro = autor_libro;
+    public void setAuthor(String author) {
+        this.author = author;
     }
 
-    public String getCantidad_libro() {
-        return Cantidad_libro;
+    public String getQuantity() {
+        return quantity;
     }
 
-    public void setCantidad_libro(String cantidad_libro) {
-        Cantidad_libro = cantidad_libro;
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
     }
 
-    public String getUrl_libro() {
-        return Url_libro;
+    public String getBook_url() {
+        return book_url;
     }
 
-    public void setUrl_libro(String url_libro) {
-        Url_libro = url_libro;
+    public void setBook_url(String book_url) {
+        this.book_url = book_url;
     }
 
-    public String getImagen_libro() {
-        return Imagen_libro;
+    public String getImage_url() {
+        return image_url;
     }
 
-    public void setImagen_libro(String imagen_libro) {
-        Imagen_libro = imagen_libro;
+    public void setImage_url(String image_url) {
+        this.image_url = image_url;
     }
 
-    public String getDescripcion_libro() {
-        return Descripcion_libro;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDescripcion_libro(String descripcion_libro) {
-        Descripcion_libro = descripcion_libro;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

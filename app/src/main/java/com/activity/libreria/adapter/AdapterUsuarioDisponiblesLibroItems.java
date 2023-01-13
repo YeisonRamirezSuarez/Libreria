@@ -1,7 +1,6 @@
 package com.activity.libreria.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,12 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.activity.libreria.ActualizarLibros;
 import com.activity.libreria.MVP.Interfaces.CallbackLibro;
-import com.activity.libreria.PrestarLibroUsuario;
 import com.activity.libreria.R;
-import com.activity.libreria.modelos.Libros;
-import com.activity.libreria.modelos.LibrosPrestadosRsp;
 import com.activity.libreria.modelos.LibrosRsp;
 import com.bumptech.glide.Glide;
 
@@ -58,12 +53,12 @@ public class AdapterUsuarioDisponiblesLibroItems extends RecyclerView.Adapter<Ad
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         LibrosRsp librosRsp = listaLibros.get(position);
         Glide.with(context)
-                .load(listaLibros.get(position).getImagen_libro())
+                .load(listaLibros.get(position).getImage_url())
                 .error(R.drawable.error)
                 .into(holder.imageView_txt);
 
-        holder.nombre_libro_txt.setText(String.valueOf(listaLibros.get(position).getTitulo_libro()));
-        holder.autor_libro_txt.setText(String.valueOf(listaLibros.get(position).getAutor_libro()));
+        holder.nombre_libro_txt.setText(String.valueOf(listaLibros.get(position).getTitle()));
+        holder.autor_libro_txt.setText(String.valueOf(listaLibros.get(position).getAuthor()));
         holder.mainLayoutMenu.setOnClickListener(v -> callbackLibro.clickListener(librosRsp, screen));
         //Cargamos la imagen
 
@@ -77,12 +72,12 @@ public class AdapterUsuarioDisponiblesLibroItems extends RecyclerView.Adapter<Ad
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                 listaLibros.clear();
                 List<LibrosRsp> collecion = listaOriginal.stream()
-                        .filter(i -> i.getTitulo_libro().toLowerCase().contains(txtBuscar.toLowerCase()))
+                        .filter(i -> i.getTitle().toLowerCase().contains(txtBuscar.toLowerCase()))
                         .collect(Collectors.toList());
                 listaLibros.addAll(collecion);
             } else {
                 for (LibrosRsp librosRsp : listaOriginal) {
-                    if (librosRsp.getTitulo_libro().toLowerCase().contains(txtBuscar.toLowerCase())) {
+                    if (librosRsp.getTitle().toLowerCase().contains(txtBuscar.toLowerCase())) {
                         listaLibros.add(librosRsp);
                     }
                 }

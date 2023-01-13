@@ -1,56 +1,36 @@
 package com.activity.libreria;
 
-import static com.activity.libreria.bd.BDHelper.TABLE_LIBROS;
-import static com.activity.libreria.bd.BDHelper.TABLE_LIBROS_PRESTADOS;
-import static com.activity.libreria.bd.BDHelper.TABLE_USER;
 import static com.activity.libreria.bd.NetwordHelper.IP_PUBLICA;
-import static com.activity.libreria.bd.NetwordHelper.PUERTO;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.activity.libreria.Interfaces.Callback;
-import com.activity.libreria.adapter.AdapterUsuarioLibroItems;
-import com.activity.libreria.bd.BDHelper;
 import com.activity.libreria.bd.Conexion;
 import com.activity.libreria.metodos.MetodosLibros;
 import com.activity.libreria.metodos.MetodosUsuario;
 import com.activity.libreria.metodos.SPreferences;
 import com.activity.libreria.modelos.Libros;
 import com.activity.libreria.modelos.ListaLibros;
-import com.activity.libreria.modelos.ListaLibrosPrestados;
 import com.activity.libreria.modelos.ListaUsuario;
-import com.activity.libreria.modelos.Usuario;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.google.gson.Gson;
-
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class VerMiLibro extends AppCompatActivity implements View.OnClickListener, Callback {
 
@@ -139,19 +119,19 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
         // Aqui es como se muestra el nombre del Usuario que ingreso
 
         listaUsuario= (ListaUsuario) object;
-        rol.setText(listaUsuario.getUsuarios().get(0).getRol_Usuario());
-        nombre_usuario_txt.setText(listaUsuario.getUsuarios().get(0).getNombre_Usuario());
+        rol.setText(listaUsuario.getUsuarios().get(0).getRol());
+        nombre_usuario_txt.setText(listaUsuario.getUsuarios().get(0).getName());
     }
 
     private void cargarDatosLibro(Object object) {
         ListaLibros libros = (ListaLibros) object;
         listaLibros = libros;
         if (libros != null) {
-            nombreLibro_ver.setText(libros.getLibros().get(0).getTitulo_libro());
-            autorLibro_ver.setText(libros.getLibros().get(0).getAutor_libro());
-            descripcionLibro_ver.setText(libros.getLibros().get(0).getDescripcion_libro());
+            nombreLibro_ver.setText(libros.getLibros().get(0).getTitle());
+            autorLibro_ver.setText(libros.getLibros().get(0).getAuthor());
+            descripcionLibro_ver.setText(libros.getLibros().get(0).getDescription());
             Glide.with(this)
-                    .load(libros.getLibros().get(0).getImagen_libro())
+                    .load(libros.getLibros().get(0).getImage_url())
                     .error(R.drawable.error)
                     .into(imageView_txt);
         }
@@ -173,7 +153,7 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
                 try {
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_VIEW);
-                    String url = listaLibros.getLibros().get(0).getUrl_libro();
+                    String url = listaLibros.getLibros().get(0).getBook_url();
                     intent.setData(Uri.parse(url));
                     startActivity(intent);
                 } catch (Exception e) {
@@ -215,8 +195,8 @@ public class VerMiLibro extends AppCompatActivity implements View.OnClickListene
     }
 
     public boolean InputlibrosCantidad(ListaLibros listaLibros){
-        final int id=listaLibros.getLibros().get(0).get_id();
-        final String cantidad= String.valueOf(Integer.parseInt(listaLibros.getLibros().get(0).getCantidad_libro()) + 1);
+        final int id=listaLibros.getLibros().get(0).getId();
+        final String cantidad= String.valueOf(Integer.parseInt(listaLibros.getLibros().get(0).getQuantity()) + 1);
 
         String url="https://"+IP_PUBLICA+"/actualizar_cantidad_libro.php?id="+id+"&Cantidad_libro="+cantidad+"";
         RequestQueue servicio= Volley.newRequestQueue(this);

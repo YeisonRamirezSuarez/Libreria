@@ -1,67 +1,67 @@
 package com.activity.libreria.modelos;
 
 public class UsuarioRsp {
-    private int _id;
-    private String Nombre_Usuario;
-    private String Correo_Electronico;
-    private String Telefono_Usuario;
-    private String Direccion_Usuario;
-    private String Contrasena_Usuario;
-    private String Rol_Usuario;
+    private int id;
+    private String name;
+    private String email;
+    private String phone;
+    private String address;
+    private String password;
+    private String rol;
 
-    public int get_id() {
-        return _id;
+    public int getId() {
+        return id;
     }
 
-    public void set_id(int _id) {
-        this._id = _id;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public String getNombre_Usuario() {
-        return Nombre_Usuario;
+    public String getName() {
+        return name;
     }
 
-    public void setNombre_Usuario(String nombre_Usuario) {
-        Nombre_Usuario = nombre_Usuario;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getCorreo_Electronico() {
-        return Correo_Electronico;
+    public String getEmail() {
+        return email;
     }
 
-    public void setCorreo_Electronico(String correo_Electronico) {
-        Correo_Electronico = correo_Electronico;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getTelefono_Usuario() {
-        return Telefono_Usuario;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setTelefono_Usuario(String telefono_Usuario) {
-        Telefono_Usuario = telefono_Usuario;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public String getDireccion_Usuario() {
-        return Direccion_Usuario;
+    public String getAddress() {
+        return address;
     }
 
-    public void setDireccion_Usuario(String direccion_Usuario) {
-        Direccion_Usuario = direccion_Usuario;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
-    public String getContrasena_Usuario() {
-        return Contrasena_Usuario;
+    public String getPassword() {
+        return password;
     }
 
-    public void setContrasena_Usuario(String contrasena_Usuario) {
-        Contrasena_Usuario = contrasena_Usuario;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
-    public String getRol_Usuario() {
-        return Rol_Usuario;
+    public String getRol() {
+        return rol;
     }
 
-    public void setRol_Usuario(String rol_Usuario) {
-        Rol_Usuario = rol_Usuario;
+    public void setRol(String rol) {
+        this.rol = rol;
     }
 }
