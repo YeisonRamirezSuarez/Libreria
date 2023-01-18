@@ -466,11 +466,11 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
         funciones.setVisibility(View.GONE);
         librosPrestadosRsp = (LibrosPrestadosRsp) object;
         if (librosPrestadosRsp != null) {
-            nombreLibroHistorial_ver.setText(librosPrestadosRsp.getTitulo_libro_Prestado());
-            autorLibroHistorial_ver.setText(librosPrestadosRsp.getAutor_libro_Prestado());
-            descripcionLibroHistorial_ver.setText(librosPrestadosRsp.getDescripcion_libro_Prestado());
+            nombreLibroHistorial_ver.setText(librosPrestadosRsp.getTitle());
+            autorLibroHistorial_ver.setText(librosPrestadosRsp.getAuthor());
+            descripcionLibroHistorial_ver.setText(librosPrestadosRsp.getDescription());
             Glide.with(this)
-                    .load(librosPrestadosRsp.getImagen_libro_Prestado())
+                    .load(librosPrestadosRsp.getImage_url())
                     .error(R.drawable.error)
                     .into(imageView_txt);
         }
@@ -594,7 +594,7 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
                 try {
                     Intent intent = new Intent();
                     intent.setAction(Intent.ACTION_VIEW);
-                    String url = librosPrestadosRsp.getUrl_libro_Prestado();
+                    String url = librosPrestadosRsp.getBook_url();
                     intent.setData(Uri.parse(url));
                     startActivity(intent);
                 } catch (Exception e) {
@@ -608,11 +608,11 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
         TextView titulo = findViewById(R.id.tituloBannerUser);
         titulo.setText("MiLibro");
         if (listaLibrosPrestados != null) {
-            nombreLibro_ver.setText(librosPrestadosRsp.getTitulo_libro_Prestado());
-            autorLibro_ver.setText(librosPrestadosRsp.getAutor_libro_Prestado());
-            descripcionLibro_ver.setText(librosPrestadosRsp.getDescripcion_libro_Prestado());
+            nombreLibro_ver.setText(librosPrestadosRsp.getTitle());
+            autorLibro_ver.setText(librosPrestadosRsp.getAuthor());
+            descripcionLibro_ver.setText(librosPrestadosRsp.getDescription());
             Glide.with(this)
-                    .load(librosPrestadosRsp.getImagen_libro_Prestado())
+                    .load(librosPrestadosRsp.getImage_url())
                     .error(R.drawable.error)
                     .into(imageView_txt);
         }
@@ -658,8 +658,8 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
                 showScreen(SCREEN_PANTALLA_CARGA, SCREEN_LIBROS_DISPONIBLES, SCREEN_ADMINISTRADOR);
                 break;
             case SCREEN_ACTUALIZAR_LIBRO:
-                if(respuesta.equals("\tcorrecto")) {
-                    Toast.makeText(this, "Libro actualizado corrctamente", Toast.LENGTH_SHORT).show();
+                if(respuesta.equals("El libro se actualizó correctamente.")) {
+                    Toast.makeText(this, respuesta, Toast.LENGTH_SHORT).show();
                     showScreen(SCREEN_PANTALLA_CARGA, SCREEN_LIBROS_DISPONIBLES, SCREEN_ADMINISTRADOR);
                 }else if(respuesta.equals("\tFallo")){
                     Toast.makeText(getApplicationContext(),
@@ -701,7 +701,7 @@ public class MasterControl extends AppCompatActivity implements interfaces.View 
                 boolean siExiste = false;
                 listaLibrosPrestados = (ListaLibrosPrestados) object;
                 for (int j = 0; j < listaLibrosPrestados.getLibros().size(); j++) {
-                    if (listaLibrosPrestados.getLibros().get(j).getCorreo_Prestamo_libro().equals(object2) && listaLibrosPrestados.getLibros().get(j).get_id_Libro() == librosRsp.getId()) {
+                    if (listaLibrosPrestados.getLibros().get(j).getEmail_user().equals(object2) && listaLibrosPrestados.getLibros().get(j).getId_book() == librosRsp.getId()) {
                         siExiste = true;
                     }
                 }

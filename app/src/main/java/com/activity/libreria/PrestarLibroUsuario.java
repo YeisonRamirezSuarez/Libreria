@@ -230,7 +230,7 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
     private void validar(){
         for (int j = 0; j < listaLibrosPrestados.getLibros().size(); j++)
         {
-            if (listaLibrosPrestados.getLibros().get(j).getCorreo_Prestamo_libro().equals(sharedPreferences.getSharedPreference()) && listaLibrosPrestados.getLibros().get(j).get_id_Libro() == id)
+            if (listaLibrosPrestados.getLibros().get(j).getEmail_user().equals(sharedPreferences.getSharedPreference()) && listaLibrosPrestados.getLibros().get(j).getId_book() == id)
             {
                 siExiste = true;
             }

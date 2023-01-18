@@ -13,6 +13,7 @@ import com.activity.libreria.modelos.LibrosRsp;
 import com.activity.libreria.modelos.ListaLibros;
 import com.activity.libreria.modelos.ListaLibrosPrestados;
 import com.activity.libreria.modelos.ListaUsuario;
+import com.activity.libreria.modelos.Mensajes;
 import com.activity.libreria.modelos.UsuarioRsp;
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -90,33 +91,82 @@ public class Model implements interfaces.Model{
 
     @Override
     public void peticionCrearLibro(LibrosRsp librosRsp) {
-        final String nombre=librosRsp.getTitle();
-        final String autor=librosRsp.getAuthor();
-        final String cantidad=librosRsp.getQuantity();
-        final String urlLibro=librosRsp.getBook_url();
-        final String imagen=librosRsp.getImage_url();
-        final String descripcion=librosRsp.getDescription();
 
-        String url="https://"+IP_PUBLICA+"/registro_libro.php?Titulo_libro="+nombre+"&Autor_libro="+autor+"&Cantidad_libro="+cantidad+"&Url_libro="+urlLibro+"&Imagen_libro="+imagen+"&Descripcion_libro="+descripcion+"";
-        RequestQueue servicio= Volley.newRequestQueue(context);
-        StringRequest respuesta=new StringRequest(
-                Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                presenter.respuesta(response, SCREEN_CREAR_LIBRO);
-            }
-        }, new Response.ErrorListener() {
+        String URL="https://"+IP_PUBLICA+"/libro.php";
+
+        Map<String, String> postParam= new HashMap<String, String>();
+        postParam.put("title", librosRsp.getTitle());
+        postParam.put("author", librosRsp.getAuthor());
+        postParam.put("quantity", librosRsp.getQuantity());
+        postParam.put("book_url", librosRsp.getBook_url());
+        postParam.put("image_url", librosRsp.getImage_url());
+        postParam.put("description", librosRsp.getDescription());
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                URL, new JSONObject(postParam),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Gson gson = new Gson();
+                        Mensajes msj = gson.fromJson(String.valueOf(response), Mensajes.class);
+                        presenter.respuesta(msj.getMensaje(), SCREEN_CREAR_LIBRO);
+                    }
+                }, new Response.ErrorListener() {
+
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context,
-                        "Error comunicación"+error,Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
             }
-        });
-        servicio.add(respuesta);
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+        RequestQueue queue = Volley.newRequestQueue(context);
+        queue.add(jsonObjReq);
     }
 
     @Override
     public void peticionCrearUsuario(UsuarioRsp usuarioRsp) {
+        String URL="https://"+IP_PUBLICA+"/usuario.php";
+
+        Map<String, String> postParam= new HashMap<String, String>();
+        postParam.put("name", usuarioRsp.getName());
+        postParam.put("email", usuarioRsp.getEmail());
+        postParam.put("phone", usuarioRsp.getPhone());
+        postParam.put("address", usuarioRsp.getAddress());
+        postParam.put("password", usuarioRsp.getPassword());
+        postParam.put("rol", "usuario");
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                URL, new JSONObject(postParam),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Gson gson = new Gson();
+                        Mensajes msj = gson.fromJson(String.valueOf(response), Mensajes.class);
+                        presenter.respuesta(msj.getMensaje(), SCREEN_REGISTRAR);
+                        //presenter.respuesta(msj.getMensaje(), SCREEN_CREAR_LIBRO);
+                    }
+                }, new Response.ErrorListener() {
+
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+        RequestQueue queue = Volley.newRequestQueue(context);
+        queue.add(jsonObjReq);
         final String nombre=usuarioRsp.getName();
         final String correo=usuarioRsp.getEmail();
         final String telefono=usuarioRsp.getPhone();
@@ -146,69 +196,88 @@ public class Model implements interfaces.Model{
     @Override
     public void peticionActualizarLibro(LibrosRsp librosRsp, String screen) {
         if (screen.equals(SCREEN_ACTUALIZAR_LIBRO)) {
-            int id_libro = librosRsp.getId();
-            String nombre = librosRsp.getTitle();
-            String autor = librosRsp.getAuthor();
-            String cantidad = librosRsp.getQuantity();
-            String urlLibro = librosRsp.getBook_url();
-            String imagen = librosRsp.getImage_url();
-            String descripcion = librosRsp.getDescription();
+            String URL="https://"+IP_PUBLICA+"/libro.php?update=1&id="+librosRsp.getId()+"";
 
-            String url = "https://" + IP_PUBLICA + "/actualizar_libro.php?id=" + id_libro + "&Titulo_libro=" + nombre + "&Autor_libro=" + autor + "&Cantidad_libro=" + cantidad + "&Url_libro=" + urlLibro + "&Imagen_libro=" + imagen + "&Descripcion_libro=" + descripcion + "";
-            RequestQueue servicio = Volley.newRequestQueue(context);
-            StringRequest respuesta = new StringRequest(
-                    Request.Method.POST, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    if (response.equals("\tcorrecto")) {
-                        presenter.respuesta(response, screen);
-                    } else if (response.equals("\tFallo")) {
-                        Toast.makeText(context,
-                                "Fallo la actualizacion correctamente", Toast.LENGTH_LONG).show();
-                    }
+            Map<String, String> postParam= new HashMap<String, String>();
+            postParam.put("title", librosRsp.getTitle());
+            postParam.put("author", librosRsp.getAuthor());
+            postParam.put("quantity", librosRsp.getQuantity());
+            postParam.put("book_url", librosRsp.getBook_url());
+            postParam.put("image_url", librosRsp.getImage_url());
+            postParam.put("description", librosRsp.getDescription());
 
-                }
-            }, new Response.ErrorListener() {
+            JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                    URL, new JSONObject(postParam),
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Gson gson = new Gson();
+                            Mensajes msj = gson.fromJson(String.valueOf(response), Mensajes.class);
+                            presenter.respuesta(msj.getMensaje(), screen);
+                        }
+                    }, new Response.ErrorListener() {
+
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(context,
-                            error.toString(), Toast.LENGTH_LONG).show();
+                    Gson gson = new Gson();
+                    Mensajes msj = gson.fromJson(String.valueOf(error), Mensajes.class);
+                    Toast.makeText(context, msj.getMensaje(), Toast.LENGTH_SHORT).show();
                 }
-            });
-            servicio.add(respuesta);
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Content-Type", "application/json; charset=utf-8");
+                    return headers;
+                }
+            };
+            RequestQueue queue = Volley.newRequestQueue(context);
+            queue.add(jsonObjReq);
+
         }else if(screen.equals(SCREEN_ACTUALIZAR_LIBRO_PRESTADO)){
-            int id_libro = librosRsp.getId();
-            String nombre=librosRsp.getTitle();
-            String autor=librosRsp.getAuthor();
-            String cantidad=librosRsp.getQuantity();
-            String urlLibro=librosRsp.getBook_url();
-            String imagen=librosRsp.getImage_url();
-            String descripcion=librosRsp.getDescription();
 
-            String url="https://"+IP_PUBLICA+"/actualizar_libro_prestado.php?id="+ id_libro +"&Titulo_libro="+nombre+"&Autor_libro="+autor+"&Cantidad_libro="+cantidad+"&Url_libro="+urlLibro+"&Imagen_libro="+imagen+"&Descripcion_libro="+descripcion+"";
-            RequestQueue servicio= Volley.newRequestQueue(context);
-            StringRequest respuesta=new StringRequest(
-                    Request.Method.POST, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    System.out.printf(response);
-                }
-            }, new Response.ErrorListener() {
+            String URL="https://"+IP_PUBLICA+"/libro.php?prestado=1&id="+librosRsp.getId()+"";
+
+            Map<String, String> postParam= new HashMap<String, String>();
+            postParam.put("title", librosRsp.getTitle());
+            postParam.put("author", librosRsp.getAuthor());
+            postParam.put("quantity", librosRsp.getQuantity());
+            postParam.put("book_url", librosRsp.getBook_url());
+            postParam.put("image_url", librosRsp.getImage_url());
+            postParam.put("description", librosRsp.getDescription());
+
+            JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                    URL, new JSONObject(postParam),
+                    new Response.Listener<JSONObject>() {
+                        @Override
+                        public void onResponse(JSONObject response) {
+                            Gson gson = new Gson();
+                            Mensajes msj = gson.fromJson(String.valueOf(response), Mensajes.class);
+                            System.out.printf(msj.getMensaje());
+                        }
+                    }, new Response.ErrorListener() {
+
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(context,
-                            error.toString(),Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
                 }
-            });
-            servicio.add(respuesta);
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> headers = new HashMap<String, String>();
+                    headers.put("Content-Type", "application/json; charset=utf-8");
+                    return headers;
+                }
+            };
+            RequestQueue queue = Volley.newRequestQueue(context);
+            queue.add(jsonObjReq);
         }
     }
 
     @Override
     public void peticionEliminarLibro(LibrosRsp librosRsp, String screen) {
         if (screen.equals(SCREEN_ACTUALIZAR_LIBRO)) {
-            int id_libro = librosRsp.getId();
-            String URL = "https://" + IP_PUBLICA + "/eliminar_libro.php?id=" + id_libro + "";
+            String URL="https://"+IP_PUBLICA+"/libro.php?delete=1&id="+librosRsp.getId()+"";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
                     new Response.Listener<String>() {
                         @Override
@@ -226,8 +295,7 @@ public class Model implements interfaces.Model{
             RequestQueue requestQueue = Volley.newRequestQueue(context);
             requestQueue.add(stringRequest);
         }else if(screen.equals(SCREEN_ACTUALIZAR_LIBRO_PRESTADO)){
-            int id_libro = librosRsp.getId();
-            String URL = "https://"+IP_PUBLICA+"/eliminar_libro_prestado_id.php?id="+id_libro+"";
+            String URL="https://"+IP_PUBLICA+"/libro.php?delete_prestado=1&id="+librosRsp.getId()+"";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
                     new Response.Listener<String>() {
                         @Override
@@ -250,13 +318,13 @@ public class Model implements interfaces.Model{
     @Override
     public void peticionEliminarLibroPrestado(LibrosPrestadosRsp librosPrestadosRsp,String screen) {
         int id = librosPrestadosRsp.get_id();
-        String URL = "https://"+IP_PUBLICA+"/eliminar_libro_prestado.php?id="+id+"";
+        String URL = "https://"+IP_PUBLICA+"/peticiones.php?delete=1&id="+id+"";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         peticionConsultaLibroId(librosPrestadosRsp,"");
-                        presenter.respuesta(response, screen);
+                        presenter.respuesta("Libro devuelto", screen);
                     }
                 },
                 new Response.ErrorListener() {
@@ -274,43 +342,71 @@ public class Model implements interfaces.Model{
     public void peticionPrestarLibro(ListaUsuario listaUsuario, LibrosRsp librosRsp, String screen) {
         DateFormat df = new SimpleDateFormat(" d MMM yyyy, HH:mm"); //definir formato para fecha
         String fecha_registro = df.format(Calendar.getInstance().getTime()); //obtener fecha
-        final int id=librosRsp.getId();
-        final String nombre=librosRsp.getTitle();
-        final String autor=librosRsp.getAuthor();
-        final String cantidad=librosRsp.getQuantity();
-        final String urlLibro=librosRsp.getBook_url();
-        final String imagen=librosRsp.getImage_url();
-        final String descripcion=librosRsp.getDescription();
-        final String Fecha_Prestamo_libro=fecha_registro;
-        final String Correo_Prestamo_libro=listaUsuario.getUsuarios().get(0).getEmail();
-        final String Nombre_Usuario_Prestamo_libro=listaUsuario.getUsuarios().get(0).getName();
-        final String Telefono_Usuario_Prestamo_libro =listaUsuario.getUsuarios().get(0).getPhone();
+        LibrosPrestadosRsp libros = new LibrosPrestadosRsp();
 
-        String url="https://"+IP_PUBLICA+"/registro_libro_prestado.php?id="+id+"&Titulo_libro="+nombre+"&Autor_libro="+autor+"&Cantidad_libro="+cantidad+"&Url_libro="+urlLibro+"&Imagen_libro="+imagen+"&Descripcion_libro="+descripcion+"" +
-                "&Fecha_Prestamo_libro="+Fecha_Prestamo_libro+"&Correo_Prestamo_libro="+Correo_Prestamo_libro+"&Nombre_Usuario_Prestamo_libro="+Nombre_Usuario_Prestamo_libro+"&Telefono_Usuario_Prestamo_libro="+Telefono_Usuario_Prestamo_libro+"";
-        RequestQueue servicio= Volley.newRequestQueue(context);
-        StringRequest respuesta=new StringRequest(
-                Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                InputlibrosCantidadRestar(listaLibros);
-                presenter.respuesta(response, screen);
-            }
-        }, new Response.ErrorListener() {
+        libros.setId_book(librosRsp.getId());
+        libros.setTitle(librosRsp.getTitle());
+        libros.setAuthor(librosRsp.getAuthor());
+        libros.setBook_url(librosRsp.getBook_url());
+        libros.setImage_url(librosRsp.getImage_url());
+        libros.setDescription(librosRsp.getDescription());
+        libros.setDate(fecha_registro);
+        libros.setEmail_user(listaUsuario.getUsuarios().get(0).getEmail());
+        libros.setName_user(listaUsuario.getUsuarios().get(0).getName());
+        libros.setPhone_user(listaUsuario.getUsuarios().get(0).getPhone());
+
+        String URL="https://"+IP_PUBLICA+"/peticiones.php?prestar=1";
+
+        Map<String, String> postParam= new HashMap<String, String>();
+        postParam.put("id_book", String.valueOf(libros.getId_book()));
+        postParam.put("title", libros.getTitle());
+        postParam.put("author", libros.getAuthor());
+        postParam.put("book_url", libros.getBook_url());
+        postParam.put("image_url", libros.getImage_url());
+        postParam.put("description", libros.getDescription());
+        postParam.put("date", libros.getDate());
+        postParam.put("email_user", libros.getEmail_user());
+        postParam.put("name_user", libros.getName_user());
+        postParam.put("phone_user", libros.getPhone_user());
+
+        JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.POST,
+                URL, new JSONObject(postParam),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        InputlibrosCantidadRestar(listaLibros, libros.getId_book());
+                        presenter.respuesta("Libro prestado", screen);
+                    }
+                }, new Response.ErrorListener() {
+
             @Override
             public void onErrorResponse(VolleyError error) {
-                Toast.makeText(context,
-                        "Error comunicación"+error,Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, error.toString(), Toast.LENGTH_SHORT).show();
             }
-        });
-        servicio.add(respuesta);
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type", "application/json; charset=utf-8");
+                return headers;
+            }
+        };
+        RequestQueue queue = Volley.newRequestQueue(context);
+        queue.add(jsonObjReq);
     }
 
-    public boolean InputlibrosCantidadRestar(ListaLibros listaLibros){
-        final int id=listaLibros.getLibros().get(0).getId();
-        final String cantidad= String.valueOf(Integer.parseInt(listaLibros.getLibros().get(0).getQuantity()) - 1);
+    public boolean InputlibrosCantidadRestar(ListaLibros listaLibros, int id_libro){
+        //final String cantidad= String.valueOf(Integer.parseInt(listaLibros.getLibros().get(0).getQuantity()) - 1);
+        String cantidad = null;
+        int cantidadLibro = 0;
+        for(LibrosRsp libro : listaLibros.getLibros()){
+            if (libro.getId() == id_libro){
+                cantidad = libro.getQuantity();
+                cantidadLibro = Integer.parseInt(cantidad) - 1;
+            }
+        }
 
-        String url="https://"+IP_PUBLICA+"/actualizar_cantidad_libro.php?id="+id+"&Cantidad_libro="+cantidad+"";
+        String url="https://"+IP_PUBLICA+"/peticiones.php?cantidad=1&id="+id_libro+"&cantidad_libro="+cantidadLibro+"";
         RequestQueue servicio= Volley.newRequestQueue(context);
         StringRequest respuesta=new StringRequest(
                 Request.Method.POST, url, new Response.Listener<String>() {
@@ -334,7 +430,7 @@ public class Model implements interfaces.Model{
         final int id=listaLibros.getLibros().get(0).getId();
         final String cantidad= String.valueOf(Integer.parseInt(listaLibros.getLibros().get(0).getQuantity()) + 1);
 
-        String url="https://"+IP_PUBLICA+"/actualizar_cantidad_libro.php?id="+id+"&Cantidad_libro="+cantidad+"";
+        String url="https://"+IP_PUBLICA+"/peticiones.php?cantidad=1&id="+id+"&cantidad_libro="+cantidad+"";
         RequestQueue servicio= Volley.newRequestQueue(context);
         StringRequest respuesta=new StringRequest(
                 Request.Method.POST, url, new Response.Listener<String>() {
@@ -430,7 +526,7 @@ public class Model implements interfaces.Model{
 
     @Override
     public void peticionLibrosPrestados(String screen) {
-        String URL = "https://"+IP_PUBLICA+"/libros_prestados_disponibles_por_id.php";
+        String URL = "https://"+IP_PUBLICA+"/peticiones.php?prestado=1";
         String correo = sPreferences.getSharedPreference();
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET,URL,null,
@@ -464,8 +560,8 @@ public class Model implements interfaces.Model{
     @Override
     public void peticionLibrosPrestadosId(Object object, String screen) {
         librosPrestadosRsp = (LibrosPrestadosRsp) object;
-        int id = librosPrestadosRsp.get_id_Libro();
-        String URL = "https://"+IP_PUBLICA+"/consulta_libros_prestados.php?id="+id+"";
+        int id = librosPrestadosRsp.getId_book();
+        String URL = "https://"+IP_PUBLICA+"/peticiones.php?prestado=1&id="+id+"";
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET,URL,null,
                 new Response.Listener<JSONObject>() {
@@ -497,7 +593,7 @@ public class Model implements interfaces.Model{
 
     @Override
     public void peticionLibrosPrestadosUsuario(String screen) {
-        String URL = "https://"+IP_PUBLICA+"/consulta_libro_prestado.php?correo="+sPreferences.getSharedPreference()+"";
+        String URL = "https://"+IP_PUBLICA+"/libro.php?email="+sPreferences.getSharedPreference()+"";
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET,URL,null,
                 new Response.Listener<JSONObject>() {
@@ -529,7 +625,7 @@ public class Model implements interfaces.Model{
 
     @Override
     public void peticionConsultaLibroPrestados(String screen) {
-        String URL = "https://"+IP_PUBLICA+"/libros_prestados_disponibles.php";
+        String URL = "https://"+IP_PUBLICA+"/peticiones.php?prestados=1";
         String correo = sPreferences.getSharedPreference();
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET,URL,null,
@@ -560,8 +656,8 @@ public class Model implements interfaces.Model{
     }
 
     public void peticionConsultaLibroId(LibrosPrestadosRsp librosPrestadosRsp,String screen) {
-        int id = librosPrestadosRsp.get_id_Libro();
-        String URL = "https://"+IP_PUBLICA+"/consulta_libro_id.php?id="+id+"";
+        int id = librosPrestadosRsp.getId_book();
+        String URL = "https://"+IP_PUBLICA+"/libro.php?id="+id+"";
         String correo = sPreferences.getSharedPreference();
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET,URL,null,

@@ -1,7 +1,6 @@
 package com.activity.libreria.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,14 +11,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.activity.libreria.ActualizarLibros;
-import com.activity.libreria.HistorialUsuarioLibros;
 import com.activity.libreria.MVP.Interfaces.CallbackLibro;
 import com.activity.libreria.R;
-import com.activity.libreria.modelos.Libros;
 import com.activity.libreria.modelos.LibrosPrestadosRsp;
-import com.activity.libreria.modelos.LibrosRsp;
-import com.activity.libreria.modelos.ListaLibrosPrestados;
 import com.bumptech.glide.Glide;
 
 import java.util.ArrayList;
@@ -58,12 +52,12 @@ public class AdapterAdministradorLibroPrestadoItems extends RecyclerView.Adapter
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         LibrosPrestadosRsp librosPrestadosRsp = listaLibros.get(position);
         Glide.with(context)
-                .load(listaLibros.get(position).getImagen_libro_Prestado())
+                .load(listaLibros.get(position).getImage_url())
                 .error(R.drawable.error)
                 .into(holder.imageView_txt);
 
-        holder.nombre_libro_txt.setText(String.valueOf(listaLibros.get(position).getTitulo_libro_Prestado()));
-        holder.autor_libro_txt.setText(String.valueOf(listaLibros.get(position).getAutor_libro_Prestado()));
+        holder.nombre_libro_txt.setText(String.valueOf(listaLibros.get(position).getTitle()));
+        holder.autor_libro_txt.setText(String.valueOf(listaLibros.get(position).getAuthor()));
         holder.mainLayoutMenu.setOnClickListener(v -> callbackLibro.clickListener(librosPrestadosRsp, screen));
         //Cargamos la imagen
 
@@ -77,12 +71,12 @@ public class AdapterAdministradorLibroPrestadoItems extends RecyclerView.Adapter
             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
                 listaLibros.clear();
                 List<LibrosPrestadosRsp> collecion = listaOriginal.stream()
-                        .filter(i -> i.getTitulo_libro_Prestado().toLowerCase().contains(txtBuscar.toLowerCase()))
+                        .filter(i -> i.getTitle().toLowerCase().contains(txtBuscar.toLowerCase()))
                         .collect(Collectors.toList());
                 listaLibros.addAll(collecion);
             } else {
                 for (LibrosPrestadosRsp librosPrestadosRsp : listaOriginal) {
-                    if (librosPrestadosRsp.getTitulo_libro_Prestado().toLowerCase().contains(txtBuscar.toLowerCase())) {
+                    if (librosPrestadosRsp.getTitle().toLowerCase().contains(txtBuscar.toLowerCase())) {
                         listaLibros.add(librosPrestadosRsp);
                     }
                 }
