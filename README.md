@@ -21,8 +21,8 @@ This project is a Java Android application for managing books. It allows users t
 <img src="https://github.com/YeisonRamirezSuarez/Libreria/assets/107414134/d1a1e6e8-b014-424f-9112-a8920bc99286" width="200px">
 <img src="https://github.com/YeisonRamirezSuarez/Libreria/assets/107414134/b6af05e4-7226-437e-9aa3-1b24cce4194c" width="200px">
 <img src="https://github.com/YeisonRamirezSuarez/Libreria/assets/107414134/8b9b3877-fe78-4e65-b5d0-419dd12b1f2a" width="200px">
-<img src="https://github.com/YeisonRamirezSuarez/Libreria/assets/107414134/af6c470e-a362-4e4c-ada0-4c441d06c1a" width="200px">
-<img src="https://github.com/YeisonRamirezSuarez/Libreria/assets/107414134/73fe4641-2970-4872-a8a3-c6b20e2324ff" width="200px">
+<img src="https://github.com/YeisonRamirezSuarez/Libreria/assets/107414134/853a81ab-6f25-4d2b-acae-9259f92b97eb" width="200px">
+<img src="https://github.com/YeisonRamirezSuarez/Libreria/assets/107414134/e18da6ce-42ec-474a-9a17-ec650f8aec6a" width="200px">
 
 ## Prerequisites
 
