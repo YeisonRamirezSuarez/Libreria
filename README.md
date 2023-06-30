@@ -12,11 +12,9 @@ This project is a Java Android application for managing books. It allows users t
 - Book Borrowing: Users can select and read borrowed books.
 - Book Return: Users can return borrowed books to the library.
 
-## Contendio
+## Content
 
-![admin](https://github.com/YeisonRamirezSuarez/Libreria/assets/107414134/1be56245-bb5e-4612-9dad-ac5791034fcd)
-
-
+![login](https://github.com/YeisonRamirezSuarez/Libreria/assets/107414134/b4f053b6-642d-48b5-952b-f2500c11d6c2)
 
 ## Prerequisites
 
