@@ -13,9 +13,14 @@ This project is a Java Android application for managing books. It allows users t
 - Book Return: Users can return borrowed books to the library.
 
 ## Content
+![Ldispo]()
 
-<img src="https://github.com/YeisonRamirezSuarez/Libreria/assets/107414134/543a61c9-53fe-4c46-a59c-7226539ff686" width="200px">
+<img src="https://github.com/YeisonRamirezSuarez/Libreria/assets/107414134/ea636e30-ef28-4d37-9328-3c1739939dbd" width="200px">
 <img src="https://github.com/YeisonRamirezSuarez/Libreria/assets/107414134/9784ba2e-94eb-43eb-a2b2-e6a0388592d9" width="200px">
+<img src="https://github.com/YeisonRamirezSuarez/Libreria/assets/107414134/26103ffb-3c77-4225-82a8-a7ccfc0372e7" width="200px">
+<img src="https://github.com/YeisonRamirezSuarez/Libreria/assets/107414134/d1a1e6e8-b014-424f-9112-a8920bc99286" width="200px">
+<img src="https://github.com/YeisonRamirezSuarez/Libreria/assets/107414134/b6af05e4-7226-437e-9aa3-1b24cce4194c" width="200px">
+<img src="https://github.com/YeisonRamirezSuarez/Libreria/assets/107414134/8b9b3877-fe78-4e65-b5d0-419dd12b1f2a" width="200px">
 
 ## Prerequisites
 
