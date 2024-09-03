@@ -77,8 +77,8 @@ public class actividadAdministrador extends AppCompatActivity implements View.On
         conexion = new Conexion();
         sPreferences = new SPreferences(this);
 
-       // conexion.consultaLibros("https://"+IP_PUBLICA+"/libros_disponibles.php", this, this);
-        //conexion.buscarUsuarios("https://"+IP_PUBLICA+"/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
+       // conexion.consultaLibros(IP_PUBLICA+"/libros_disponibles.php", this, this);
+        //conexion.buscarUsuarios(IP_PUBLICA+"/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
 
     }
 

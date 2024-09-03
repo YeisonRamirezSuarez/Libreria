@@ -102,7 +102,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener {
                 } else {
                     sPreferences.setSharedPreference(correoLogin);
                     presenter.consultarDatosLogin(usuarioRsp);
-                    //validarUsuario("https://"+IP_PUBLICA+"/validar_usuario.php");
+                    //validarUsuario(IP_PUBLICA+"/validar_usuario.php");
 
                 }
             }

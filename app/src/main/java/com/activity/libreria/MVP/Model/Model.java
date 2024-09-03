@@ -56,7 +56,7 @@ public class Model implements interfaces.Model{
 
     @Override
     public void peticionValidarLogin(UsuarioRsp usuarioRsp) {
-        String URL = "https://"+IP_PUBLICA+"/login.php";
+        String URL = IP_PUBLICA+"/login.php";
 
         Map<String, String> postParam= new HashMap<String, String>();
         postParam.put("email", usuarioRsp.getEmail());
@@ -92,7 +92,7 @@ public class Model implements interfaces.Model{
     @Override
     public void peticionCrearLibro(LibrosRsp librosRsp) {
 
-        String URL="https://"+IP_PUBLICA+"/libro.php";
+        String URL= IP_PUBLICA+"/libro.php";
 
         Map<String, String> postParam= new HashMap<String, String>();
         postParam.put("title", librosRsp.getTitle());
@@ -131,7 +131,7 @@ public class Model implements interfaces.Model{
 
     @Override
     public void peticionCrearUsuario(UsuarioRsp usuarioRsp) {
-        String URL="https://"+IP_PUBLICA+"/usuario.php";
+        String URL= IP_PUBLICA+"/usuario.php";
 
         Map<String, String> postParam= new HashMap<String, String>();
         postParam.put("name", usuarioRsp.getName());
@@ -173,7 +173,7 @@ public class Model implements interfaces.Model{
         final String direccion=usuarioRsp.getAddress();
         final String contrasena=usuarioRsp.getPassword();
 
-        String url="https://"+IP_PUBLICA+"/registro_usuario.php?Nombre_Usuario="+nombre+"&CorreoElectronico_Usuario="+correo+"&Telefono_Usuario="+telefono+"&Direccion_Usuario="+direccion+"&Contrasena_Usuario="+contrasena+"";
+        String url=IP_PUBLICA+"/registro_usuario.php?Nombre_Usuario="+nombre+"&CorreoElectronico_Usuario="+correo+"&Telefono_Usuario="+telefono+"&Direccion_Usuario="+direccion+"&Contrasena_Usuario="+contrasena+"";
         RequestQueue servicio= Volley.newRequestQueue(context);
         StringRequest respuesta=new StringRequest(
                 Request.Method.POST, url, new Response.Listener<String>() {
@@ -184,8 +184,6 @@ public class Model implements interfaces.Model{
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    Toast.makeText(context,
-                            "Error comunicación"+error,Toast.LENGTH_SHORT).show();
                 }
             });
             servicio.add(respuesta);
@@ -196,7 +194,7 @@ public class Model implements interfaces.Model{
     @Override
     public void peticionActualizarLibro(LibrosRsp librosRsp, String screen) {
         if (screen.equals(SCREEN_ACTUALIZAR_LIBRO)) {
-            String URL="https://"+IP_PUBLICA+"/libro.php?update=1&id="+librosRsp.getId()+"";
+            String URL= IP_PUBLICA+"/libro.php?update=1&id="+librosRsp.getId()+"";
 
             Map<String, String> postParam= new HashMap<String, String>();
             postParam.put("title", librosRsp.getTitle());
@@ -236,7 +234,7 @@ public class Model implements interfaces.Model{
 
         }else if(screen.equals(SCREEN_ACTUALIZAR_LIBRO_PRESTADO)){
 
-            String URL="https://"+IP_PUBLICA+"/libro.php?prestado=1&id="+librosRsp.getId()+"";
+            String URL= IP_PUBLICA+"/libro.php?prestado=1&id="+librosRsp.getId()+"";
 
             Map<String, String> postParam= new HashMap<String, String>();
             postParam.put("title", librosRsp.getTitle());
@@ -277,7 +275,7 @@ public class Model implements interfaces.Model{
     @Override
     public void peticionEliminarLibro(LibrosRsp librosRsp, String screen) {
         if (screen.equals(SCREEN_ACTUALIZAR_LIBRO)) {
-            String URL="https://"+IP_PUBLICA+"/libro.php?delete=1&id="+librosRsp.getId()+"";
+            String URL= IP_PUBLICA+"/libro.php?delete=1&id="+librosRsp.getId()+"";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
                     new Response.Listener<String>() {
                         @Override
@@ -295,7 +293,7 @@ public class Model implements interfaces.Model{
             RequestQueue requestQueue = Volley.newRequestQueue(context);
             requestQueue.add(stringRequest);
         }else if(screen.equals(SCREEN_ACTUALIZAR_LIBRO_PRESTADO)){
-            String URL="https://"+IP_PUBLICA+"/libro.php?delete_prestado=1&id="+librosRsp.getId()+"";
+            String URL= IP_PUBLICA+"/libro.php?delete_prestado=1&id="+librosRsp.getId()+"";
             StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
                     new Response.Listener<String>() {
                         @Override
@@ -318,7 +316,7 @@ public class Model implements interfaces.Model{
     @Override
     public void peticionEliminarLibroPrestado(LibrosPrestadosRsp librosPrestadosRsp,String screen) {
         int id = librosPrestadosRsp.get_id();
-        String URL = "https://"+IP_PUBLICA+"/peticiones.php?delete=1&id="+id+"";
+        String URL = IP_PUBLICA+"/peticiones.php?delete=1&id="+id+"";
         StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
                 new Response.Listener<String>() {
                     @Override
@@ -355,7 +353,7 @@ public class Model implements interfaces.Model{
         libros.setName_user(listaUsuario.getUsuarios().get(0).getName());
         libros.setPhone_user(listaUsuario.getUsuarios().get(0).getPhone());
 
-        String URL="https://"+IP_PUBLICA+"/peticiones.php?prestar=1";
+        String URL= IP_PUBLICA+"/peticiones.php?prestar=1";
 
         Map<String, String> postParam= new HashMap<String, String>();
         postParam.put("id_book", String.valueOf(libros.getId_book()));
@@ -406,7 +404,7 @@ public class Model implements interfaces.Model{
             }
         }
 
-        String url="https://"+IP_PUBLICA+"/peticiones.php?cantidad=1&id="+id_libro+"&cantidad_libro="+cantidadLibro+"";
+        String url= IP_PUBLICA+"/peticiones.php?cantidad=1&id="+id_libro+"&cantidad_libro="+cantidadLibro+"";
         RequestQueue servicio= Volley.newRequestQueue(context);
         StringRequest respuesta=new StringRequest(
                 Request.Method.POST, url, new Response.Listener<String>() {
@@ -430,7 +428,7 @@ public class Model implements interfaces.Model{
         final int id=listaLibros.getLibros().get(0).getId();
         final String cantidad= String.valueOf(Integer.parseInt(listaLibros.getLibros().get(0).getQuantity()) + 1);
 
-        String url="https://"+IP_PUBLICA+"/peticiones.php?cantidad=1&id="+id+"&cantidad_libro="+cantidad+"";
+        String url= IP_PUBLICA+"/peticiones.php?cantidad=1&id="+id+"&cantidad_libro="+cantidad+"";
         RequestQueue servicio= Volley.newRequestQueue(context);
         StringRequest respuesta=new StringRequest(
                 Request.Method.POST, url, new Response.Listener<String>() {
@@ -452,7 +450,7 @@ public class Model implements interfaces.Model{
 
     @Override
     public void peticionUsuario() {
-        String URL = "https://"+IP_PUBLICA+"/usuario.php?email="+sPreferences.getSharedPreference()+"";
+        String URL = IP_PUBLICA+"/usuario.php?email="+sPreferences.getSharedPreference()+"";
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET,URL,null,
                 new Response.Listener<JSONObject>() {
@@ -488,7 +486,7 @@ public class Model implements interfaces.Model{
     @Override
     public void peticionLibros(String screen) {
 
-        String URL = "https://"+IP_PUBLICA+"/libro.php";
+        String URL = IP_PUBLICA+"/libro.php";
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET,URL,null,
                 new Response.Listener<JSONObject>() {
@@ -526,7 +524,7 @@ public class Model implements interfaces.Model{
 
     @Override
     public void peticionLibrosPrestados(String screen) {
-        String URL = "https://"+IP_PUBLICA+"/peticiones.php?prestado=1";
+        String URL = IP_PUBLICA+"/peticiones.php?prestado=1";
         String correo = sPreferences.getSharedPreference();
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET,URL,null,
@@ -561,7 +559,7 @@ public class Model implements interfaces.Model{
     public void peticionLibrosPrestadosId(Object object, String screen) {
         librosPrestadosRsp = (LibrosPrestadosRsp) object;
         int id = librosPrestadosRsp.getId_book();
-        String URL = "https://"+IP_PUBLICA+"/peticiones.php?prestado=1&id="+id+"";
+        String URL = IP_PUBLICA+"/peticiones.php?prestado=1&id="+id+"";
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET,URL,null,
                 new Response.Listener<JSONObject>() {
@@ -593,7 +591,7 @@ public class Model implements interfaces.Model{
 
     @Override
     public void peticionLibrosPrestadosUsuario(String screen) {
-        String URL = "https://"+IP_PUBLICA+"/libro.php?email="+sPreferences.getSharedPreference()+"";
+        String URL = IP_PUBLICA+"/libro.php?email="+sPreferences.getSharedPreference()+"";
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET,URL,null,
                 new Response.Listener<JSONObject>() {
@@ -625,7 +623,7 @@ public class Model implements interfaces.Model{
 
     @Override
     public void peticionConsultaLibroPrestados(String screen) {
-        String URL = "https://"+IP_PUBLICA+"/peticiones.php?prestados=1";
+        String URL = IP_PUBLICA+"/peticiones.php?prestados=1";
         String correo = sPreferences.getSharedPreference();
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET,URL,null,
@@ -657,7 +655,7 @@ public class Model implements interfaces.Model{
 
     public void peticionConsultaLibroId(LibrosPrestadosRsp librosPrestadosRsp,String screen) {
         int id = librosPrestadosRsp.getId_book();
-        String URL = "https://"+IP_PUBLICA+"/libro.php?id="+id+"";
+        String URL = IP_PUBLICA+"/libro.php?id="+id+"";
         String correo = sPreferences.getSharedPreference();
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest(Request.Method.GET,URL,null,

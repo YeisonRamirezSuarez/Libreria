@@ -97,8 +97,8 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
         titulo = findViewById(R.id.tituloBannerUser);
         titulo.setText("Prestar Libro");
         conexion = new Conexion();
-        conexion.consultaLibros("https://"+IP_PUBLICA+"/consulta_libro_id.php?id="+id+"", this, this);
-        conexion.buscarUsuarios("https://"+IP_PUBLICA+"/consulta_usuario.php?correo="+sharedPreferences.getSharedPreference()+"", this, this);
+        conexion.consultaLibros(IP_PUBLICA+"/consulta_libro_id.php?id="+id+"", this, this);
+        conexion.buscarUsuarios(IP_PUBLICA+"/consulta_usuario.php?correo="+sharedPreferences.getSharedPreference()+"", this, this);
     }
 
     @Override
@@ -159,7 +159,7 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
                 startActivity(i);
                 break;
             case R.id.prestar_libro:
-                conexion.consultaLibrosPrestados("https://"+IP_PUBLICA+"/libros_prestados_disponibles.php", this, this);
+                conexion.consultaLibrosPrestados(IP_PUBLICA+"/libros_prestados_disponibles.php", this, this);
                 break;
         }
     }
@@ -178,7 +178,7 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
         final String Nombre_Usuario_Prestamo_libro=listaUsuario.getUsuarios().get(0).getName();
         final String Telefono_Usuario_Prestamo_libro =listaUsuario.getUsuarios().get(0).getPhone();
 
-        String url="https://"+IP_PUBLICA+"/registro_libro_prestado.php?id="+id+"&Titulo_libro="+nombre+"&Autor_libro="+autor+"&Cantidad_libro="+cantidad+"&Url_libro="+urlLibro+"&Imagen_libro="+imagen+"&Descripcion_libro="+descripcion+"" +
+        String url=IP_PUBLICA+"/registro_libro_prestado.php?id="+id+"&Titulo_libro="+nombre+"&Autor_libro="+autor+"&Cantidad_libro="+cantidad+"&Url_libro="+urlLibro+"&Imagen_libro="+imagen+"&Descripcion_libro="+descripcion+"" +
                 "&Fecha_Prestamo_libro="+Fecha_Prestamo_libro+"&Correo_Prestamo_libro="+Correo_Prestamo_libro+"&Nombre_Usuario_Prestamo_libro="+Nombre_Usuario_Prestamo_libro+"&Telefono_Usuario_Prestamo_libro="+Telefono_Usuario_Prestamo_libro+"";
        RequestQueue servicio= Volley.newRequestQueue(this);
         StringRequest respuesta=new StringRequest(
@@ -207,7 +207,7 @@ public class PrestarLibroUsuario extends AppCompatActivity implements View.OnCli
         final int id=listaLibros.getLibros().get(0).getId();
         final String cantidad= String.valueOf(Integer.parseInt(listaLibros.getLibros().get(0).getQuantity()) - 1);
 
-        String url="https://"+IP_PUBLICA+"/actualizar_cantidad_libro.php?id="+id+"&Cantidad_libro="+cantidad+"";
+        String url=IP_PUBLICA+"/actualizar_cantidad_libro.php?id="+id+"&Cantidad_libro="+cantidad+"";
         RequestQueue servicio= Volley.newRequestQueue(this);
         StringRequest respuesta=new StringRequest(
                 Request.Method.POST, url, new Response.Listener<String>() {

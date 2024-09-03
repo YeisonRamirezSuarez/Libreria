@@ -85,8 +85,8 @@ public class actividadUsuario extends AppCompatActivity implements View.OnClickL
         listaUsuario = new ListaUsuario();
         listaLibrosPrestados = new ListaLibrosPrestados();
         //conexion.consultaLibrosPrestados("http://"+IP_PUBLICA+":"+PUERTO+"/php/libros_prestados_disponibles.php", this, this);
-        conexion.consultaLibrosPrestados("https://"+IP_PUBLICA+"/consulta_libro_prestado.php?correo="+sPreferences.getSharedPreference()+"", this, this);
-        conexion.buscarUsuarios("https://"+IP_PUBLICA+"/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
+        conexion.consultaLibrosPrestados(IP_PUBLICA+"/consulta_libro_prestado.php?correo="+sPreferences.getSharedPreference()+"", this, this);
+        conexion.buscarUsuarios(IP_PUBLICA+"/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
     }
 
     @Override

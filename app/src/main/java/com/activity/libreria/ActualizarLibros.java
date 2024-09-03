@@ -100,8 +100,8 @@ public class ActualizarLibros extends AppCompatActivity implements View.OnClickL
         librosRsp = new LibrosRsp();
         sPreferences = new SPreferences(this);
         clickBorrar();
-        conexion.consultaLibros("https://"+IP_PUBLICA+"/consulta_libro_id.php?id="+ id_libro +"", this, this);
-        conexion.buscarUsuarios("https://"+IP_PUBLICA+"/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
+        conexion.consultaLibros(IP_PUBLICA+"/consulta_libro_id.php?id="+ id_libro +"", this, this);
+        conexion.buscarUsuarios(IP_PUBLICA+"/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
 
     }
 
@@ -192,7 +192,7 @@ public class ActualizarLibros extends AppCompatActivity implements View.OnClickL
          String imagen=librosRsp.getImage_url();
          String descripcion=librosRsp.getDescription();
 
-        String url="https://"+IP_PUBLICA+"/actualizar_libro.php?id="+ id_libro +"&Titulo_libro="+nombre+"&Autor_libro="+autor+"&Cantidad_libro="+cantidad+"&Url_libro="+urlLibro+"&Imagen_libro="+imagen+"&Descripcion_libro="+descripcion+"";
+        String url= IP_PUBLICA+"/actualizar_libro.php?id="+ id_libro +"&Titulo_libro="+nombre+"&Autor_libro="+autor+"&Cantidad_libro="+cantidad+"&Url_libro="+urlLibro+"&Imagen_libro="+imagen+"&Descripcion_libro="+descripcion+"";
         RequestQueue servicio= Volley.newRequestQueue(this);
         StringRequest respuesta=new StringRequest(
                 Request.Method.POST, url, new Response.Listener<String>() {
@@ -230,7 +230,7 @@ public class ActualizarLibros extends AppCompatActivity implements View.OnClickL
         String imagen=librosRsp.getImage_url();
         String descripcion=librosRsp.getDescription();
 
-        String url="https://"+IP_PUBLICA+"/actualizar_libro_prestado.php?id="+ id_libro +"&Titulo_libro="+nombre+"&Autor_libro="+autor+"&Cantidad_libro="+cantidad+"&Url_libro="+urlLibro+"&Imagen_libro="+imagen+"&Descripcion_libro="+descripcion+"";
+        String url= IP_PUBLICA+"/actualizar_libro_prestado.php?id="+ id_libro +"&Titulo_libro="+nombre+"&Autor_libro="+autor+"&Cantidad_libro="+cantidad+"&Url_libro="+urlLibro+"&Imagen_libro="+imagen+"&Descripcion_libro="+descripcion+"";
         RequestQueue servicio= Volley.newRequestQueue(this);
         StringRequest respuesta=new StringRequest(
                 Request.Method.POST, url, new Response.Listener<String>() {
@@ -292,8 +292,8 @@ public class ActualizarLibros extends AppCompatActivity implements View.OnClickL
         borrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                eliminarLibro("https://"+IP_PUBLICA+"/eliminar_libro.php?id="+ id_libro +"");
-                eliminarLibroPrestado("https://"+IP_PUBLICA+"/eliminar_libro_prestado_id.php?id="+id_libro+"");
+                eliminarLibro(IP_PUBLICA+"/eliminar_libro.php?id="+ id_libro +"");
+                eliminarLibroPrestado(IP_PUBLICA+"/eliminar_libro_prestado_id.php?id="+id_libro+"");
             }
         });
     }

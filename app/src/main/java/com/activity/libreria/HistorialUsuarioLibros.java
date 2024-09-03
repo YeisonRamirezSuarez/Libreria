@@ -89,8 +89,8 @@ public class HistorialUsuarioLibros extends AppCompatActivity implements View.On
         listaLibros = new ListaLibros();
         listaLibrosPrestados = new ListaLibrosPrestados();
         sPreferences = new SPreferences(this);
-        conexion.buscarUsuarios("https://"+IP_PUBLICA+"/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
-        conexion.consultaLibros("https://"+IP_PUBLICA+"/consulta_libro_id.php?id="+id+"", this, this);
+        conexion.buscarUsuarios(IP_PUBLICA+"/consulta_usuario.php?correo="+sPreferences.getSharedPreference()+"", this, this);
+        conexion.consultaLibros(IP_PUBLICA+"/consulta_libro_id.php?id="+id+"", this, this);
 
 
     }
@@ -145,7 +145,7 @@ public class HistorialUsuarioLibros extends AppCompatActivity implements View.On
                     .into(imageView_txt);
         }
         siExiste = false;
-        conexion.consultaLibrosPrestados("https://"+IP_PUBLICA+"/consulta_libros_prestados.php?id="+id+"", this, this);
+        conexion.consultaLibrosPrestados(IP_PUBLICA+"/consulta_libros_prestados.php?id="+id+"", this, this);
     }
 
     @Override
